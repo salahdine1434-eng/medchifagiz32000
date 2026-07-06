@@ -1,8 +1,8 @@
 <?php
-$host = "127.0.0.1";
-$dbname = "medchifagiz";
-$user = "root";
-$pass = "";
+$host = " https://php-myadmin.net/index.php";
+$dbname = "icei_42351031_rafik22";
+$user = "icei_42351031";
+$pass = "LEtRSvD61KBq";
 
 try {
     $pdo = new PDO(
