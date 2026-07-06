@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedChifaGiz — Service Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ═══════════════════════════════════════════
+   ROOT & RESET
+═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #050d1a;
+  --bg2:       #0a1628;
+  --bg3:       #0f1f35;
+  --surface:   #111d30;
+  --surface2:  #152240;
+  --border:    rgba(56,139,255,.13);
+  --border2:   rgba(56,139,255,.22);
+  --accent:    #0ea5e9;
+  --accent2:   #3b82f6;
+  --accent3:   #06b6d4;
+  --green:     #10b981;
+  --orange:    #f59e0b;
+  --red:       #ef4444;
+  --pink:      #ec4899;
+  --purple:    #8b5cf6;
+  --text:      #e2eaf5;
+  --text2:     #8fadc8;
+  --text3:     #4a6885;
+  --sidebar-w: 270px;
+  --header-h:  64px;
+  --radius:    14px;
+  --radius-sm: 8px;
+  --shadow:    0 4px 24px rgba(0,0,0,.4);
+  --glow:      0 0 24px rgba(14,165,233,.18);
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Cairo', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════
+   BACKGROUND
+═══════════════════════════════════════════ */
+.bg-particles {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+}
+.bg-particles span {
+  position: absolute; border-radius: 50%;
+  background: radial-gradient(circle, rgba(14,165,233,.12), transparent 70%);
+  animation: float linear infinite;
+}
+.bg-mesh {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(14,165,233,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 10% 80%, rgba(59,130,246,.06) 0%, transparent 60%);
+}
+@keyframes float {
+  0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: .5; }
+  100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+}
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════ */
+.layout { display: flex; height: 100vh; position: relative; z-index: 1; }
+
+/* ═══════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════ */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 50;
+  transition: width .3s cubic-bezier(.4,0,.2,1);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.sidebar.collapsed { width: 64px; }
+.sidebar-glow {
+  position: absolute;
+  top: 0; right: 0;
+  width: 1px; height: 60%;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+  opacity: .4;
+}
+
+/* Logo */
+.sidebar-logo {
+  display: flex; align-items: center; gap: 12px;
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  min-height: 72px;
+}
+.logo-icon {
+  width: 38px; height: 38px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 10px;
+  display: grid; place-items: center;
+  font-size: 17px; color: #fff;
+  box-shadow: var(--glow);
+}
+.logo-text { display: flex; flex-direction: column; overflow: hidden; white-space: nowrap; }
+.logo-brand { font-size: 15px; font-weight: 800; color: var(--text); letter-spacing: -.3px; }
+.logo-brand em { font-style: normal; color: var(--accent); }
+.logo-sub { font-size: 10px; color: var(--text3); font-weight: 500; letter-spacing: .5px; text-transform: uppercase; }
+
+/* Profile */
+.sidebar-profile {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  overflow: hidden; white-space: nowrap;
+}
+.profile-avatar {
+  width: 38px; height: 38px; flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent2), var(--accent));
+  display: grid; place-items: center;
+  font-size: 15px; font-weight: 700; color: #fff;
+  position: relative;
+}
+.profile-avatar .online-dot {
+  position: absolute; bottom: 1px; left: 1px;
+  width: 9px; height: 9px;
+  background: var(--green);
+  border-radius: 50%;
+  border: 2px solid var(--surface);
+}
+.profile-info { overflow: hidden; }
+.profile-name { display: block; font-size: 13px; font-weight: 700; color: var(--text); }
+.profile-role { display: block; font-size: 10.5px; color: var(--text3); margin-top: 1px; }
+.profile-dept {
+  display: inline-block; margin-top: 4px;
+  font-size: 10px; font-weight: 600;
+  background: rgba(14,165,233,.15);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 20px;
+  border: 1px solid rgba(14,165,233,.25);
+}
+
+/* Nav */
+.sidebar-nav { flex: 1; padding: 10px 10px; overflow-y: auto; overflow-x: hidden; }
+.sidebar-nav::-webkit-scrollbar { width: 3px; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+.nav-section-label {
+  font-size: 9.5px; font-weight: 700; letter-spacing: 1.2px;
+  color: var(--text3); text-transform: uppercase;
+  padding: 10px 8px 4px;
+  white-space: nowrap; overflow: hidden;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all .2s;
+  color: var(--text2);
+  font-size: 13px; font-weight: 600;
+  position: relative;
+  white-space: nowrap;
+  text-decoration: none;
+  user-select: none;
+  margin-bottom: 2px;
+}
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(14,165,233,.18), rgba(14,165,233,.06));
+  color: var(--accent);
+  border-right: 2px solid var(--accent);
+}
+.nav-icon {
+  width: 30px; height: 30px; flex-shrink: 0;
+  display: grid; place-items: center;
+  border-radius: 7px;
+  background: rgba(255,255,255,.04);
+  font-size: 13px;
+  transition: background .2s;
+}
+.nav-item.active .nav-icon { background: rgba(14,165,233,.15); }
+.nav-item:hover .nav-icon { background: rgba(255,255,255,.08); }
+.nav-badge {
+  margin-right: auto; flex-shrink: 0;
+  font-size: 10px; font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+  min-width: 18px; height: 18px;
+  border-radius: 9px;
+  display: grid; place-items: center;
+  padding: 0 5px;
+}
+.nav-badge.orange { background: var(--orange); }
+.nav-badge.green  { background: var(--green); }
+.nav-badge.red    { background: var(--red); }
+.nav-item.danger { color: var(--red); }
+.nav-item.danger .nav-icon { background: rgba(239,68,68,.12); }
+.nav-item.danger:hover { background: rgba(239,68,68,.08); }
+
+.sidebar-footer {
+  padding: 10px 10px 14px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════ */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ═══════════════════════════════════════════
+   HEADER / TOPBAR
+═══════════════════════════════════════════ */
+.header {
+  height: var(--header-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 20px;
+  gap: 12px;
+  flex-shrink: 0;
+  position: relative; z-index: 30;
+}
+.header-right { display: flex; align-items: center; gap: 10px; }
+.sidebar-toggle {
+  width: 34px; height: 34px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text2);
+  cursor: pointer;
+  display: grid; place-items: center;
+  font-size: 14px;
+  transition: all .2s;
+}
+.sidebar-toggle:hover { background: var(--bg3); color: var(--text); }
+.header-title {
+  font-size: 14px; font-weight: 700;
+  color: var(--text);
+}
+.header-title small { display: block; font-size: 10.5px; color: var(--text3); font-weight: 500; margin-top: 1px; }
+
+.header-center { flex: 1; display: flex; justify-content: center; }
+.header-datetime { text-align: center; }
+.header-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px; font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+.header-date { font-size: 10.5px; color: var(--text3); margin-top: 1px; }
+
+.header-left { display: flex; align-items: center; gap: 8px; margin-right: auto; }
+.header-search {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+}
+.header-search i { font-size: 12px; color: var(--text3); }
+.header-search input {
+  background: none; border: none; outline: none;
+  font-family: 'Cairo', sans-serif;
+  font-size: 12.5px; color: var(--text);
+  width: 160px;
+}
+.header-search input::placeholder { color: var(--text3); }
+
+.header-btn {
+  width: 34px; height: 34px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text2);
+  cursor: pointer;
+  display: grid; place-items: center;
+  font-size: 14px;
+  position: relative;
+  transition: all .2s;
+}
+.header-btn:hover { background: var(--bg3); color: var(--text); }
+.btn-badge {
+  position: absolute; top: -4px; left: -4px;
+  width: 16px; height: 16px;
+  background: var(--red);
+  border-radius: 50%;
+  font-size: 9px; font-weight: 700; color: #fff;
+  display: grid; place-items: center;
+}
+
+/* Notif Panel */
+.notif-panel {
+  position: absolute; top: calc(var(--header-h) + 4px); left: 20px;
+  width: 320px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  z-index: 100;
+  display: none;
+}
+.notif-panel.open { display: block; animation: dropIn .2s; }
+@keyframes dropIn { from { opacity:0; transform:translateY(-8px); } }
+.notif-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px; font-weight: 700;
+}
+.notif-clear { background: none; border: none; color: var(--accent); font-family: 'Cairo',sans-serif; font-size: 11px; cursor: pointer; }
+.notif-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  transition: background .2s; cursor: pointer;
+}
+.notif-item:hover { background: var(--surface2); }
+.notif-item:last-child { border-bottom: none; }
+.notif-item.urgent { background: rgba(239,68,68,.06); }
+.notif-icon {
+  width: 32px; height: 32px; flex-shrink: 0;
+  border-radius: 8px;
+  background: rgba(239,68,68,.15);
+  color: var(--red);
+  display: grid; place-items: center;
+  font-size: 13px;
+}
+.notif-icon.blue  { background: rgba(59,130,246,.15); color: var(--accent2); }
+.notif-icon.green { background: rgba(16,185,129,.15); color: var(--green); }
+.notif-body strong { display: block; font-size: 12px; font-weight: 700; margin-bottom: 2px; }
+.notif-body span   { display: block; font-size: 11px; color: var(--text2); }
+.notif-body time   { display: block; font-size: 10px; color: var(--text3); margin-top: 3px; }
+
+/* ═══════════════════════════════════════════
+   CONTENT AREA
+═══════════════════════════════════════════ */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+.content::-webkit-scrollbar { width: 5px; }
+.content::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+.section { display: none; }
+.section.active { display: block; animation: fadeIn .25s; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } }
+
+/* ═══════════════════════════════════════════
+   WELCOME BAR
+═══════════════════════════════════════════ */
+.welcome-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  background: linear-gradient(120deg, var(--surface) 60%, rgba(14,165,233,.08));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  margin-bottom: 22px;
+}
+.welcome-bar h1 { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+.welcome-bar p  { font-size: 13px; color: var(--text2); }
+.welcome-bar strong { color: var(--accent); }
+.wave { display: inline-block; animation: wave 2s infinite; }
+@keyframes wave {
+  0%,100% { transform: rotate(0deg); }
+  25%      { transform: rotate(20deg); }
+  75%      { transform: rotate(-10deg); }
+}
+
+/* ═══════════════════════════════════════════
+   STATS GRID
+═══════════════════════════════════════════ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  display: flex; align-items: center; gap: 14px;
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s, box-shadow .2s;
+  cursor: default;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 4px; height: 100%;
+  background: var(--card-color, var(--accent));
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.3); }
+.stat-icon {
+  width: 44px; height: 44px; flex-shrink: 0;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--card-color, var(--accent)) 15%, transparent);
+  color: var(--card-color, var(--accent));
+  display: grid; place-items: center;
+  font-size: 18px;
+}
+.stat-body { flex: 1; min-width: 0; }
+.stat-value { font-size: 26px; font-weight: 800; line-height: 1; color: var(--text); }
+.stat-label { font-size: 11.5px; color: var(--text2); margin-top: 3px; }
+.stat-trend  { font-size: 10.5px; margin-top: 4px; }
+.stat-trend.up   { color: var(--green); }
+.stat-trend.down { color: var(--red); }
+.stat-sub { font-size: 10.5px; color: var(--text3); margin-top: 4px; }
+
+/* ═══════════════════════════════════════════
+   PAGE HEADER ROW
+═══════════════════════════════════════════ */
+.page-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px;
+}
+.page-header h2 { font-size: 16px; font-weight: 700; }
+.page-header p   { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.page-actions { display: flex; gap: 8px; }
+
+/* ═══════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  font-family: 'Cairo', sans-serif;
+  font-size: 12.5px; font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  border: none;
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(14,165,233,.3);
+}
+.btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-outline {
+  background: transparent;
+  color: var(--text2);
+  border: 1px solid var(--border);
+}
+.btn-outline:hover { background: var(--surface2); color: var(--text); }
+.btn-sm { padding: 5px 10px; font-size: 11px; border-radius: 6px; }
+.btn-green  { background: rgba(16,185,129,.15); color: var(--green);  border: 1px solid rgba(16,185,129,.25); }
+.btn-orange { background: rgba(245,158,11,.15); color: var(--orange); border: 1px solid rgba(245,158,11,.25); }
+.btn-blue   { background: rgba(59,130,246,.15);  color: var(--accent2); border: 1px solid rgba(59,130,246,.25); }
+.btn-red    { background: rgba(239,68,68,.12);   color: var(--red);   border: 1px solid rgba(239,68,68,.2); }
+
+/* ═══════════════════════════════════════════
+   CARD / TABLE
+═══════════════════════════════════════════ */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.card-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.card-header h3 { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.card-header h3 i { color: var(--accent); }
+.card-body { padding: 0; }
+
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  padding: 10px 16px;
+  font-size: 11px; font-weight: 700; letter-spacing: .5px;
+  color: var(--text3); text-transform: uppercase;
+  background: var(--bg3);
+  text-align: right;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 11px 16px;
+  font-size: 12.5px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: middle;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--surface2); }
+
+/* Patient avatar in table */
+.pt-cell { display: flex; align-items: center; gap: 10px; }
+.pt-avatar {
+  width: 32px; height: 32px; flex-shrink: 0;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 13px; font-weight: 700; color: #fff;
+}
+.pt-name { font-weight: 600; font-size: 13px; }
+.pt-sub  { font-size: 10.5px; color: var(--text3); }
+
+/* Status badges */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11px; font-weight: 600;
+}
+.badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.badge-green  { background: rgba(16,185,129,.12); color: var(--green);  }
+.badge-orange { background: rgba(245,158,11,.12); color: var(--orange); }
+.badge-red    { background: rgba(239,68,68,.10);  color: var(--red);    }
+.badge-blue   { background: rgba(59,130,246,.12); color: var(--accent2);}
+.badge-purple { background: rgba(139,92,246,.12); color: var(--purple); }
+
+/* Action buttons cell */
+.action-group { display: flex; gap: 6px; flex-wrap: nowrap; }
+
+/* ═══════════════════════════════════════════
+   TEAM ACTIVITY
+═══════════════════════════════════════════ */
+.activity-list { padding: 8px 0; }
+.activity-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 18px;
+  border-bottom: 1px solid var(--border);
+  transition: background .2s;
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-item:hover { background: var(--surface2); }
+.activity-icon {
+  width: 34px; height: 34px; flex-shrink: 0;
+  border-radius: 8px;
+  display: grid; place-items: center;
+  font-size: 13px;
+}
+.activity-body { flex: 1; }
+.activity-body strong { display: block; font-size: 12.5px; font-weight: 700; }
+.activity-body span   { display: block; font-size: 11px; color: var(--text2); margin-top: 1px; }
+.activity-time { font-size: 10.5px; color: var(--text3); white-space: nowrap; font-family: 'JetBrains Mono', monospace; }
+
+/* ═══════════════════════════════════════════
+   SECTION: FILES
+═══════════════════════════════════════════ */
+.files-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+  padding: 18px;
+}
+.file-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s;
+}
+.file-card:hover { background: var(--surface2); border-color: var(--border2); transform: translateY(-2px); }
+.file-icon { font-size: 28px; margin-bottom: 8px; color: var(--accent); }
+.file-name { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+.file-meta { font-size: 10px; color: var(--text3); }
+
+/* ═══════════════════════════════════════════
+   SECTION: SETTINGS
+═══════════════════════════════════════════ */
+.settings-wrap { max-width: 680px; }
+.settings-group {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.settings-group-title {
+  font-size: 13px; font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.settings-field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.settings-field label { display: block; font-size: 11.5px; color: var(--text2); margin-bottom: 6px; font-weight: 600; }
+.settings-field input, .settings-field select {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  transition: border-color .2s;
+}
+.settings-field input:focus,
+.settings-field select:focus { border-color: var(--accent); }
+.settings-toggles { display: flex; flex-direction: column; gap: 12px; }
+.settings-toggle-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.settings-toggle-item:last-child { border-bottom: none; }
+.stg-text strong { display: block; font-size: 13px; font-weight: 600; }
+.stg-text small  { display: block; font-size: 11px; color: var(--text3); margin-top: 2px; }
+.toggle-switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; inset: 0;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  cursor: pointer;
+  transition: .3s;
+}
+.toggle-slider::before {
+  content: ''; position: absolute;
+  width: 16px; height: 16px;
+  right: 2px; top: 2px;
+  background: var(--text3);
+  border-radius: 50%;
+  transition: .3s;
+}
+.toggle-switch input:checked + .toggle-slider { background: rgba(14,165,233,.2); border-color: var(--accent); }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(-18px); background: var(--accent); }
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 13px; font-weight: 600;
+  color: var(--text);
+  box-shadow: var(--shadow);
+  z-index: 999;
+  opacity: 0;
+  transition: all .3s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ═══════════════════════════════════════════
+   QUICK STATS ROW (dashboard bottom)
+═══════════════════════════════════════════ */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.three-col { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .three-col  { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  :root { --sidebar-w: 220px; }
+  .sidebar { position: fixed; top: 0; right: 0; height: 100vh; z-index: 200; }
+  .sidebar.collapsed { width: 0; }
+  .main { width: 100%; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .header-search { display: none; }
+  .settings-field-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .content { padding: 14px; }
+  .two-col { grid-template-columns: 1fr; }
+}
+
+/* ── misc ── */
+.mt8 { margin-top: 8px; }
+.text-center { text-align: center; }
+.color-accent { color: var(--accent); }
+select option { background: var(--surface); }
+</style>
+</head>
+<body>
+
+<!-- BG -->
+<div class="bg-particles" id="bgParticles"></div>
+<div class="bg-mesh"></div>
+
+<div class="layout">
+
+<!-- ═══════════════════════════════════════════
+     SIDEBAR
+═══════════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-glow"></div>
+
+  <!-- Logo -->
+  <div class="sidebar-logo">
+    <div class="logo-icon"><i class="fas fa-heart-pulse"></i></div>
+    <div class="logo-text">
+      <span class="logo-brand">MedChifa<em>Giz</em></span>
+      <span class="logo-sub">Service Admin</span>
+    </div>
+  </div>
+
+  <!-- Profile -->
+  <div class="sidebar-profile">
+    <div class="profile-avatar">
+      <span>أ</span>
+      <div class="online-dot"></div>
+    </div>
+    <div class="profile-info">
+      <span class="profile-name">د. أحمد بن سالم</span>
+      <span class="profile-role">مدير المصلحة</span>
+      <span class="profile-dept">الطب الداخلي</span>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">الرئيسية</div>
+    <a class="nav-item active" onclick="switchSection('dashboard',this)">
+      <div class="nav-icon"><i class="fas fa-house-medical"></i></div>
+      <span>الرئيسية</span>
+      <div class="nav-badge">5</div>
+    </a>
+
+    <div class="nav-section-label">الخدمات</div>
+    <a class="nav-item" onclick="switchSection('requests',this)">
+      <div class="nav-icon"><i class="fas fa-clipboard-list"></i></div>
+      <span>الطلبات / الاستشارات</span>
+      <div class="nav-badge orange">8</div>
+    </a>
+    <a class="nav-item" onclick="switchSection('patients',this)">
+      <div class="nav-icon"><i class="fas fa-bed-pulse"></i></div>
+      <span>مرضى المصلحة</span>
+      <div class="nav-badge">14</div>
+    </a>
+    <a class="nav-item" onclick="switchSection('files',this)">
+      <div class="nav-icon"><i class="fas fa-folder-open"></i></div>
+      <span>الملفات الطبية</span>
+    </a>
+    <a class="nav-item" onclick="switchSection('team',this)">
+      <div class="nav-icon"><i class="fas fa-users-gear"></i></div>
+      <span>نشاط الفريق</span>
+      <div class="nav-badge green">3</div>
+    </a>
+
+    <div class="nav-section-label">الحساب</div>
+    <a class="nav-item" onclick="switchSection('settings',this)">
+      <div class="nav-icon"><i class="fas fa-gear"></i></div>
+      <span>الإعدادات</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a class="nav-item danger" onclick="handleLogout()" style="margin:0;border-radius:10px;">
+      <div class="nav-icon"><i class="fas fa-right-from-bracket"></i></div>
+      <span>تسجيل الخروج</span>
+    </a>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════
+     MAIN
+═══════════════════════════════════════════ -->
+<main class="main">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-right">
+      <button class="sidebar-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="header-title" id="headerTitle">
+        الرئيسية
+        <small>MedChifaGiz · Service Admin</small>
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="header-datetime">
+        <div class="header-time" id="headerTime">--:--:--</div>
+        <div class="header-date" id="headerDate"></div>
+      </div>
+    </div>
+    <div class="header-left">
+      <div class="header-search">
+        <i class="fas fa-magnifying-glass"></i>
+        <input type="text" placeholder="بحث سريع...">
+      </div>
+      <button class="header-btn" onclick="toggleNotifs()">
+        <i class="fas fa-bell"></i>
+        <span class="btn-badge">3</span>
+      </button>
+    </div>
+
+    <!-- Notif panel -->
+    <div class="notif-panel" id="notifPanel">
+      <div class="notif-header">
+        <span>الإشعارات</span>
+        <button class="notif-clear" onclick="clearNotifs()">مسح الكل</button>
+      </div>
+      <div class="notif-list" id="notifList">
+        <div class="notif-item urgent">
+          <div class="notif-icon"><i class="fas fa-triangle-exclamation"></i></div>
+          <div class="notif-body">
+            <strong>طلب استشارة عاجل</strong>
+            <span>المريض كمال بن حسن — الغرفة 07</span>
+            <time>منذ 5 دقائق</time>
+          </div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon blue"><i class="fas fa-file-medical"></i></div>
+          <div class="notif-body">
+            <strong>ملف طبي جديد مرفوع</strong>
+            <span>فريدة بن عمر — تحاليل الدم</span>
+            <time>منذ 18 دقيقة</time>
+          </div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon green"><i class="fas fa-check-circle"></i></div>
+          <div class="notif-body">
+            <strong>طلب تمّت معالجته</strong>
+            <span>استشارة قسم الأشعة اكتملت</span>
+            <time>منذ 42 دقيقة</time>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ══════════════════════════════════════
+         DASHBOARD
+    ══════════════════════════════════════ -->
+    <section class="section active" id="section-dashboard">
+
+      <div class="welcome-bar">
+        <div>
+          <h1>صباح النور، د. أحمد <span class="wave">👋</span></h1>
+          <p>لديك <strong>8 طلبات جديدة</strong> و<strong>14 مريضاً</strong> في المصلحة اليوم.</p>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card" style="--card-color:#0ea5e9">
+          <div class="stat-icon"><i class="fas fa-bed-pulse"></i></div>
+          <div class="stat-body">
+            <div class="stat-value">14</div>
+            <div class="stat-label">إجمالي المرضى</div>
+            <div class="stat-trend up"><i class="fas fa-arrow-up"></i> +3 اليوم</div>
+          </div>
+        </div>
+        <div class="stat-card" style="--card-color:#f59e0b">
+          <div class="stat-icon"><i class="fas fa-clipboard-list"></i></div>
+          <div class="stat-body">
+            <div class="stat-value">8</div>
+            <div class="stat-label">الطلبات الجديدة</div>
+            <div class="stat-trend up"><i class="fas fa-arrow-up"></i> +2 منذ أمس</div>
+          </div>
+        </div>
+        <div class="stat-card" style="--card-color:#10b981">
+          <div class="stat-icon"><i class="fas fa-folder-open"></i></div>
+          <div class="stat-body">
+            <div class="stat-value">23</div>
+            <div class="stat-label">الملفات المفتوحة</div>
+            <div class="stat-sub">5 بحاجة مراجعة</div>
+          </div>
+        </div>
+        <div class="stat-card" style="--card-color:#8b5cf6">
+          <div class="stat-icon"><i class="fas fa-users-gear"></i></div>
+          <div class="stat-body">
+            <div class="stat-value">7</div>
+            <div class="stat-label">نشاط الفريق</div>
+            <div class="stat-sub">3 متصلون الآن</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Latest Requests + Team -->
+      <div class="three-col">
+        <!-- Latest requests -->
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fas fa-clipboard-list"></i> آخر الطلبات</h3>
+            <button class="btn btn-outline btn-sm" onclick="switchSection('requests', document.querySelector('[onclick*=requests]'))">عرض الكل</button>
+          </div>
+          <div class="card-body">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>المريض</th>
+                  <th>السبب</th>
+                  <th>الحالة</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div class="pt-cell"><div class="pt-avatar" style="background:linear-gradient(135deg,#0ea5e9,#3b82f6)">ك</div><div><div class="pt-name">كمال بن حسن</div></div></div></td>
+                  <td>استشارة كلوية</td>
+                  <td><span class="badge badge-orange">معلّق</span></td>
+                </tr>
+                <tr>
+                  <td><div class="pt-cell"><div class="pt-avatar" style="background:linear-gradient(135deg,#10b981,#0ea5e9)">ز</div><div><div class="pt-name">زينب مرابط</div></div></div></td>
+                  <td>نتائج تحاليل</td>
+                  <td><span class="badge badge-blue">قيد المعالجة</span></td>
+                </tr>
+                <tr>
+                  <td><div class="pt-cell"><div class="pt-avatar" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">ع</div><div><div class="pt-name">عمار بوعلي</div></div></div></td>
+                  <td>إحالة أشعة</td>
+                  <td><span class="badge badge-green">مكتمل</span></td>
+                </tr>
+                <tr>
+                  <td><div class="pt-cell"><div class="pt-avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">ن</div><div><div class="pt-name">نادية صالح</div></div></div></td>
+                  <td>استشارة قلبية</td>
+                  <td><span class="badge badge-red">عاجل</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Team Summary -->
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fas fa-users-gear"></i> الفريق</h3>
+          </div>
+          <div class="activity-list">
+            <div class="activity-item">
+              <div class="activity-icon" style="background:rgba(14,165,233,.15);color:var(--accent)"><i class="fas fa-user-doctor"></i></div>
+              <div class="activity-body">
+                <strong>د. سارة ميلود</strong>
+                <span>طبيبة مقيمة · متصلة</span>
+              </div>
+              <span class="badge badge-green" style="font-size:9px">نشط</span>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:rgba(16,185,129,.15);color:var(--green)"><i class="fas fa-user-nurse"></i></div>
+              <div class="activity-body">
+                <strong>فاطمة بن عمر</strong>
+                <span>ممرضة أولى · متصلة</span>
+              </div>
+              <span class="badge badge-green" style="font-size:9px">نشط</span>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:rgba(245,158,11,.15);color:var(--orange)"><i class="fas fa-user-doctor"></i></div>
+              <div class="activity-body">
+                <strong>د. يوسف بكر</strong>
+                <span>طبيب مناوب</span>
+              </div>
+              <span class="badge badge-orange" style="font-size:9px">مناوبة</span>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:rgba(139,92,246,.15);color:var(--purple)"><i class="fas fa-user-nurse"></i></div>
+              <div class="activity-body">
+                <strong>ليلى حمزة</strong>
+                <span>ممرضة · غائبة</span>
+              </div>
+              <span class="badge badge-red" style="font-size:9px">غائب</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         REQUESTS / CONSULTATIONS
+    ══════════════════════════════════════ -->
+    <section class="section" id="section-requests">
+      <div class="page-header">
+        <div>
+          <h2><i class="fas fa-clipboard-list color-accent"></i> الطلبات والاستشارات</h2>
+          <p>جميع الطلبات والاستشارات الواردة لمصلحة الطب الداخلي</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-outline btn-sm"><i class="fas fa-filter"></i> تصفية</button>
+          <button class="btn btn-primary btn-sm" onclick="showToast('تمّ إضافة طلب جديد ✓')"><i class="fas fa-plus"></i> طلب جديد</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>المريض</th>
+                <th>الجهة</th>
+                <th>السبب</th>
+                <th>التاريخ</th>
+                <th>الحالة</th>
+                <th>الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="pt-cell"><div class="pt-avatar" style="background:linear-gradient(135deg,#0ea5e9,#3b82f6)">ك</div><div><div class="pt-name">كمال بن حسن</div><div class="pt-sub">غرفة 07</div></div></div></td>
+                <td>قسم المخبر</td>
+                <td>استشارة كلوية عاجلة</td>
+                <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3)">2025-05-31</td>
+                <td><span class="badge badge-orange">معلّق</span></td>
+                <td><div class="action-group">
+                  <button class="btn btn-blue btn-sm" onclick="showToast('عرض الطلب')"><i class="fas fa-eye"></i> عرض</button>
+                  <button class="btn btn-orange btn-sm" onclick="showToast('تمّ التوجيه ✓')"><i class="fas fa-share"></i> توجيه</button>
+                  <button class="btn btn-green btn-sm" onclick="showToast('جارٍ المتابعة ✓')"><i class="fas fa-clock"></i> متابعة</button>
+                </div></td>
+              </tr>
+              <tr>
+                <td><div class="pt-cell"><div class="pt-avatar" style="background:linear-gradient(135deg,#ef4444,#f59e0b)">ن</div><div><div class="pt-name">نادية صالح</div><div class="pt-sub">غرفة 12</div></div></div></td>
+                <td>قسم القلب</td>
+                <td>استشارة قلبية — ألم صدري</td>
+                <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3)">2025-05-31</td>
+                <td><span class="badge badge-red">عاجل</span></td>
+                <td><div class="action-group">
+                  <button class="btn btn-blue btn-sm" onclick="showToast('عرض الطلب')"><i class="fas fa-eye"></i> عرض</button>
+                  <button class="btn btn-orange btn-sm" onclick="showToast('تمّ التوجيه ✓')"><i class="fas fa-share"></i> توجيه</button>
+                  <button class="btn btn-green btn-sm" onclick="showToast('جارٍ المتابعة ✓')"><i class="fas fa-clock"></i> متابعة</button>
+                </div></td>
+              </tr>
+              <tr>
+                <td><div class="pt-cell"><div class="pt-avatar" style="background:linear-gradient(135deg,#10b981,#0ea5e9)">ز</div><div><div class="pt-name">زينب مرابط</div><div class="pt-sub">غرفة 03</div></div></div></td>
+                <td>قسم الأشعة</td>
+                <td>طلب صورة صدرية</td>
+                <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3)">2025-05-30</td>
+                <td><span class="badge badge-blue">قيد المعالجة</span></td>
+                <td><div class="action-group">
+                  <button class="btn btn-blue btn-sm" onclick="showToast('عرض الطلب')"><i class="fas fa-eye"></i> عرض</button>
+                  <button class="btn btn-orange btn-sm" onclick="showToast('تمّ التوجيه ✓')"><i class="fas fa-share"></i> توجيه</button>
+                  <button class="btn btn-green btn-sm" onclick="showToast('جارٍ المتابعة ✓')"><i class="fas fa-clock"></i> متابعة</button>
+                </div></td>
+              </tr>
+              <tr>
+                <td><div class="pt-cell"><div class="pt-avatar" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">ع</div><div><div class="pt-name">عمار بوعلي</div><div class="pt-sub">غرفة 09</div></div></div></td>
+                <td>الصيدلية</td>
+                <td>طلب دواء — إحالة</td>
+                <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3)">2025-05-30</td>
+                <td><span class="badge badge-green">مكتمل</span></td>
+                <td><div class="action-group">
+                  <button class="btn btn-blue btn-sm" onclick="showToast('عرض الطلب')"><i class="fas fa-eye"></i> عرض</button>
+                  <button class="btn btn-green btn-sm" onclick="showToast('مكتمل بالفعل')"><i class="fas fa-check"></i> مكتمل</button>
+                </div></td>
+              </tr>
+              <tr>
+                <td><div class="pt-cell"><div class="pt-avatar" style="background:linear-gradient(135deg,#06b6d4,#10b981)">ح</div><div><div class="pt-name">حسين بلعيد</div><div class="pt-sub">غرفة 15</div></div></div></td>
+                <td>قسم المخبر</td>
+                <td>تحاليل دم شاملة</td>
+                <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3)">2025-05-29</td>
+                <td><span class="badge badge-purple">جديد</span></td>
+                <td><div class="action-group">
+                  <button class="btn btn-blue btn-sm" onclick="showToast('عرض الطلب')"><i class="fas fa-eye"></i> عرض</button>
+                  <button class="btn btn-orange btn-sm" onclick="showToast('تمّ التوجيه ✓')"><i class="fas fa-share"></i> توجيه</button>
+                  <button class="btn btn-green btn-sm" onclick="showToast('جارٍ المتابعة ✓')"><i class="fas fa-clock"></i> متابعة</button>
+                </div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         PATIENTS
+    ══════════════════════════════════════ -->
+    <section class="section" id="section-patients">
+      <div class="page-header">
+        <div>
+          <h2><i class="fas fa-bed-pulse color-accent"></i> مرضى المصلحة</h2>
+          <p>قائمة المرضى المقيمين في مصلحة الطب الداخلي</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-outline btn-sm"><i class="fas fa-filter"></i> تصفية</button>
+          <button class="btn btn-primary btn-sm" onclick="showToast('إضافة مريض جديد')"><i class="fas fa-user-plus"></i> إضافة مريض</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>المريض</th>
+                <th>الحالة الصحية</th>
+                <th>الطبيب المعالج</th>
+                <th>الغرفة</th>
+                <th>تاريخ الدخول</th>
+                <th>الملف</th>
+              </tr>
+            </thead>
+            <tbody id="patientsBody">
+              <!-- JS filled -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         FILES
+    ══════════════════════════════════════ -->
+    <section class="section" id="section-files">
+      <div class="page-header">
+        <div>
+          <h2><i class="fas fa-folder-open color-accent"></i> الملفات الطبية</h2>
+          <p>جميع الملفات والوثائق الطبية الخاصة بالمصلحة</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-outline btn-sm"><i class="fas fa-search"></i> بحث</button>
+          <button class="btn btn-primary btn-sm" onclick="showToast('رفع ملف جديد ✓')"><i class="fas fa-upload"></i> رفع ملف</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="files-grid">
+          <div class="file-card" onclick="showToast('فتح الملف: كمال بن حسن')">
+            <div class="file-icon"><i class="fas fa-file-medical"></i></div>
+            <div class="file-name">كمال بن حسن</div>
+            <div class="file-meta">تحاليل دم · 2.3 MB · اليوم</div>
+          </div>
+          <div class="file-card" onclick="showToast('فتح الملف: نادية صالح')">
+            <div class="file-icon" style="color:var(--orange)"><i class="fas fa-x-ray"></i></div>
+            <div class="file-name">نادية صالح</div>
+            <div class="file-meta">أشعة صدر · 4.1 MB · أمس</div>
+          </div>
+          <div class="file-card" onclick="showToast('فتح الملف: زينب مرابط')">
+            <div class="file-icon" style="color:var(--green)"><i class="fas fa-file-waveform"></i></div>
+            <div class="file-name">زينب مرابط</div>
+            <div class="file-meta">تقرير سريري · 1.8 MB · 30 مايو</div>
+          </div>
+          <div class="file-card" onclick="showToast('فتح الملف: عمار بوعلي')">
+            <div class="file-icon" style="color:var(--purple)"><i class="fas fa-pills"></i></div>
+            <div class="file-name">عمار بوعلي</div>
+            <div class="file-meta">وصفة دوائية · 0.5 MB · 30 مايو</div>
+          </div>
+          <div class="file-card" onclick="showToast('فتح الملف: حسين بلعيد')">
+            <div class="file-icon" style="color:var(--accent3)"><i class="fas fa-file-medical"></i></div>
+            <div class="file-name">حسين بلعيد</div>
+            <div class="file-meta">ملف كامل · 3.2 MB · 29 مايو</div>
+          </div>
+          <div class="file-card" onclick="showToast('فتح الملف: فريدة بن عمر')">
+            <div class="file-icon" style="color:var(--pink)"><i class="fas fa-heart-pulse"></i></div>
+            <div class="file-name">فريدة بن عمر</div>
+            <div class="file-meta">تخطيط قلب · 2.7 MB · 28 مايو</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         TEAM ACTIVITY
+    ══════════════════════════════════════ -->
+    <section class="section" id="section-team">
+      <div class="page-header">
+        <div>
+          <h2><i class="fas fa-users-gear color-accent"></i> نشاط الفريق</h2>
+          <p>متابعة نشاط وحضور فريق مصلحة الطب الداخلي</p>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <!-- Activity log -->
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fas fa-clock-rotate-left"></i> آخر النشاطات</h3>
+          </div>
+          <div class="activity-list">
+            <div class="activity-item">
+              <div class="activity-icon" style="background:rgba(14,165,233,.15);color:var(--accent)"><i class="fas fa-stethoscope"></i></div>
+              <div class="activity-body">
+                <strong>استشارة جديدة</strong>
+                <span>د. سارة ميلود — مريض كمال بن حسن، غرفة 07</span>
+              </div>
+              <span class="activity-time">08:34</span>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:rgba(16,185,129,.15);color:var(--green)"><i class="fas fa-syringe"></i></div>
+              <div class="activity-body">
+                <strong>تطبيق علاج</strong>
+                <span>فاطمة بن عمر — جرعة إنسولين، غرفة 03</span>
+              </div>
+              <span class="activity-time">08:12</span>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:rgba(245,158,11,.15);color:var(--orange)"><i class="fas fa-file-waveform"></i></div>
+              <div class="activity-body">
+                <strong>تحديث ملف طبي</strong>
+                <span>د. يوسف بكر — نادية صالح، تقرير سريري</span>
+              </div>
+              <span class="activity-time">07:55</span>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:rgba(139,92,246,.15);color:var(--purple)"><i class="fas fa-user-plus"></i></div>
+              <div class="activity-body">
+                <strong>مريض جديد</strong>
+                <span>حسين بلعيد — دخول قسم الطب الداخلي</span>
+              </div>
+              <span class="activity-time">07:20</span>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:rgba(239,68,68,.15);color:var(--red)"><i class="fas fa-triangle-exclamation"></i></div>
+              <div class="activity-body">
+                <strong>تنبيه عاجل</strong>
+                <span>د. سارة ميلود — إنذار ضغط دم حرج، غرفة 12</span>
+              </div>
+              <span class="activity-time">06:48</span>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:rgba(6,182,212,.15);color:var(--accent3)"><i class="fas fa-share-nodes"></i></div>
+              <div class="activity-body">
+                <strong>توجيه طلب</strong>
+                <span>د. يوسف بكر — إحالة إلى قسم الأشعة</span>
+              </div>
+              <span class="activity-time">06:30</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Team members -->
+        <div>
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-header">
+              <h3><i class="fas fa-users"></i> أعضاء الفريق</h3>
+              <span style="font-size:11px;color:var(--text3)">3 متصلون</span>
+            </div>
+            <div class="activity-list">
+              <div class="activity-item">
+                <div class="activity-icon" style="background:linear-gradient(135deg,rgba(14,165,233,.3),rgba(59,130,246,.3));color:var(--accent)"><i class="fas fa-user-doctor"></i></div>
+                <div class="activity-body">
+                  <strong>د. سارة ميلود</strong>
+                  <span>طبيبة مقيمة</span>
+                </div>
+                <span class="badge badge-green" style="font-size:9px">نشط</span>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon" style="background:rgba(16,185,129,.2);color:var(--green)"><i class="fas fa-user-nurse"></i></div>
+                <div class="activity-body">
+                  <strong>فاطمة بن عمر</strong>
+                  <span>ممرضة أولى</span>
+                </div>
+                <span class="badge badge-green" style="font-size:9px">نشط</span>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon" style="background:rgba(245,158,11,.2);color:var(--orange)"><i class="fas fa-user-doctor"></i></div>
+                <div class="activity-body">
+                  <strong>د. يوسف بكر</strong>
+                  <span>طبيب مناوب</span>
+                </div>
+                <span class="badge badge-orange" style="font-size:9px">مناوبة</span>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon" style="background:rgba(239,68,68,.15);color:var(--red)"><i class="fas fa-user-nurse"></i></div>
+                <div class="activity-body">
+                  <strong>ليلى حمزة</strong>
+                  <span>ممرضة</span>
+                </div>
+                <span class="badge badge-red" style="font-size:9px">غائب</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats mini -->
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-chart-simple"></i> إحصائيات اليوم</h3>
+            </div>
+            <div style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:12.5px;color:var(--text2)">الاستشارات المنجزة</span>
+                <span style="font-size:14px;font-weight:700;color:var(--green)">12</span>
+              </div>
+              <div style="background:var(--bg3);border-radius:4px;height:6px;overflow:hidden"><div style="width:75%;height:100%;background:var(--green);border-radius:4px"></div></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:12.5px;color:var(--text2)">الطلبات المعلّقة</span>
+                <span style="font-size:14px;font-weight:700;color:var(--orange)">5</span>
+              </div>
+              <div style="background:var(--bg3);border-radius:4px;height:6px;overflow:hidden"><div style="width:40%;height:100%;background:var(--orange);border-radius:4px"></div></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:12.5px;color:var(--text2)">الملفات المحدّثة</span>
+                <span style="font-size:14px;font-weight:700;color:var(--accent)">8</span>
+              </div>
+              <div style="background:var(--bg3);border-radius:4px;height:6px;overflow:hidden"><div style="width:60%;height:100%;background:var(--accent);border-radius:4px"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         SETTINGS
+    ══════════════════════════════════════ -->
+    <section class="section" id="section-settings">
+      <div class="page-header">
+        <div>
+          <h2><i class="fas fa-gear color-accent"></i> الإعدادات</h2>
+          <p>إعدادات حساب مدير المصلحة</p>
+        </div>
+      </div>
+
+      <div class="settings-wrap">
+        <div class="settings-group">
+          <div class="settings-group-title">المعلومات الشخصية</div>
+          <div class="settings-field-grid">
+            <div class="settings-field">
+              <label>الاسم الكامل</label>
+              <input type="text" value="د. أحمد بن سالم">
+            </div>
+            <div class="settings-field">
+              <label>المصلحة</label>
+              <input type="text" value="الطب الداخلي">
+            </div>
+            <div class="settings-field">
+              <label>الرتبة الوظيفية</label>
+              <input type="text" value="مدير المصلحة">
+            </div>
+            <div class="settings-field">
+              <label>البريد الإلكتروني</label>
+              <input type="email" value="a.bensalem@medchifagiz.dz">
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="showToast('تمّ حفظ التغييرات ✓')">
+            <i class="fas fa-save"></i> حفظ
+          </button>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-group-title">التفضيلات</div>
+          <div class="settings-toggles">
+            <div class="settings-toggle-item">
+              <div class="stg-text">
+                <strong>الإشعارات الصوتية</strong>
+                <small>صوت عند وصول طلب جديد</small>
+              </div>
+              <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="settings-toggle-item">
+              <div class="stg-text">
+                <strong>تنبيهات الحالات العاجلة</strong>
+                <small>إشعار فوري للطلبات العاجلة</small>
+              </div>
+              <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="settings-toggle-item">
+              <div class="stg-text">
+                <strong>الوضع الليلي</strong>
+                <small>خلفية داكنة لراحة العين</small>
+              </div>
+              <label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-group-title">تغيير كلمة السر</div>
+          <div class="settings-field-grid">
+            <div class="settings-field">
+              <label>كلمة السر الحالية</label>
+              <input type="password" placeholder="••••••••">
+            </div>
+            <div class="settings-field">
+              <label>كلمة السر الجديدة</label>
+              <input type="password" placeholder="••••••••">
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="showToast('تمّ تحديث كلمة السر ✓')">
+            <i class="fas fa-lock"></i> تحديث
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /content -->
+</main>
+
+</div><!-- /layout -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ─── PARTICLES ─────────────────────────── */
+(function(){
+  const c = document.getElementById('bgParticles');
+  for(let i=0;i<18;i++){
+    const s = document.createElement('span');
+    const sz = 80 + Math.random()*200;
+    s.style.cssText = `
+      width:${sz}px;height:${sz}px;
+      left:${Math.random()*100}%;
+      animation-duration:${14+Math.random()*20}s;
+      animation-delay:${-Math.random()*20}s;
+    `;
+    c.appendChild(s);
+  }
+})();
+
+/* ─── CLOCK ──────────────────────────── */
+function updateClock(){
+  const now = new Date();
+  document.getElementById('headerTime').textContent =
+    now.toLocaleTimeString('ar-DZ',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('headerDate').textContent =
+    now.toLocaleDateString('ar-DZ',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+/* ─── SIDEBAR TOGGLE ────────────────── */
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('collapsed');
+}
+
+/* ─── SECTION SWITCH ────────────────── */
+const titles = {
+  dashboard: 'الرئيسية',
+  requests:  'الطلبات والاستشارات',
+  patients:  'مرضى المصلحة',
+  files:     'الملفات الطبية',
+  team:      'نشاط الفريق',
+  settings:  'الإعدادات',
+};
+
+function switchSection(id, el){
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('section-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  document.getElementById('headerTitle').innerHTML =
+    `${titles[id] || id}<small>MedChifaGiz · Service Admin</small>`;
+}
+
+/* ─── NOTIFICATIONS ─────────────────── */
+function toggleNotifs(){
+  document.getElementById('notifPanel').classList.toggle('open');
+}
+function clearNotifs(){
+  document.getElementById('notifList').innerHTML =
+    '<div style="padding:20px;text-align:center;color:var(--text3);font-size:12px">لا توجد إشعارات</div>';
+  document.querySelector('.btn-badge').style.display='none';
+  document.getElementById('notifPanel').classList.remove('open');
+}
+document.addEventListener('click', e => {
+  if(!e.target.closest('.notif-panel') && !e.target.closest('[onclick*=toggleNotifs]'))
+    document.getElementById('notifPanel').classList.remove('open');
+});
+
+/* ─── TOAST ──────────────────────────── */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ─── LOGOUT ─────────────────────────── */
+function handleLogout(){
+  if(confirm('هل أنت متأكد من تسجيل الخروج؟'))
+    showToast('جارٍ تسجيل الخروج...');
+}
+
+/* ─── PATIENTS TABLE ─────────────────── */
+const patients = [
+  { name:'كمال بن حسن',   status:'حرجة',        statusCls:'badge-red',    doctor:'د. سارة ميلود',  room:'07', admit:'2025-05-28', color:'linear-gradient(135deg,#0ea5e9,#3b82f6)', init:'ك' },
+  { name:'نادية صالح',    status:'مستقرة',       statusCls:'badge-orange', doctor:'د. يوسف بكر',    room:'12', admit:'2025-05-29', color:'linear-gradient(135deg,#ef4444,#f59e0b)', init:'ن' },
+  { name:'زينب مرابط',    status:'تحسّن',        statusCls:'badge-green',  doctor:'د. سارة ميلود',  room:'03', admit:'2025-05-27', color:'linear-gradient(135deg,#10b981,#0ea5e9)', init:'ز' },
+  { name:'عمار بوعلي',    status:'مستقرة',       statusCls:'badge-blue',   doctor:'د. يوسف بكر',    room:'09', admit:'2025-05-26', color:'linear-gradient(135deg,#8b5cf6,#ec4899)', init:'ع' },
+  { name:'حسين بلعيد',    status:'جديد',         statusCls:'badge-purple', doctor:'د. سارة ميلود',  room:'15', admit:'2025-05-31', color:'linear-gradient(135deg,#06b6d4,#10b981)', init:'ح' },
+  { name:'فريدة بن عمر',  status:'تحسّن',        statusCls:'badge-green',  doctor:'د. يوسف بكر',    room:'05', admit:'2025-05-25', color:'linear-gradient(135deg,#ec4899,#8b5cf6)', init:'ف' },
+];
+
+const tbody = document.getElementById('patientsBody');
+patients.forEach(p => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><div class="pt-cell">
+      <div class="pt-avatar" style="background:${p.color}">${p.init}</div>
+      <div><div class="pt-name">${p.name}</div></div>
+    </div></td>
+    <td><span class="badge ${p.statusCls}">${p.status}</span></td>
+    <td style="font-size:12px;color:var(--text2)">${p.doctor}</td>
+    <td><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent)">غرفة ${p.room}</span></td>
+    <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3)">${p.admit}</td>
+    <td><button class="btn btn-blue btn-sm" onclick="showToast('فتح ملف: ${p.name}')"><i class="fas fa-folder-open"></i> فتح الملف</button></td>
+  `;
+  tbody.appendChild(tr);
+});
+</script>
+</body>
+</html>

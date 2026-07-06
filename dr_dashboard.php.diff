@@ -1,0 +1,13 @@
+--- /mnt/user-data/uploads/dr_dashboard.php	2026-07-02 20:28:07.261660000 +0000
++++ /home/claude/fix/dr_dashboard.php	2026-07-02 20:57:28.675209342 +0000
+@@ -2110,6 +2110,10 @@
+     <!-- Scripts -->
+     <script>
+         window.DOCTOR_SPECIALTY = '<?php echo addslashes(trim($doctor["specialty"] ?? "")); ?>';
++        // معرّف المستخدم الحالي (الطبيب) كما هو مخزّن في الجلسة — يُستخدم فقط لتحديد
++        // جهة/لون رسائل المراسلة الطبية عبر مقارنة sender_id بهذا المعرّف، دون أي
++        // تعديل على الـ API أو قاعدة البيانات.
++        window.CURRENT_USER_ID = <?= (int)($_SESSION['user_id'] ?? 0) ?>;
+         /* إخفاء قسم متابعة الحمل في كارد إضافة مريض إذا لم يكن التخصص نساء وتوليد */
+         (function() {
+             function apfHidePregnancyIfNeeded() {

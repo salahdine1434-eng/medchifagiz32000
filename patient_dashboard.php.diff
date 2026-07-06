@@ -1,0 +1,12 @@
+--- /mnt/user-data/uploads/patient_dashboard.php	2026-07-02 20:28:54.356559000 +0000
++++ /home/claude/fix/patient_dashboard.php	2026-07-02 20:57:38.635209934 +0000
+@@ -2322,6 +2322,9 @@
+ </div><!-- end APP -->
+ 
+ <script>
++window.CURRENT_USER_ID = <?= (int)($_SESSION['user_id'] ?? 0) ?>;
++</script>
++<script>
+ /* ═══════════════════════════════════════════════════
+    PATIENT SIDEBAR — Navigation & Toggle Logic
+    لا يُعدّل أي Logic موجود — يتكامل معه فقط

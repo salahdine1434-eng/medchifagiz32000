@@ -1,0 +1,2654 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedChifaGiz — صيدلي المصلحة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ========== CSS Variables ========== */
+:root {
+  --primary:#2563eb;--primary-light:#3b82f6;--primary-dark:#1d4ed8;
+  --cyan:#06b6d4;--cyan-light:#22d3ee;--teal:#0891b2;
+  --purple:#8b5cf6;--purple-light:#a78bfa;
+  --green:#10b981;--orange:#f59e0b;--red:#ef4444;--pink:#ec4899;
+  --bg:#f0f4ff;--sidebar-bg:#fff;--card-bg:#fff;
+  --text-primary:#1e293b;--text-secondary:#64748b;--text-muted:#94a3b8;
+  --border:#e2e8f0;
+  --shadow:0 4px 24px rgba(37,99,235,0.08);
+  --shadow-lg:0 8px 40px rgba(37,99,235,0.13);
+  --radius:18px;--radius-sm:10px;
+  --sidebar-w:265px;--topbar-h:72px;
+  --transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+[data-theme="dark"]{
+  --bg:#0f172a;--sidebar-bg:#1e293b;--card-bg:#1e293b;
+  --text-primary:#f1f5f9;--text-secondary:#94a3b8;--text-muted:#64748b;
+  --border:#334155;--shadow:0 4px 24px rgba(0,0,0,0.3);--shadow-lg:0 8px 40px rgba(0,0,0,0.4);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Cairo','Tajawal',sans-serif;background:var(--bg);color:var(--text-primary);direction:rtl;transition:var(--transition);overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--primary-light);border-radius:3px;}
+.app-layout{display:flex;min-height:100vh;}
+
+/* ===== SIDEBAR ===== */
+.sidebar{width:var(--sidebar-w);background:var(--sidebar-bg);box-shadow:4px 0 24px rgba(37,99,235,0.07);display:flex;flex-direction:column;position:fixed;right:0;top:0;bottom:0;z-index:100;transition:var(--transition);overflow-y:auto;overflow-x:hidden;}
+.sidebar-logo{padding:18px 18px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.logo-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--purple),var(--primary));border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;box-shadow:0 4px 15px rgba(139,92,246,0.35);}
+.logo-text h2{font-size:15px;font-weight:800;color:var(--primary);}
+.logo-text span{font-size:10px;color:var(--text-muted);}
+.sidebar-service{padding:14px 18px;background:linear-gradient(135deg,rgba(139,92,246,0.06),rgba(37,99,235,0.06));border-bottom:1px solid var(--border);}
+.service-badge{display:flex;align-items:center;gap:9px;}
+.service-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.service-name{font-size:12px;font-weight:700;color:var(--text-primary);}
+.service-role{font-size:10px;color:var(--text-muted);}
+.service-selector{width:100%;margin-top:8px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-primary);font-family:inherit;font-size:11px;outline:none;cursor:pointer;}
+.sidebar-nav{padding:10px 0;flex:1;}
+.nav-section-title{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--text-muted);padding:8px 18px 4px;text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 18px;cursor:pointer;border-radius:11px;margin:2px 8px;transition:var(--transition);color:var(--text-secondary);font-size:13px;font-weight:500;position:relative;}
+.nav-item:hover{background:rgba(139,92,246,0.07);color:var(--purple);}
+.nav-item.active{background:linear-gradient(135deg,var(--purple),var(--primary));color:#fff;box-shadow:0 4px 15px rgba(139,92,246,0.3);}
+.nav-item .nav-icon{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:9px;font-size:14px;flex-shrink:0;}
+.nav-item:not(.active) .nav-icon{background:rgba(139,92,246,0.07);}
+.nav-item.active .nav-icon{background:rgba(255,255,255,0.2);}
+.nav-badge{margin-right:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;min-width:18px;text-align:center;}
+.nav-item.active .nav-badge{background:rgba(255,255,255,0.25);}
+.sidebar-footer{padding:12px 8px;border-top:1px solid var(--border);}
+.logout-btn{display:flex;align-items:center;gap:10px;padding:10px 18px;color:var(--red);cursor:pointer;border-radius:11px;font-size:13px;font-weight:600;transition:var(--transition);}
+.logout-btn:hover{background:rgba(239,68,68,0.08);}
+.logout-btn .nav-icon{background:rgba(239,68,68,0.08);}
+
+/* ===== MAIN ===== */
+.main-content{margin-right:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{height:var(--topbar-h);background:var(--card-bg);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:14px;position:sticky;top:0;z-index:90;box-shadow:0 2px 12px rgba(37,99,235,0.05);}
+.topbar-title{flex:1;}
+.topbar-title h1{font-size:19px;font-weight:800;color:var(--text-primary);}
+.topbar-title p{font-size:11px;color:var(--text-muted);}
+.search-wrap{position:relative;width:240px;}
+.search-wrap input{width:100%;padding:8px 36px 8px 14px;border:1.5px solid var(--border);border-radius:30px;background:var(--bg);color:var(--text-primary);font-family:inherit;font-size:12px;transition:var(--transition);outline:none;}
+.search-wrap input:focus{border-color:var(--purple);}
+.search-wrap i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:12px;}
+.topbar-actions{display:flex;align-items:center;gap:7px;}
+.tb-btn{width:36px;height:36px;border-radius:10px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--text-secondary);font-size:15px;transition:var(--transition);position:relative;}
+.tb-btn:hover{background:rgba(139,92,246,0.1);color:var(--purple);}
+.notif-badge{position:absolute;top:-3px;left:-3px;width:17px;height:17px;background:var(--red);border-radius:50%;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:700;border:2px solid var(--card-bg);}
+.lang-btn{padding:6px 12px;border-radius:9px;border:1.5px solid var(--border);cursor:pointer;background:var(--bg);color:var(--text-secondary);font-size:11px;font-weight:600;font-family:inherit;transition:var(--transition);}
+.lang-btn:hover{border-color:var(--purple);color:var(--purple);}
+.topbar-clock{display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,var(--purple),var(--primary));color:#fff;padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;}
+
+/* Notif dropdown */
+.notif-dropdown{position:absolute;top:calc(100% + 10px);left:0;width:320px;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-lg);z-index:200;display:none;overflow:hidden;}
+.notif-dropdown.open{display:block;animation:dropIn 0.2s ease;}
+@keyframes dropIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.notif-header{padding:12px 15px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.notif-header h4{font-size:13px;font-weight:700;}
+.notif-header span{font-size:11px;color:var(--purple);cursor:pointer;}
+.notif-item{padding:10px 15px;border-bottom:1px solid var(--border);display:flex;gap:9px;align-items:flex-start;transition:var(--transition);cursor:pointer;}
+.notif-item:hover{background:var(--bg);}
+.notif-item .notif-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.notif-item.warn .notif-icon{background:rgba(245,158,11,0.12);color:var(--orange);}
+.notif-item.danger .notif-icon{background:rgba(239,68,68,0.12);color:var(--red);}
+.notif-item.info .notif-icon{background:rgba(6,182,212,0.12);color:var(--cyan);}
+.notif-item.success .notif-icon{background:rgba(16,185,129,0.12);color:var(--green);}
+.notif-item-text h5{font-size:12px;font-weight:600;}
+.notif-item-text p{font-size:10px;color:var(--text-muted);margin-top:2px;}
+
+/* ===== PAGE ===== */
+.page-content{padding:22px;flex:1;}
+.section{display:none;}
+.section.active{display:block;animation:fadeIn 0.35s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.section-header h2{font-size:20px;font-weight:800;}
+.section-header p{font-size:12px;color:var(--text-muted);margin-top:2px;}
+
+/* ===== STATS GRID ===== */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:20px;max-width:900px;}
+.stat-card{background:var(--card-bg);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);transition:var(--transition);position:relative;overflow:hidden;border:1px solid var(--border);cursor:default;}
+.stat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:transparent;}
+.stat-card::before{content:'';position:absolute;top:0;right:0;width:70px;height:70px;border-radius:0 var(--radius) 0 70px;opacity:0.08;}
+.stat-card.blue::before{background:var(--primary);}
+.stat-card.cyan::before{background:var(--cyan);}
+.stat-card.green::before{background:var(--green);}
+.stat-card.orange::before{background:var(--orange);}
+.stat-card.red::before{background:var(--red);}
+.stat-card.purple::before{background:var(--purple);}
+.stat-card.teal::before{background:var(--teal);}
+.stat-card.pink::before{background:var(--pink);}
+.card-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px;}
+.blue .card-icon{background:rgba(37,99,235,0.1);color:var(--primary);}
+.cyan .card-icon{background:rgba(6,182,212,0.1);color:var(--cyan);}
+.green .card-icon{background:rgba(16,185,129,0.1);color:var(--green);}
+.orange .card-icon{background:rgba(245,158,11,0.1);color:var(--orange);}
+.red .card-icon{background:rgba(239,68,68,0.1);color:var(--red);}
+.purple .card-icon{background:rgba(139,92,246,0.1);color:var(--purple);}
+.teal .card-icon{background:rgba(8,145,178,0.1);color:var(--teal);}
+.pink .card-icon{background:rgba(236,72,153,0.1);color:var(--pink);}
+.card-val{font-size:28px;font-weight:900;color:var(--text-primary);line-height:1;}
+.card-label{font-size:11px;color:var(--text-muted);margin-top:4px;margin-bottom:8px;}
+.card-trend{font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:20px;}
+.card-trend.up{background:rgba(16,185,129,0.1);color:var(--green);}
+.card-trend.down{background:rgba(239,68,68,0.1);color:var(--red);}
+.card-trend.neutral{background:rgba(100,116,139,0.1);color:var(--text-secondary);}
+.progress-bar-wrap{margin-top:10px;}
+.progress-bar-track{height:4px;background:var(--border);border-radius:99px;overflow:hidden;}
+.progress-bar-fill{height:100%;border-radius:99px;transition:width 1s ease;}
+.blue .progress-bar-fill{background:linear-gradient(90deg,var(--primary),var(--primary-light));}
+.cyan .progress-bar-fill{background:linear-gradient(90deg,var(--teal),var(--cyan));}
+.green .progress-bar-fill{background:linear-gradient(90deg,#059669,var(--green));}
+.orange .progress-bar-fill{background:linear-gradient(90deg,#d97706,var(--orange));}
+.red .progress-bar-fill{background:linear-gradient(90deg,#dc2626,var(--red));}
+.purple .progress-bar-fill{background:linear-gradient(90deg,#7c3aed,var(--purple));}
+.teal .progress-bar-fill{background:linear-gradient(90deg,var(--teal),var(--cyan-light));}
+.pink .progress-bar-fill{background:linear-gradient(90deg,#db2777,var(--pink));}
+.progress-bar-label{display:flex;justify-content:space-between;font-size:9px;color:var(--text-muted);margin-top:3px;}
+
+/* ===== HOME RX PREVIEW SECTION ===== */
+.home-rx-section{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;margin-bottom:0;}
+.home-rx-section-header{padding:13px 18px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.home-rx-section-header h3{font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px;margin:0;}
+.home-rx-badge{background:var(--red);color:#fff;font-size:10px;padding:1px 7px;border-radius:10px;}
+.home-rx-readonly{background:rgba(139,92,246,0.08);color:var(--purple);font-size:10px;padding:2px 8px;border-radius:6px;font-weight:700;letter-spacing:0.3px;}
+.home-rx-section-header a{font-size:11px;color:var(--purple);cursor:pointer;font-weight:600;display:flex;align-items:center;gap:4px;text-decoration:none;}
+.home-rx-table th{background:var(--bg);}
+.home-rx-table td{cursor:default;}
+.home-rx-table tr:hover td{background:rgba(139,92,246,0.03);}
+.home-rx-empty{text-align:center;padding:32px 16px;color:var(--text-muted);}
+.home-rx-empty i{font-size:32px;opacity:0.3;display:block;margin-bottom:10px;}
+.home-rx-empty p{font-size:12px;margin:0;}
+
+/* ===== DASH GRID ===== */
+.dash-grid{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:14px;margin-bottom:14px;}
+.dash-grid:empty{margin-bottom:0;}
+.dash-card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;}
+.dash-card-header{padding:14px 16px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.dash-card-header h3{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.dash-card-header a{font-size:11px;color:var(--purple);cursor:pointer;}
+.dash-card-body{padding:12px 16px;}
+
+/* ===== TABLES ===== */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:11px;font-weight:700;color:var(--text-muted);padding:9px 11px;text-align:right;border-bottom:2px solid var(--border);background:var(--bg);white-space:nowrap;}
+td{font-size:12px;padding:9px 11px;border-bottom:1px solid var(--border);text-align:right;vertical-align:middle;white-space:nowrap;}
+tr:hover td{background:rgba(139,92,246,0.02);}
+.table-card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;}
+.table-actions{display:flex;gap:5px;}
+
+/* ===== BADGES ===== */
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;}
+.badge.ok,.badge.done,.badge.approved,.badge.delivered{background:rgba(16,185,129,0.1);color:var(--green);}
+.badge.low,.badge.out,.badge.rejected{background:rgba(239,68,68,0.1);color:var(--red);}
+.badge.med,.badge.pending,.badge.review{background:rgba(245,158,11,0.1);color:var(--orange);}
+.badge.active,.badge.processing,.badge.ready,.badge.sent{background:rgba(37,99,235,0.1);color:var(--primary);}
+.badge.new{background:rgba(139,92,246,0.1);color:var(--purple);}
+.badge.info{background:rgba(6,182,212,0.1);color:var(--cyan);}
+.badge.restricted{background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.3);}
+
+/* ===== BUTTONS ===== */
+.btn{padding:8px 16px;border-radius:9px;border:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;transition:var(--transition);}
+.btn-primary{background:linear-gradient(135deg,var(--purple),var(--primary));color:#fff;box-shadow:0 4px 12px rgba(139,92,246,0.3);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(139,92,246,0.4);}
+.btn-green{background:linear-gradient(135deg,var(--green),#059669);color:#fff;}
+.btn-green:hover{transform:translateY(-2px);}
+.btn-cyan{background:linear-gradient(135deg,var(--cyan),var(--teal));color:#fff;}
+.btn-cyan:hover{transform:translateY(-2px);}
+.btn-orange{background:linear-gradient(135deg,var(--orange),#d97706);color:#fff;}
+.btn-red{background:rgba(239,68,68,0.1);color:var(--red);border:1.5px solid rgba(239,68,68,0.2);}
+.btn-red:hover{background:var(--red);color:#fff;}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text-secondary);}
+.btn-outline:hover{border-color:var(--purple);color:var(--purple);}
+.btn-sm{padding:5px 10px;font-size:11px;}
+.btn-icon{width:30px;height:30px;padding:0;justify-content:center;}
+
+/* ===== FILTER TABS ===== */
+.filter-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+/* Extra table breathing room now that stats cards are removed */
+#sec-requests .table-card{margin-top:0;}
+.filter-tab{padding:7px 14px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg);color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;transition:var(--transition);}
+.filter-tab.active,.filter-tab:hover{background:var(--purple);color:#fff;border-color:var(--purple);}
+
+/* ===== INV TOOLBAR ===== */
+.inv-toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+.inv-toolbar input,.inv-toolbar select{padding:8px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text-primary);font-family:inherit;font-size:12px;outline:none;transition:var(--transition);}
+.inv-toolbar input:focus,.inv-toolbar select:focus{border-color:var(--purple);}
+.inv-toolbar input{flex:1;min-width:180px;}
+
+/* ===== RX CARDS ===== */
+.rx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px;}
+.rx-card{background:var(--card-bg);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);border:1px solid var(--border);transition:var(--transition);cursor:pointer;}
+.rx-card:hover{box-shadow:var(--shadow-lg);border-color:var(--purple);}
+.rx-card.restricted-card{border-color:var(--red);background:rgba(239,68,68,0.02);}
+.rx-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.rx-patient{font-weight:700;font-size:14px;}
+.rx-doctor{font-size:11px;color:var(--text-muted);}
+.rx-drugs{background:var(--bg);border-radius:9px;padding:9px;margin-bottom:10px;}
+.rx-drug-item{font-size:11px;padding:3px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;}
+.rx-drug-item:last-child{border-bottom:none;}
+.rx-footer{display:flex;gap:6px;flex-wrap:wrap;}
+
+/* ===== PATIENT CARD ===== */
+.patient-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.patient-card{background:var(--card-bg);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);border:1px solid var(--border);transition:var(--transition);cursor:pointer;}
+.patient-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--purple);}
+.patient-avatar{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff;flex-shrink:0;}
+.patient-info-row{display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-top:3px;}
+
+/* ===== MODALS ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.55);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.open{display:flex;animation:fadeIn 0.2s ease;}
+.modal{background:var(--card-bg);border-radius:var(--radius);box-shadow:0 20px 60px rgba(15,23,42,0.2);width:100%;max-width:820px;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;animation:slideUp 0.3s ease;}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-sm{max-width:520px;}
+.modal-lg{max-width:1040px;}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.modal-header h3{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px;}
+.modal-close{width:32px;height:32px;border-radius:8px;border:none;cursor:pointer;background:var(--bg);color:var(--text-secondary);font-size:15px;display:flex;align-items:center;justify-content:center;transition:var(--transition);}
+.modal-close:hover{background:rgba(239,68,68,0.1);color:var(--red);}
+.modal-body{padding:18px 20px;overflow-y:auto;flex:1;}
+.modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-start;flex-shrink:0;flex-wrap:wrap;}
+
+/* ===== FORMS ===== */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-grid.cols3{grid-template-columns:1fr 1fr 1fr;}
+.form-grid.single{grid-template-columns:1fr;}
+.form-group{display:flex;flex-direction:column;gap:4px;}
+.form-group label{font-size:11px;font-weight:600;color:var(--text-secondary);}
+.form-group input,.form-group select,.form-group textarea{padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text-primary);font-family:inherit;font-size:12px;outline:none;transition:var(--transition);}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(139,92,246,0.08);}
+.form-group textarea{resize:vertical;min-height:70px;}
+
+/* ===== ALERT ITEMS ===== */
+.alert-item{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:var(--transition);}
+.alert-item:last-child{border-bottom:none;}
+.alert-item:hover{padding-right:5px;}
+.alert-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.alert-icon.warn{background:rgba(245,158,11,0.12);color:var(--orange);}
+.alert-icon.danger{background:rgba(239,68,68,0.12);color:var(--red);}
+.alert-icon.info{background:rgba(6,182,212,0.12);color:var(--cyan);}
+.alert-icon.success{background:rgba(16,185,129,0.12);color:var(--green);}
+.alert-text h5{font-size:12px;font-weight:600;}
+.alert-text p{font-size:11px;color:var(--text-muted);}
+
+/* ===== CHARTS ===== */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.chart-card{background:var(--card-bg);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.chart-card h3{font-size:13px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.chart-card h3 i{color:var(--purple);}
+.chart-container{position:relative;height:230px;}
+
+/* ===== REPORTS ===== */
+.reports-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;}
+.report-card{background:var(--card-bg);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;transition:var(--transition);cursor:pointer;}
+.report-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--purple);}
+.report-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px;}
+
+/* ===== SETTINGS ===== */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.settings-card{background:var(--card-bg);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.settings-card h3{font-size:14px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.settings-card h3 i{color:var(--purple);}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);}
+.toggle-row:last-child{border-bottom:none;}
+.toggle-label{font-size:13px;font-weight:500;}
+.toggle-desc{font-size:10px;color:var(--text-muted);}
+.toggle-switch{position:relative;width:40px;height:22px;cursor:pointer;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-track{position:absolute;inset:0;background:var(--border);border-radius:99px;transition:var(--transition);}
+.toggle-track::after{content:'';position:absolute;left:3px;top:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:var(--transition);box-shadow:0 2px 4px rgba(0,0,0,0.15);}
+.toggle-switch input:checked + .toggle-track{background:var(--purple);}
+.toggle-switch input:checked + .toggle-track::after{transform:translateX(18px);}
+
+/* ===== QUICK ACTIONS ===== */
+.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.qa-btn{padding:9px 10px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--text-primary);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:6px;}
+.qa-btn:hover{background:var(--purple);color:#fff;border-color:var(--purple);}
+
+/* ===== ORDONNANCE PRINT VIEW ===== */
+.rx-print-wrap{background:#fff;border-radius:12px;border:2px solid var(--border);overflow:hidden;}
+.rx-print-header{background:linear-gradient(135deg,var(--purple),var(--primary));color:#fff;padding:16px 20px;}
+.rx-print-body{padding:18px 20px;}
+.rx-drug-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 2fr;gap:8px;padding:8px;background:var(--bg);border-radius:8px;margin-bottom:6px;font-size:12px;align-items:center;}
+.rx-drug-row.header{font-weight:700;font-size:11px;color:var(--text-muted);background:transparent;}
+
+/* ===== ORDER STATUS TIMELINE ===== */
+.status-timeline{display:flex;align-items:center;gap:0;margin:12px 0;overflow-x:auto;padding:4px;}
+.status-step{display:flex;flex-direction:column;align-items:center;min-width:90px;}
+.status-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;border:2px solid var(--border);background:var(--bg);color:var(--text-muted);transition:var(--transition);}
+.status-dot.done{background:var(--green);border-color:var(--green);color:#fff;}
+.status-dot.current{background:var(--purple);border-color:var(--purple);color:#fff;box-shadow:0 0 0 4px rgba(139,92,246,0.2);}
+.status-line{flex:1;height:2px;background:var(--border);min-width:30px;}
+.status-line.done{background:var(--green);}
+.status-lbl{font-size:10px;color:var(--text-muted);margin-top:5px;text-align:center;}
+.status-step.done .status-lbl{color:var(--green);}
+.status-step.current .status-lbl{color:var(--purple);font-weight:700;}
+
+/* ===== TOAST ===== */
+.toast-wrap{position:fixed;bottom:24px;left:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
+.toast{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;box-shadow:var(--shadow-lg);animation:slideInLeft 0.35s ease;min-width:250px;}
+@keyframes slideInLeft{from{transform:translateX(-30px);opacity:0}to{transform:translateX(0);opacity:1}}
+.toast.success{border-right:4px solid var(--green);}
+.toast.error{border-right:4px solid var(--red);}
+.toast.info{border-right:4px solid var(--cyan);}
+.toast.warn{border-right:4px solid var(--orange);}
+.toast i{font-size:16px;}
+.toast.success i{color:var(--green);}
+.toast.error i{color:var(--red);}
+.toast.info i{color:var(--cyan);}
+.toast.warn i{color:var(--orange);}
+
+/* ===== CONFIRM DIALOG ===== */
+.confirm-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.5);backdrop-filter:blur(4px);z-index:2000;display:none;align-items:center;justify-content:center;}
+.confirm-overlay.open{display:flex;}
+.confirm-box{background:var(--card-bg);border-radius:var(--radius);padding:24px;max-width:380px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:slideUp 0.3s ease;}
+.confirm-box h4{font-size:17px;font-weight:800;margin-bottom:8px;}
+.confirm-box p{font-size:13px;color:var(--text-muted);margin-bottom:20px;}
+.confirm-box .btns{display:flex;gap:10px;justify-content:center;}
+
+
+
+/* ===== CLOCK ===== */
+.clock-display{text-align:center;padding:14px 10px;background:linear-gradient(135deg,rgba(139,92,246,0.05),rgba(37,99,235,0.05));border-radius:var(--radius-sm);margin-top:10px;}
+.clock-display .time{font-size:26px;font-weight:900;color:var(--purple);letter-spacing:2px;}
+.clock-display .date{font-size:10px;color:var(--text-muted);margin-top:2px;}
+
+/* ===== MEDS TABLE ===== */
+.drug-stock-bar{height:6px;background:var(--border);border-radius:99px;overflow:hidden;width:80px;}
+.drug-stock-fill{height:100%;border-radius:99px;}
+
+/* ===== RESTRICTED DRUG BANNER ===== */
+.restricted-banner{background:linear-gradient(135deg,rgba(239,68,68,0.08),rgba(239,68,68,0.04));border:1.5px solid rgba(239,68,68,0.2);border-radius:12px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;color:var(--red);}
+.restricted-banner i{font-size:18px;}
+
+/* ===== SERVICE DROPDOWN ===== */
+.service-opt {
+  display:flex;align-items:center;gap:9px;
+  padding:8px 10px;border-radius:9px;
+  cursor:pointer;transition:var(--transition);
+  font-size:12px;font-weight:500;color:var(--text-primary);
+  margin-bottom:2px;
+}
+.service-opt:hover { background:rgba(139,92,246,0.08);color:var(--purple); }
+.service-opt.selected {
+  background:linear-gradient(135deg,var(--purple),var(--primary));
+  color:#fff;font-weight:700;
+  box-shadow:0 3px 10px rgba(139,92,246,0.25);
+}
+.service-opt .svc-icon {
+  width:28px;height:28px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;flex-shrink:0;
+}
+.service-opt:not(.selected) .svc-icon { background:rgba(139,92,246,0.08);color:var(--purple); }
+.service-opt.selected .svc-icon { background:rgba(255,255,255,0.2);color:#fff; }
+.service-group-title {
+  font-size:9px;font-weight:700;letter-spacing:1.2px;
+  color:var(--text-muted);padding:8px 10px 3px;
+  text-transform:uppercase;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+  .sidebar{transform:translateX(100%);transition:var(--transition);}
+  .sidebar.open{transform:translateX(0);}
+  .main-content{margin-right:0;}
+  .dash-grid{grid-template-columns:1fr;}
+  .form-grid{grid-template-columns:1fr;}
+  .charts-grid{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+}
+
+/* ===== PERSISTENT STATS BAR ===== */
+.persistent-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:12px 22px 0;background:var(--bg);}
+.pstat-card{background:var(--card-bg);border-radius:12px;padding:10px 14px;box-shadow:var(--shadow);border:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:pointer;transition:var(--transition);}
+.pstat-card:hover{border-color:var(--purple);transform:translateY(-2px);}
+.pstat-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.pstat-info{flex:1;min-width:0;}
+.pstat-val{font-size:20px;font-weight:900;line-height:1;}
+.pstat-lbl{font-size:10px;color:var(--text-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+
+.back-home-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg);color:var(--text-secondary);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:var(--transition);margin-bottom:14px;}
+.back-home-btn:hover{background:var(--purple);color:#fff;border-color:var(--purple);}
+.back-home-btn i{font-size:13px;}
+
+
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.2)}}
+.pulse-dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;display:inline-block;}
+
+/* ===== SERVICE PICKER SCREEN ===== */
+#servicePickerScreen{
+  position:fixed;inset:0;z-index:9000;
+  background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;
+  animation:fadeIn 0.4s ease;
+}
+#servicePickerScreen.hidden{display:none;}
+.sp-logo{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.sp-logo-icon{width:56px;height:56px;background:linear-gradient(135deg,var(--purple),var(--primary));border-radius:16px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px;box-shadow:0 6px 20px rgba(139,92,246,0.35);}
+.sp-logo-text h1{font-size:22px;font-weight:900;color:var(--primary);}
+.sp-logo-text p{font-size:12px;color:var(--text-muted);}
+.sp-card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);width:100%;max-width:680px;overflow:hidden;}
+.sp-header{padding:22px 24px 18px;border-bottom:1px solid var(--border);text-align:center;}
+.sp-header h2{font-size:17px;font-weight:800;color:var(--text-primary);margin-bottom:4px;}
+.sp-header p{font-size:12px;color:var(--text-muted);}
+.sp-search-wrap{padding:14px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card-bg);z-index:2;}
+.sp-search-wrap input{width:100%;padding:10px 38px 10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text-primary);font-family:inherit;font-size:13px;outline:none;transition:var(--transition);}
+.sp-search-wrap input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(139,92,246,0.1);}
+.sp-search-wrap .sp-search-icon{position:absolute;left:32px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:13px;pointer-events:none;}
+.sp-body{max-height:400px;overflow-y:auto;padding:12px 16px 16px;}
+.sp-group-title{font-size:10px;font-weight:700;letter-spacing:1.4px;color:var(--text-muted);padding:8px 4px 5px;text-transform:uppercase;display:flex;align-items:center;gap:6px;}
+.sp-group-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.sp-services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:7px;margin-bottom:6px;}
+.sp-service-btn{display:flex;align-items:center;gap:9px;padding:10px 12px;border-radius:11px;border:1.5px solid var(--border);background:var(--bg);color:var(--text-primary);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:var(--transition);text-align:right;}
+.sp-service-btn:hover{background:rgba(139,92,246,0.07);border-color:var(--purple);color:var(--purple);transform:translateY(-1px);box-shadow:0 4px 12px rgba(139,92,246,0.1);}
+.sp-service-btn .sp-svc-icon{width:30px;height:30px;border-radius:8px;background:rgba(139,92,246,0.08);color:var(--purple);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;transition:var(--transition);}
+.sp-service-btn:hover .sp-svc-icon{background:var(--purple);color:#fff;}
+.sp-no-results{text-align:center;padding:30px;color:var(--text-muted);font-size:12px;}
+.sp-no-results i{font-size:32px;opacity:0.3;display:block;margin-bottom:10px;}
+</style>
+</head>
+<body>
+
+<!-- ===== SERVICE PICKER SCREEN ===== -->
+<div id="servicePickerScreen">
+  <div class="sp-logo">
+    <div class="sp-logo-icon"><i class="fas fa-pills"></i></div>
+    <div class="sp-logo-text">
+      <h1>MedChifaGiz</h1>
+      <p>نظام إدارة الصيدلية — Pharmacien Service</p>
+    </div>
+  </div>
+  <div class="sp-card">
+    <div class="sp-header">
+      <h2><i class="fas fa-hospital-alt" style="color:var(--purple);margin-left:8px"></i>اختر مصلحتك</h2>
+      <p>حدد المصلحة الطبية للدخول إلى لوحة التحكم الخاصة بها</p>
+    </div>
+    <div class="sp-search-wrap" style="position:relative">
+      <input type="text" id="spSearchInput" placeholder="ابحث عن مصلحة..." oninput="spFilterServices(this.value)" autocomplete="off">
+      <i class="fas fa-search sp-search-icon"></i>
+    </div>
+    <div class="sp-body" id="spServiceBody"></div>
+  </div>
+</div>
+
+<div class="app-layout" id="appLayout" style="display:none">
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><i class="fas fa-pills"></i></div>
+    <div class="logo-text">
+      <h2>MedChifaGiz</h2>
+      <span>صيدلي المصلحة — Pharmacien Service</span>
+    </div>
+  </div>
+  <div class="sidebar-service">
+    <div class="service-badge">
+      <div class="service-icon" id="sidebarServiceIcon" style="background:rgba(139,92,246,0.12);color:var(--purple)"><i class="fas fa-hospital"></i></div>
+      <div>
+        <div class="service-name" id="sidebarServiceName">—</div>
+        <div class="service-role">صيدلي المصلحة <span class="pulse-dot" style="margin-right:4px"></span></div>
+      </div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-title" data-ar="القائمة الرئيسية" data-fr="Menu Principal">القائمة الرئيسية</div>
+    <div class="nav-item active" onclick="navTo('home')" id="nav-home">
+      <div class="nav-icon"><i class="fas fa-home"></i></div><span data-ar="الرئيسية" data-fr="Accueil">الرئيسية</span>
+    </div>
+    <div class="nav-item" onclick="navTo('newrx')" id="nav-newrx">
+      <div class="nav-icon"><i class="fas fa-file-prescription"></i></div>
+      <span data-ar="الوصفات الجديدة" data-fr="Nouvelles Ord.">الوصفات الجديدة</span>
+      <span class="nav-badge" id="badge-rx">0</span>
+    </div>
+    <div class="nav-item" onclick="navTo('patients')" id="nav-patients">
+      <div class="nav-icon"><i class="fas fa-user-injured"></i></div><span data-ar="المرضى" data-fr="Patients">المرضى</span>
+      <span class="nav-badge" id="badge-patients">12</span>
+    </div>
+    <div class="nav-item" onclick="navTo('requests')" id="nav-requests">
+      <div class="nav-icon"><i class="fas fa-shopping-cart"></i></div><span data-ar="الطلبات" data-fr="Demandes">الطلبات</span>
+      <span class="nav-badge" id="badge-req">3</span>
+    </div>
+    <div class="nav-section-title" data-ar="المخزون" data-fr="Stock">المخزون</div>
+    <div class="nav-item" onclick="navTo('drugs')" id="nav-drugs">
+      <div class="nav-icon"><i class="fas fa-pills"></i></div><span data-ar="الأدوية" data-fr="Médicaments">الأدوية</span>
+    </div>
+    <div class="nav-item" onclick="navTo('supplies')" id="nav-supplies">
+      <div class="nav-icon"><i class="fas fa-box-open"></i></div><span data-ar="المستلزمات الطبية" data-fr="Consommables">المستلزمات الطبية</span>
+    </div>
+
+    <div class="nav-section-title" data-ar="التحليل" data-fr="Analyse">التحليل</div>
+    <div class="nav-item" onclick="navTo('reports')" id="nav-reports">
+      <div class="nav-icon"><i class="fas fa-file-alt"></i></div><span data-ar="التقارير" data-fr="Rapports">التقارير</span>
+    </div>
+    <div class="nav-item" onclick="navTo('statistics')" id="nav-statistics">
+      <div class="nav-icon"><i class="fas fa-chart-bar"></i></div><span data-ar="الإحصائيات" data-fr="Statistiques">الإحصائيات</span>
+    </div>
+    <div class="nav-section-title" data-ar="النظام" data-fr="Système">النظام</div>
+    <div class="nav-item" onclick="navTo('settings')" id="nav-settings">
+      <div class="nav-icon"><i class="fas fa-cog"></i></div><span data-ar="الإعدادات" data-fr="Paramètres">الإعدادات</span>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="logout-btn" onclick="confirmLogout()">
+      <div class="nav-icon"><i class="fas fa-sign-out-alt" style="color:var(--red)"></i></div>
+      <span data-ar="تسجيل الخروج" data-fr="Déconnexion">تسجيل الخروج</span>
+    </div>
+  </div>
+</aside>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-content" id="mainContent">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <button onclick="document.getElementById('sidebar').classList.toggle('open')" style="border:none;background:none;cursor:pointer;color:var(--text-secondary);font-size:17px;padding:5px;border-radius:8px;display:none" id="hamburger"><i class="fas fa-bars"></i></button>
+    <div class="topbar-title">
+      <h1 id="topbarTitle">لوحة تحكم صيدلي المصلحة</h1>
+      <p id="topbarSub">مرحباً — مصلحة الاستعجالات والجراحة</p>
+    </div>
+    <div class="search-wrap">
+      <input type="text" placeholder="بحث عن مريض، دواء، وصفة..." id="globalSearch" oninput="globalSearch(this.value)">
+      <i class="fas fa-search"></i>
+    </div>
+    <div class="topbar-actions">
+      <button class="lang-btn" id="langBtn" onclick="toggleLang()">FR</button>
+      <button class="tb-btn" onclick="toggleTheme()" id="themeBtn" title="الوضع الليلي"><i class="fas fa-moon"></i></button>
+      <div style="position:relative">
+        <button class="tb-btn" onclick="toggleNotifDropdown()" id="notifBtn" title="الإشعارات">
+          <i class="fas fa-bell"></i>
+          <span class="notif-badge" id="notifBadge">7</span>
+        </button>
+        <div class="notif-dropdown" id="notifDropdown">
+          <div class="notif-header"><h4>الإشعارات</h4><span onclick="markAllNotifRead()">تحديد الكل كمقروء</span></div>
+          <div id="notifList"></div>
+        </div>
+      </div>
+      <div class="topbar-clock"><i class="fas fa-clock"></i><span id="topbarClock">00:00:00</span></div>
+    </div>
+  </header>
+
+  <!-- ===== PAGE CONTENT ===== -->
+  <div class="page-content">
+
+    <!-- ===== HOME ===== -->
+    <section class="section active" id="sec-home">
+      <div class="section-header">
+        <div>
+          <h2><i class="fas fa-home" style="color:var(--purple);margin-left:8px"></i><span data-ar="لوحة التحكم" data-fr="Tableau de Bord">لوحة التحكم</span></h2>
+          <p id="homeServiceSubtitle">مصلحة الاستعجالات والجراحة — صيدلي المصلحة</p>
+        </div>
+      </div>
+      <div class="stats-grid" id="homeStatsGrid"></div>
+      <div id="homeRxPreview"></div>
+      <div class="dash-grid" id="homeDashGrid"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:0" id="homeBottom"></div>
+    </section>
+
+    <!-- ===== PATIENTS ===== -->
+    <section class="section" id="sec-patients">
+      <button class="back-home-btn" onclick="navTo('home')"><i class="fas fa-arrow-right"></i>الرئيسية</button>
+      <div class="section-header">
+        <div><h2><i class="fas fa-user-injured" style="color:var(--purple);margin-left:8px"></i>المرضى</h2><p id="patientsSub">قائمة مرضى المصلحة</p></div>
+        <button class="btn btn-primary" onclick="openModal('modalAddPatient')"><i class="fas fa-plus"></i>إضافة مريض</button>
+      </div>
+      <div class="inv-toolbar">
+        <input type="text" id="patientSearch" placeholder="بحث باسم المريض أو رقم الملف..." oninput="renderPatients(this.value)">
+      </div>
+      <div class="patient-grid" id="patientGrid"></div>
+    </section>
+
+    <!-- ===== PRESCRIPTIONS ===== -->
+    <section class="section" id="sec-prescriptions">
+      <button class="back-home-btn" onclick="navTo('home')"><i class="fas fa-arrow-right"></i>الرئيسية</button>
+      <div class="section-header">
+        <div><h2><i class="fas fa-file-medical" style="color:var(--purple);margin-left:8px"></i>الوصفات الطبية</h2><p>الوصفات الخاصة بمصلحتك</p></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline" onclick="printRxList()"><i class="fas fa-print"></i>طباعة</button>
+        </div>
+      </div>
+      <div class="filter-tabs" id="rxFilterTabs">
+        <div class="filter-tab active" onclick="filterRx('all',this)">الكل</div>
+        <div class="filter-tab" onclick="filterRx('new',this)">جديدة</div>
+        <div class="filter-tab" onclick="filterRx('pending',this)">قيد المعالجة</div>
+        <div class="filter-tab" onclick="filterRx('approved',this)">مقبولة</div>
+        <div class="filter-tab" onclick="filterRx('rejected',this)">مرفوضة</div>
+        <div class="filter-tab" onclick="filterRx('review',this)">تحتاج مراجعة</div>
+      </div>
+      <div class="rx-grid" id="rxGrid"></div>
+    </section>
+
+    <!-- ===== NEW PRESCRIPTIONS (إدارة كاملة) ===== -->
+    <section class="section" id="sec-newrx">
+      <button class="back-home-btn" onclick="navTo('home')"><i class="fas fa-arrow-right"></i>الرئيسية</button>
+      <div class="section-header">
+        <div>
+          <h2><i class="fas fa-file-prescription" style="color:var(--purple);margin-left:8px"></i>الوصفات الجديدة</h2>
+          <p>الوصفات الواردة وتحتاج معالجة</p>
+        </div>
+        <button class="btn btn-outline" onclick="printRxList()"><i class="fas fa-print"></i>طباعة</button>
+      </div>
+      <div class="filter-tabs" id="newrxFilterTabs">
+        <div class="filter-tab active" onclick="filterNewRx('new',this)">جديدة <span id="newrxCount" style="background:var(--red);color:#fff;font-size:9px;padding:1px 6px;border-radius:10px;margin-right:4px">0</span></div>
+        <div class="filter-tab" onclick="filterNewRx('all',this)">الكل</div>
+      </div>
+      <div class="rx-grid" id="newrxGrid"></div>
+    </section>
+
+    <!-- ===== REQUESTS ===== -->
+    <section class="section" id="sec-requests">
+      <button class="back-home-btn" onclick="navTo('home')"><i class="fas fa-arrow-right"></i>الرئيسية</button>
+      <div class="section-header">
+        <div><h2><i class="fas fa-shopping-cart" style="color:var(--purple);margin-left:8px"></i>الطلبات</h2><p>طلبات الأدوية والمستلزمات</p></div>
+        <button class="btn btn-primary" onclick="openModal('modalNewRequest')"><i class="fas fa-plus"></i>طلب جديد</button>
+      </div>
+      <div class="filter-tabs" id="reqFilterTabs">
+        <div class="filter-tab active" onclick="filterReq('all',this)">الكل</div>
+        <div class="filter-tab" onclick="filterReq('sent',this)">تم الإرسال</div>
+        <div class="filter-tab" onclick="filterReq('delivered',this)">استلام</div>
+        <div class="filter-tab" onclick="filterReq('rejected',this)">مرفوض</div>
+      </div>
+      <div class="table-card"><div class="table-wrap">
+        <table><thead><tr><th>#</th><th>رقم الطلب</th><th>النوع</th><th>الصنف</th><th>الكمية</th><th>تاريخ الطلب</th><th>الأولوية</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
+        <tbody id="reqBody"></tbody></table>
+      </div></div>
+    </section>
+
+    <!-- ===== DRUGS ===== -->
+    <section class="section" id="sec-drugs">
+      <button class="back-home-btn" onclick="navTo('home')"><i class="fas fa-arrow-right"></i>الرئيسية</button>
+      <div class="section-header">
+        <div><h2><i class="fas fa-pills" style="color:var(--purple);margin-left:8px"></i>مخزون الأدوية</h2><p>أدوية مصلحتك</p></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-primary" onclick="openAddDrugModal()"><i class="fas fa-plus"></i>إضافة دواء</button>
+          <button class="btn btn-outline" onclick="openDrugMovModal()"><i class="fas fa-exchange-alt"></i>تسجيل حركة الدواء</button>
+        </div>
+      </div>
+      <div class="restricted-banner" id="restrictedBanner">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>بعض الأدوية في هذه القائمة مقيدة — تُصرف فقط من الصيدلية المركزية بموافقة خاصة</span>
+      </div>
+      <div class="inv-toolbar">
+        <input type="text" id="drugSearch" placeholder="بحث باسم الدواء، المورد..." oninput="renderDrugs(this.value)">
+        <select id="drugCatFilter" onchange="renderDrugs()">
+          <option value="">كل الأصناف</option>
+          <option value="مضادات حيوية">مضادات حيوية</option>
+          <option value="مسكنات">مسكنات</option>
+          <option value="قلب وأوعية">قلب وأوعية</option>
+          <option value="تخدير">تخدير</option>
+          <option value="مضادات الولادة">مضادات الولادة</option>
+          <option value="سكري">سكري</option>
+          <option value="أورام">أورام</option>
+        </select>
+        <select id="drugStatusFilter" onchange="renderDrugs()">
+          <option value="">كل الحالات</option>
+          <option value="ok">متوفر</option>
+          <option value="low">منخفض</option>
+          <option value="out">منتهي</option>
+        </select>
+        <button class="btn btn-outline" onclick="exportDrugCSV()"><i class="fas fa-file-csv"></i>تصدير</button>
+      </div>
+      <div class="table-card"><div class="table-wrap">
+        <table><thead><tr><th>#</th><th>الدواء</th><th>الصنف</th><th>الكمية</th><th>الوحدة</th><th>الانتهاء</th><th>الحد الأدنى</th><th>المخزون</th><th>مقيد</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
+        <tbody id="drugsBody"></tbody></table>
+      </div></div>
+    </section>
+
+    <!-- ===== SUPPLIES ===== -->
+    <section class="section" id="sec-supplies">
+      <button class="back-home-btn" onclick="navTo('home')"><i class="fas fa-arrow-right"></i>الرئيسية</button>
+      <div class="section-header">
+        <div><h2><i class="fas fa-box-open" style="color:var(--purple);margin-left:8px"></i>المستلزمات الطبية</h2><p>مستلزمات مصلحتك</p></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-primary" onclick="openAddSupplyModal()"><i class="fas fa-plus"></i>إضافة مستلزم</button>
+          <button class="btn btn-outline" onclick="openMovModal()"><i class="fas fa-exchange-alt"></i>تسجيل حركة</button>
+        </div>
+      </div>
+      <div class="inv-toolbar">
+        <input type="text" id="supplySearch" placeholder="بحث باسم المستلزم..." oninput="renderSupplies(this.value)">
+        <select id="supplyCatFilter" onchange="renderSupplies()">
+          <option value="">كل الفئات</option>
+          <option value="أدوات جراحية">أدوات جراحية</option>
+          <option value="أدوات تعقيم">أدوات تعقيم</option>
+          <option value="مستلزمات التحاليل">مستلزمات التحاليل</option>
+          <option value="مستلزمات الإنعاش">مستلزمات الإنعاش</option>
+          <option value="مستلزمات العمليات">مستلزمات العمليات</option>
+          <option value="ضمادات وشاش">ضمادات وشاش</option>
+          <option value="حقن وأنابيب">حقن وأنابيب</option>
+          <option value="قفازات وكمامات">قفازات وكمامات</option>
+          <option value="محاليل">محاليل</option>
+          <option value="أخرى">أخرى</option>
+        </select>
+        <select id="supplyStatusFilter" onchange="renderSupplies()">
+          <option value="">كل الحالات</option>
+          <option value="متوفر">متوفر</option>
+          <option value="كمية قليلة">كمية قليلة</option>
+          <option value="منتهي">منتهي</option>
+          <option value="قريب الانتهاء">قريب الانتهاء</option>
+        </select>
+        <button class="btn btn-outline" onclick="exportSupplyCSV()"><i class="fas fa-file-csv"></i>تصدير</button>
+      </div>
+      <div class="table-card"><div class="table-wrap">
+        <table><thead><tr><th>#</th><th>المستلزم</th><th>الفئة</th><th>الكمية</th><th>الوحدة</th><th>الانتهاء</th><th>آخر حركة</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
+        <tbody id="suppliesBody"></tbody></table>
+      </div></div>
+    </section>
+
+    <!-- ===== SENT ORDERS ===== -->
+    <section class="section" id="sec-sentorders">
+      <button class="back-home-btn" onclick="navTo('home')"><i class="fas fa-arrow-right"></i>الرئيسية</button>
+      <div class="section-header">
+        <div><h2><i class="fas fa-paper-plane" style="color:var(--purple);margin-left:8px"></i>الطلبات المرسلة للمركزية</h2><p>متابعة حالة طلباتك</p></div>
+        <button class="btn btn-primary" onclick="openModal('modalNewRequest')"><i class="fas fa-plus"></i>طلب جديد</button>
+      </div>
+      <div class="orders-stats" id="sentOrdersStats"></div>
+      <div class="table-card"><div class="table-wrap">
+        <table><thead><tr><th>#</th><th>رقم الطلب</th><th>النوع</th><th>الصنف</th><th>الكمية</th><th>تاريخ الإرسال</th><th>تاريخ الاستلام</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
+        <tbody id="sentOrdersBody"></tbody></table>
+      </div></div>
+    </section>
+
+    <!-- ===== ALERTS ===== -->
+    <section class="section" id="sec-alerts">
+      <button class="back-home-btn" onclick="navTo('home')"><i class="fas fa-arrow-right"></i>الرئيسية</button>
+      <div class="section-header">
+        <div><h2><i class="fas fa-bell" style="color:var(--orange);margin-left:8px"></i>التنبيهات</h2><p id="alertsSubtitle">تنبيهات مصلحتك</p></div>
+        <button class="btn btn-outline" onclick="markAllAlertsRead()"><i class="fas fa-check-double"></i>تحديد الكل كمقروء</button>
+      </div>
+      <div id="alertsFullList"></div>
+    </section>
+
+    <!-- ===== REPORTS ===== -->
+    <section class="section" id="sec-reports">
+      <button class="back-home-btn" onclick="navTo('home')"><i class="fas fa-arrow-right"></i>الرئيسية</button>
+      <div class="section-header">
+        <div><h2><i class="fas fa-file-alt" style="color:var(--purple);margin-left:8px"></i>التقارير</h2><p>تقارير مصلحتك</p></div>
+      </div>
+      <div class="reports-grid">
+        <div class="report-card" onclick="generateReport('daily')"><div class="report-icon" style="background:rgba(139,92,246,0.1);color:var(--purple)"><i class="fas fa-calendar-day"></i></div><h4 style="font-weight:700;margin-bottom:6px">التقرير اليومي</h4><p style="font-size:11px;color:var(--text-muted)">ملخص نشاط اليوم الكامل</p><div style="margin-top:10px;font-size:11px;color:var(--purple)">توليد ←</div></div>
+        <div class="report-card" onclick="generateReport('monthly')"><div class="report-icon" style="background:rgba(37,99,235,0.1);color:var(--primary)"><i class="fas fa-calendar-alt"></i></div><h4 style="font-weight:700;margin-bottom:6px">التقرير الشهري</h4><p style="font-size:11px;color:var(--text-muted)">ملخص شامل للشهر</p><div style="margin-top:10px;font-size:11px;color:var(--primary)">توليد ←</div></div>
+        <div class="report-card" onclick="generateReport('rx')"><div class="report-icon" style="background:rgba(16,185,129,0.1);color:var(--green)"><i class="fas fa-file-medical"></i></div><h4 style="font-weight:700;margin-bottom:6px">تقرير الوصفات</h4><p style="font-size:11px;color:var(--text-muted)">إجمالي الوصفات المعالجة</p><div style="margin-top:10px;font-size:11px;color:var(--green)">توليد ←</div></div>
+        <div class="report-card" onclick="generateReport('drugs')"><div class="report-icon" style="background:rgba(6,182,212,0.1);color:var(--cyan)"><i class="fas fa-pills"></i></div><h4 style="font-weight:700;margin-bottom:6px">تقرير الأدوية</h4><p style="font-size:11px;color:var(--text-muted)">المخزون والحركة الدوائية</p><div style="margin-top:10px;font-size:11px;color:var(--cyan)">توليد ←</div></div>
+        <div class="report-card" onclick="generateReport('supplies')"><div class="report-icon" style="background:rgba(245,158,11,0.1);color:var(--orange)"><i class="fas fa-box-open"></i></div><h4 style="font-weight:700;margin-bottom:6px">تقرير المستلزمات</h4><p style="font-size:11px;color:var(--text-muted)">حركة المستلزمات الطبية</p><div style="margin-top:10px;font-size:11px;color:var(--orange)">توليد ←</div></div>
+        <div class="report-card" onclick="generateReport('consumption')"><div class="report-icon" style="background:rgba(239,68,68,0.1);color:var(--red)"><i class="fas fa-chart-area"></i></div><h4 style="font-weight:700;margin-bottom:6px">تقرير الاستهلاك</h4><p style="font-size:11px;color:var(--text-muted)">أكثر الأدوية استهلاكاً</p><div style="margin-top:10px;font-size:11px;color:var(--red)">توليد ←</div></div>
+      </div>
+    </section>
+
+    <!-- ===== STATISTICS ===== -->
+    <section class="section" id="sec-statistics">
+      <button class="back-home-btn" onclick="navTo('home')"><i class="fas fa-arrow-right"></i>الرئيسية</button>
+      <div class="section-header">
+        <div><h2><i class="fas fa-chart-bar" style="color:var(--purple);margin-left:8px"></i>الإحصائيات</h2><p>تحليل شامل لمصلحتك</p></div>
+        <button class="btn btn-outline" onclick="window.print()"><i class="fas fa-print"></i>طباعة</button>
+      </div>
+      <div class="stats-grid" id="statsKPIGrid"></div>
+      <div class="charts-grid">
+        <div class="chart-card"><h3><i class="fas fa-chart-line"></i>الوصفات الأسبوعية</h3><div class="chart-container"><canvas id="chartWeeklyRx"></canvas></div></div>
+        <div class="chart-card"><h3><i class="fas fa-chart-pie"></i>توزيع أصناف الأدوية</h3><div class="chart-container"><canvas id="chartDrugCat"></canvas></div></div>
+        <div class="chart-card"><h3><i class="fas fa-chart-bar"></i>أكثر الأدوية استهلاكاً</h3><div class="chart-container"><canvas id="chartTopDrugs"></canvas></div></div>
+        <div class="chart-card"><h3><i class="fas fa-chart-area"></i>حالة طلبات المركزية</h3><div class="chart-container"><canvas id="chartReqStatus"></canvas></div></div>
+      </div>
+    </section>
+
+    <!-- ===== SETTINGS ===== -->
+    <section class="section" id="sec-settings">
+      <button class="back-home-btn" onclick="navTo('home')"><i class="fas fa-arrow-right"></i>الرئيسية</button>
+      <div class="section-header">
+        <div><h2><i class="fas fa-cog" style="color:var(--purple);margin-left:8px"></i>الإعدادات</h2><p>تخصيص حسابك</p></div>
+      </div>
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h3><i class="fas fa-user"></i>معلومات الحساب</h3>
+          <div class="form-grid single">
+            <div class="form-group"><label>الاسم الكامل</label><input type="text" value="د. خيرة بن عمر" id="settingName"></div>
+            <div class="form-group"><label>الوظيفة</label><input type="text" value="صيدلية المصلحة" id="settingRole"></div>
+            <div class="form-group"><label>البريد الإلكتروني</label><input type="email" value="khaira.benamour@hospital.dz" id="settingEmail"></div>
+            <div class="form-group"><label>المصلحة الحالية</label><input type="text" value="الاستعجالات والجراحة" id="settingService" readonly></div>
+          </div>
+          <button class="btn btn-primary" style="margin-top:14px" onclick="saveSettings()"><i class="fas fa-save"></i>حفظ التغييرات</button>
+        </div>
+        <div class="settings-card">
+          <h3><i class="fas fa-bell"></i>الإشعارات</h3>
+          <div class="toggle-row"><div><div class="toggle-label">تنبيهات الوصفات الجديدة</div><div class="toggle-desc">إشعار فوري عند وصول وصفة جديدة</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
+          <div class="toggle-row"><div><div class="toggle-label">تنبيهات نقص المخزون</div><div class="toggle-desc">عند وصول الكمية للحد الأدنى</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
+          <div class="toggle-row"><div><div class="toggle-label">تنبيهات انتهاء الصلاحية</div><div class="toggle-desc">قبل 30 يوم من الانتهاء</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
+          <div class="toggle-row"><div><div class="toggle-label">إشعارات الطلبات</div><div class="toggle-desc">تحديثات حالة طلبات المركزية</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
+        </div>
+        <div class="settings-card">
+          <h3><i class="fas fa-palette"></i>المظهر</h3>
+          <div class="toggle-row"><div><div class="toggle-label">الوضع الليلي</div><div class="toggle-desc">تفعيل المظهر الداكن</div></div><label class="toggle-switch" onclick="toggleTheme()"><input type="checkbox" id="darkModeToggle"><span class="toggle-track"></span></label></div>
+          <div class="toggle-row"><div><div class="toggle-label">اللغة الفرنسية</div><div class="toggle-desc">تغيير واجهة النظام للفرنسية</div></div><label class="toggle-switch" onclick="toggleLang()"><input type="checkbox" id="langToggle"><span class="toggle-track"></span></label></div>
+        </div>
+        <div class="settings-card">
+          <h3><i class="fas fa-shield-alt"></i>الأمان</h3>
+          <div class="form-group" style="margin-bottom:10px"><label>كلمة المرور الحالية</label><input type="password" placeholder="••••••••"></div>
+          <div class="form-group" style="margin-bottom:10px"><label>كلمة المرور الجديدة</label><input type="password" placeholder="••••••••"></div>
+          <div class="form-group" style="margin-bottom:14px"><label>تأكيد كلمة المرور</label><input type="password" placeholder="••••••••"></div>
+          <button class="btn btn-green"><i class="fas fa-lock"></i>تغيير كلمة المرور</button>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- end page-content -->
+</div><!-- end main-content -->
+</div><!-- end appLayout -->
+
+<!-- ===== MODALS ===== -->
+
+<!-- View RX Modal -->
+<div class="modal-overlay" id="modalViewRx">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3><i class="fas fa-file-medical" style="color:var(--purple)"></i>الوصفة الطبية — Ordonnance</h3>
+      <button class="modal-close" onclick="closeModal('modalViewRx')">×</button>
+    </div>
+    <div class="modal-body" id="rxViewBody"></div>
+    <div class="modal-footer" id="rxViewFooter"></div>
+  </div>
+</div>
+
+<!-- Review Request Modal -->
+<div class="modal-overlay" id="modalReviewReq">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3><i class="fas fa-user-md" style="color:var(--orange)"></i>طلب مراجعة من الطبيب</h3>
+      <button class="modal-close" onclick="closeModal('modalReviewReq')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>سبب طلب المراجعة</label>
+        <textarea id="reviewNote" placeholder="اكتب سبب طلب المراجعة من الطبيب..." rows="4"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-orange" onclick="sendReviewRequest()"><i class="fas fa-paper-plane"></i>إرسال للطبيب</button>
+      <button class="btn btn-outline" onclick="closeModal('modalReviewReq')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reject RX Modal -->
+<div class="modal-overlay" id="modalRejectRx">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3><i class="fas fa-times-circle" style="color:var(--red)"></i>رفض الوصفة</h3>
+      <button class="modal-close" onclick="closeModal('modalRejectRx')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>سبب الرفض</label>
+        <textarea id="rejectNote" placeholder="اكتب سبب رفض الوصفة..." rows="4"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-red" onclick="confirmRejectRx()"><i class="fas fa-times"></i>تأكيد الرفض</button>
+      <button class="btn btn-outline" onclick="closeModal('modalRejectRx')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Request Modal -->
+<div class="modal-overlay" id="modalNewRequest">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-shopping-cart" style="color:var(--purple)"></i>طلب جديد للصيدلية المركزية</h3>
+      <button class="modal-close" onclick="closeModal('modalNewRequest')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>النوع</label>
+          <select id="reqType">
+            <option value="دواء">دواء</option>
+            <option value="مستلزم طبي">مستلزم طبي</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>الأولوية</label>
+          <select id="reqPriority">
+            <option value="عادي">عادي</option>
+            <option value="عاجل">عاجل</option>
+            <option value="حرج">حرج</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>اسم الصنف</label>
+          <input type="text" id="reqItem" placeholder="اسم الدواء أو المستلزم">
+        </div>
+        <div class="form-group">
+          <label>الكمية المطلوبة</label>
+          <input type="number" id="reqQty" placeholder="الكمية" min="1">
+        </div>
+        <div class="form-group">
+          <label>الوحدة</label>
+          <input type="text" id="reqUnit" placeholder="قرص، أمبولة، علبة...">
+        </div>
+        <div class="form-group">
+          <label>المريض المعني (اختياري)</label>
+          <input type="text" id="reqPatient" placeholder="اسم المريض">
+        </div>
+      </div>
+      <div class="form-grid single" style="margin-top:10px">
+        <div class="form-group">
+          <label>ملاحظات إضافية</label>
+          <textarea id="reqNotes" placeholder="أي معلومات إضافية..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="submitNewRequest()"><i class="fas fa-paper-plane"></i>إرسال الطلب</button>
+      <button class="btn btn-outline" onclick="closeModal('modalNewRequest')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Supply Modal -->
+<div class="modal-overlay" id="modalAddSupply">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-plus-circle" style="color:var(--purple)"></i>إضافة مستلزم طبي جديد</h3>
+      <button class="modal-close" onclick="closeModal('modalAddSupply')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>اسم المستلزم *</label>
+          <input type="text" id="supName" placeholder="اسم المستلزم الطبي">
+        </div>
+        <div class="form-group">
+          <label>الفئة *</label>
+          <select id="supCat">
+            <option value="">-- اختر أو أدخل فئة جديدة --</option>
+            <option value="أدوات جراحية">أدوات جراحية</option>
+            <option value="أدوات تعقيم">أدوات تعقيم</option>
+            <option value="مستلزمات التحاليل">مستلزمات التحاليل</option>
+            <option value="مستلزمات الإنعاش">مستلزمات الإنعاش</option>
+            <option value="مستلزمات العمليات">مستلزمات العمليات</option>
+            <option value="ضمادات وشاش">ضمادات وشاش</option>
+            <option value="حقن وأنابيب">حقن وأنابيب</option>
+            <option value="قفازات وكمامات">قفازات وكمامات</option>
+            <option value="محاليل">محاليل</option>
+            <option value="أخرى">أخرى</option>
+            <option value="__new__">➕ فئة جديدة...</option>
+          </select>
+        </div>
+        <div class="form-group" id="supNewCatGroup" style="display:none">
+          <label>اسم الفئة الجديدة</label>
+          <input type="text" id="supNewCat" placeholder="اكتب اسم الفئة الجديدة">
+        </div>
+        <div class="form-group">
+          <label>النوع</label>
+          <input type="text" id="supType" placeholder="نوع المستلزم">
+        </div>
+        <div class="form-group">
+          <label>الكمية *</label>
+          <input type="number" id="supQty" placeholder="0" min="0">
+        </div>
+        <div class="form-group">
+          <label>الوحدة *</label>
+          <input type="text" id="supUnit" placeholder="قطعة، علبة، لفة...">
+        </div>
+        <div class="form-group">
+          <label>تاريخ الانتهاء</label>
+          <input type="date" id="supExp">
+        </div>
+        <div class="form-group">
+          <label>رقم الدفعة</label>
+          <input type="text" id="supBatch" placeholder="رقم الدفعة">
+        </div>
+        <div class="form-group">
+          <label>المورد</label>
+          <input type="text" id="supSupplier" placeholder="اسم المورد">
+        </div>
+        <div class="form-group">
+          <label>الحد الأدنى للتنبيه</label>
+          <input type="number" id="supMin" placeholder="10" min="0">
+        </div>
+      </div>
+      <div class="form-grid single" style="margin-top:10px">
+        <div class="form-group">
+          <label>ملاحظات</label>
+          <textarea id="supNotes" placeholder="أي ملاحظات إضافية..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="saveNewSupply()"><i class="fas fa-save"></i>حفظ المستلزم</button>
+      <button class="btn btn-outline" onclick="closeModal('modalAddSupply')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- Movement Modal -->
+<div class="modal-overlay" id="modalMovement">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3><i class="fas fa-exchange-alt" style="color:var(--cyan)"></i>تسجيل حركة مستلزم</h3>
+      <button class="modal-close" onclick="closeModal('modalMovement')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid single">
+        <div class="form-group">
+          <label>نوع الحركة *</label>
+          <select id="movType">
+            <option value="دخول">دخول</option>
+            <option value="خروج">خروج</option>
+            <option value="تحويل">تحويل لمصلحة أخرى</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>المستلزم *</label>
+          <select id="movItem"></select>
+        </div>
+        <div class="form-group">
+          <label>الكمية *</label>
+          <input type="number" id="movQty" placeholder="0" min="1">
+        </div>
+        <div class="form-group">
+          <label>المصلحة (في حالة التحويل)</label>
+          <input type="text" id="movDept" placeholder="اسم المصلحة المستقبِلة">
+        </div>
+        <div class="form-group">
+          <label>المسؤول</label>
+          <input type="text" id="movResp" placeholder="اسم المسؤول" value="د. خيرة بن عمر">
+        </div>
+        <div class="form-group">
+          <label>التاريخ</label>
+          <input type="date" id="movDate">
+        </div>
+        <div class="form-group">
+          <label>ملاحظات</label>
+          <textarea id="movNotes" rows="2" placeholder="ملاحظات..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-cyan" onclick="saveMovement()"><i class="fas fa-check"></i>تسجيل الحركة</button>
+      <button class="btn btn-outline" onclick="closeModal('modalMovement')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Patient Modal -->
+<div class="modal-overlay" id="modalAddDrug">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-pills" style="color:var(--purple)"></i>إضافة دواء جديد</h3>
+      <button class="modal-close" onclick="closeModal('modalAddDrug')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>اسم الدواء *</label><input type="text" id="drgName" placeholder="اسم الدواء"></div>
+        <div class="form-group"><label>الصنف *</label>
+          <select id="drgCat">
+            <option value="مضادات حيوية">مضادات حيوية</option>
+            <option value="مسكنات">مسكنات</option>
+            <option value="قلب وأوعية">قلب وأوعية</option>
+            <option value="تخدير">تخدير</option>
+            <option value="سكري">سكري</option>
+            <option value="أورام">أورام</option>
+            <option value="أخرى">أخرى</option>
+          </select>
+        </div>
+        <div class="form-group"><label>الكمية *</label><input type="number" id="drgQty" placeholder="0" min="0"></div>
+        <div class="form-group"><label>الوحدة *</label><input type="text" id="drgUnit" placeholder="قرص، أمبولة، علبة..."></div>
+        <div class="form-group"><label>تاريخ الانتهاء</label><input type="date" id="drgExp"></div>
+        <div class="form-group"><label>الحد الأدنى للتنبيه</label><input type="number" id="drgMin" placeholder="10" min="0"></div>
+        <div class="form-group"><label>المورد</label><input type="text" id="drgSupplier" placeholder="اسم المورد"></div>
+        <div class="form-group"><label>مقيد</label>
+          <select id="drgRestricted"><option value="false">لا</option><option value="true">نعم — مقيد</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="saveNewDrug()"><i class="fas fa-save"></i>حفظ الدواء</button>
+      <button class="btn btn-outline" onclick="closeModal('modalAddDrug')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- Drug Movement Modal -->
+<div class="modal-overlay" id="modalDrugMovement">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3><i class="fas fa-exchange-alt" style="color:var(--cyan)"></i>تسجيل حركة دواء</h3>
+      <button class="modal-close" onclick="closeModal('modalDrugMovement')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid single">
+        <div class="form-group">
+          <label>نوع الحركة *</label>
+          <select id="drgMovType">
+            <option value="دخول">دخول (استلام)</option>
+            <option value="خروج">خروج (صرف)</option>
+            <option value="تحويل">تحويل لمصلحة أخرى</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>الدواء *</label>
+          <select id="drgMovItem"></select>
+        </div>
+        <div class="form-group">
+          <label>الكمية *</label>
+          <input type="number" id="drgMovQty" placeholder="0" min="1">
+        </div>
+        <div class="form-group">
+          <label>المصلحة (في حالة التحويل)</label>
+          <input type="text" id="drgMovDept" placeholder="اسم المصلحة المستقبِلة">
+        </div>
+        <div class="form-group">
+          <label>المسؤول</label>
+          <input type="text" id="drgMovResp" placeholder="اسم المسؤول" value="د. خيرة بن عمر">
+        </div>
+        <div class="form-group">
+          <label>التاريخ</label>
+          <input type="date" id="drgMovDate">
+        </div>
+        <div class="form-group">
+          <label>ملاحظات</label>
+          <textarea id="drgMovNotes" rows="2" placeholder="ملاحظات..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-cyan" onclick="saveDrugMovement()"><i class="fas fa-check"></i>تسجيل الحركة</button>
+      <button class="btn btn-outline" onclick="closeModal('modalDrugMovement')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Patient Modal -->
+<div class="modal-overlay" id="modalAddPatient">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-user-plus" style="color:var(--purple)"></i>إضافة مريض جديد</h3>
+      <button class="modal-close" onclick="closeModal('modalAddPatient')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>الاسم الكامل *</label><input type="text" id="pName" placeholder="اسم المريض"></div>
+        <div class="form-group"><label>رقم الملف *</label><input type="text" id="pFile" placeholder="رقم الملف الطبي"></div>
+        <div class="form-group"><label>العمر</label><input type="number" id="pAge" placeholder="السن" min="0" max="120"></div>
+        <div class="form-group"><label>الجنس</label><select id="pGender"><option value="ذكر">ذكر</option><option value="أنثى">أنثى</option></select></div>
+        <div class="form-group"><label>تاريخ الدخول</label><input type="date" id="pAdmit"></div>
+        <div class="form-group"><label>الغرفة</label><input type="text" id="pRoom" placeholder="رقم الغرفة / السرير"></div>
+        <div class="form-group"><label>الطبيب المعالج</label><input type="text" id="pDoctor" placeholder="اسم الطبيب"></div>
+        <div class="form-group"><label>الحالة</label><select id="pStatus"><option value="مقبول">مقبول</option><option value="تحت المراقبة">تحت المراقبة</option><option value="حرج">حرج</option></select></div>
+      </div>
+      <div class="form-grid single" style="margin-top:10px">
+        <div class="form-group"><label>التشخيص</label><textarea id="pDiag" rows="2" placeholder="التشخيص الأولي..."></textarea></div>
+        <div class="form-group"><label>ملاحظات</label><textarea id="pNotes" rows="2" placeholder="ملاحظات..."></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="saveNewPatient()"><i class="fas fa-save"></i>حفظ المريض</button>
+      <button class="btn btn-outline" onclick="closeModal('modalAddPatient')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- Patient Detail Modal -->
+<div class="modal-overlay" id="modalPatientDetail">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3><i class="fas fa-user-injured" style="color:var(--purple)"></i>ملف المريض الكامل</h3>
+      <button class="modal-close" onclick="closeModal('modalPatientDetail')">×</button>
+    </div>
+    <div class="modal-body" id="patientDetailBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalPatientDetail')">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Rx Preview Modal (الرئيسية - معاينة فقط) -->
+<div class="modal-overlay" id="modalNewRxPreview">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3><i class="fas fa-file-prescription" style="color:var(--purple)"></i>الوصفات الجديدة <span style="background:rgba(139,92,246,0.12);color:var(--purple);font-size:10px;padding:2px 8px;border-radius:6px;font-weight:600;margin-right:8px">معاينة فقط</span></h3>
+      <button class="modal-close" onclick="closeModal('modalNewRxPreview')">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(59,130,246,0.06));border:1px solid rgba(139,92,246,0.2);border-radius:12px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
+        <div style="width:32px;height:32px;background:rgba(139,92,246,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="fas fa-eye" style="color:var(--purple);font-size:14px"></i>
+        </div>
+        <div>
+          <div style="font-weight:700;font-size:12px;color:var(--text-primary)">وضع المعاينة</div>
+          <div style="font-size:11px;color:var(--text-muted)">لإرسال أو قبول أو رفض الوصفات — استخدم <strong style="color:var(--purple)">الوصفات الجديدة</strong> من القائمة الجانبية</div>
+        </div>
+      </div>
+      <div id="newRxPreviewList"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="closeModal('modalNewRxPreview');navTo('newrx')"><i class="fas fa-file-prescription"></i>فتح إدارة الوصفات</button>
+      <button class="btn btn-outline" onclick="closeModal('modalNewRxPreview')">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<!-- Order Detail Modal -->
+<div class="modal-overlay" id="modalOrderDetail">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-clipboard-list" style="color:var(--purple)"></i>تفاصيل الطلب</h3>
+      <button class="modal-close" onclick="closeModal('modalOrderDetail')">×</button>
+    </div>
+    <div class="modal-body" id="orderDetailBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalOrderDetail')">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Dialog -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div style="font-size:40px;margin-bottom:12px" id="confirmIcon">❓</div>
+    <h4 id="confirmTitle">تأكيد العملية</h4>
+    <p id="confirmMsg">هل أنت متأكد؟</p>
+    <div class="btns">
+      <button class="btn btn-primary" id="confirmOkBtn" onclick="runConfirm()">تأكيد</button>
+      <button class="btn btn-outline" onclick="closeConfirm()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ================================================================
+   MedChifaGiz — Pharmacien Service
+   Full Dynamic Dashboard
+   ================================================================ */
+
+var currentLang = 'ar';
+var currentService = 'الاستعجالات والجراحة';
+var currentRxFilter = 'all';
+var currentReqFilter = 'all';
+var activeRxId = null;
+var confirmCallback = null;
+
+/* ===== SAMPLE DATA ===== */
+var SERVICES = [
+  'الاستعجالات والجراحة','الإنعاش','أمراض القلب والشرايين','جراحة الأطفال',
+  'أمراض العظام','جراحة الأعصاب','جراحة المسالك البولية','الصحة الحركية',
+  'الجراحة العامة','أمراض المعدة','جراحة العيون','العصبية المركزية',
+  'أمراض الكلى','طب العمل','الطب الشرعي','طب الأورام','الأمراض المعدية',
+  'الأمراض العقلية','أمراض الأطفال','العفن البريتاني','الطب الداخلي',
+  'أمراض الصدر والرئة','أمراض الضغط','أمراض القلب','أمراض الدم',
+  'أمراض السكري والغدد','جراحة الفك والأسنان','أمراض الجلد'
+];
+
+var RESTRICTED_DRUGS = ['أدوية الولادة','الأدوية الحساسة','أدوية العمليات','أدوية التخدير','الأدوية الخاضعة للرقابة'];
+
+/* ---- PATIENTS ---- */
+var PATIENTS_SAMPLE = [
+  {id:1,name:'أحمد بن علي',file:'P-2026-001',age:45,gender:'ذكر',admit:'2026-05-10',room:'غرفة 3 - سرير 2',doctor:'د. محمد الحسني',status:'مقبول',diag:'كسر في عظم الفخذ بعد حادث مرور',notes:'مريض هادئ - يحتاج مراقبة مستمرة'},
+  {id:2,name:'فاطمة بنت يوسف',file:'P-2026-002',age:32,gender:'أنثى',admit:'2026-05-12',room:'غرفة 1 - سرير 1',doctor:'د. سارة الزهراني',status:'تحت المراقبة',diag:'التهاب حاد في الزائدة الدودية - ما بعد العملية',notes:'العملية ناجحة - تعافي جيد'},
+  {id:3,name:'عمر خالد',file:'P-2026-003',age:68,gender:'ذكر',admit:'2026-05-14',room:'غرفة 2 - سرير 3',doctor:'د. محمد الحسني',status:'حرج',diag:'نزيف داخلي - صدمة',notes:'حالة حرجة - مراقبة مستمرة في الإنعاش'},
+  {id:4,name:'أمينة براهيم',file:'P-2026-004',age:28,gender:'أنثى',admit:'2026-05-15',room:'غرفة 4 - سرير 1',doctor:'د. كريم العربي',status:'مقبول',diag:'كسر في الذراع اليمنى',notes:''},
+  {id:5,name:'يوسف مصطفى',file:'P-2026-005',age:55,gender:'ذكر',admit:'2026-05-15',room:'غرفة 2 - سرير 1',doctor:'د. سارة الزهراني',status:'تحت المراقبة',diag:'التهاب عضلة القلب',notes:'يحتاج مراقبة قلبية مستمرة'},
+  {id:6,name:'نور الهدى زيان',file:'P-2026-006',age:19,gender:'أنثى',admit:'2026-05-16',room:'غرفة 1 - سرير 2',doctor:'د. محمد الحسني',status:'مقبول',diag:'حوادث متعددة - جروح ورضوض',notes:'مريضة مستقرة'},
+];
+
+/* ---- PRESCRIPTIONS ---- */
+var PRESCRIPTIONS_SAMPLE = [
+  {id:1,pid:1,patient:'أحمد بن علي',doctor:'د. محمد الحسني',service:'الاستعجالات والجراحة',date:'2026-05-16',time:'09:30',status:'new',diag:'كسر عظم الفخذ',restricted:false,notes:'',
+   drugs:[
+     {name:'Tramadol 100mg',dose:'1 أمبولة',freq:'كل 8 ساعات',duration:'5 أيام',route:'وريدي IV'},
+     {name:'Amoxicillin 1g',dose:'1 أمبولة',freq:'كل 12 ساعة',duration:'7 أيام',route:'وريدي IV'},
+     {name:'Omeprazole 40mg',dose:'1 حبة',freq:'مرة واحدة يومياً',duration:'10 أيام',route:'فموي PO'},
+   ]},
+  {id:2,pid:2,patient:'فاطمة بنت يوسف',doctor:'د. سارة الزهراني',service:'الاستعجالات والجراحة',date:'2026-05-16',time:'10:00',status:'approved',diag:'ما بعد جراحة الزائدة',restricted:false,notes:'',
+   drugs:[
+     {name:'Paracetamol 1g',dose:'1 أمبولة',freq:'كل 6 ساعات',duration:'3 أيام',route:'وريدي IV'},
+     {name:'Metronidazole 500mg',dose:'1 كيس',freq:'كل 8 ساعات',duration:'5 أيام',route:'وريدي IV'},
+   ]},
+  {id:3,pid:3,patient:'عمر خالد',doctor:'د. محمد الحسني',service:'الاستعجالات والجراحة',date:'2026-05-16',time:'07:15',status:'new',diag:'نزيف داخلي حاد',restricted:true,notes:'يحتاج موافقة الصيدلية المركزية',
+   drugs:[
+     {name:'Kétamine 50mg/ml',dose:'2 أمبولة',freq:'حسب الحاجة',duration:'حتى التعافي',route:'وريدي IV'},
+     {name:'Héparine 5000UI',dose:'1 أمبولة',freq:'كل 12 ساعة',duration:'7 أيام',route:'تحت الجلد SC'},
+     {name:'Plasma Frais Congelé',dose:'2 وحدة',freq:'حسب التحاليل',duration:'حتى الاستقرار',route:'وريدي IV'},
+   ]},
+  {id:4,pid:4,patient:'أمينة براهيم',doctor:'د. كريم العربي',service:'الاستعجالات والجراحة',date:'2026-05-15',time:'14:30',status:'pending',diag:'كسر الذراع',restricted:false,notes:'',
+   drugs:[
+     {name:'Ibuprofène 400mg',dose:'1 حبة',freq:'كل 8 ساعات',duration:'5 أيام',route:'فموي PO'},
+     {name:'Paracetamol 500mg',dose:'2 حبة',freq:'كل 6 ساعات',duration:'5 أيام',route:'فموي PO'},
+   ]},
+  {id:5,pid:5,patient:'يوسف مصطفى',doctor:'د. سارة الزهراني',service:'الاستعجالات والجراحة',date:'2026-05-15',time:'11:00',status:'review',diag:'التهاب عضلة القلب',restricted:false,notes:'الجرعة تحتاج مراجعة',
+   drugs:[
+     {name:'Bisoprolol 5mg',dose:'1 حبة',freq:'مرة يومياً',duration:'شهر',route:'فموي PO'},
+     {name:'Aspirine 100mg',dose:'1 حبة',freq:'مرة يومياً',duration:'شهر',route:'فموي PO'},
+   ]},
+  {id:7,pid:1,patient:'أحمد بن سالم',doctor:'د. محمد الحسني',service:'الاستعجالات والجراحة',date:'2026-05-19',time:'08:00',status:'new',diag:'ألم حاد',restricted:false,notes:'',
+   drugs:[
+     {name:'Paracetamol 1g',dose:'1 أمبولة',freq:'كل 6 ساعات',duration:'3 أيام',route:'وريدي IV'},
+   ]},
+  {id:8,pid:2,patient:'سارة قاسمي',doctor:'د. سارة الزهراني',service:'مصلحة الأطفال',date:'2026-05-19',time:'09:15',status:'review',diag:'التهاب الحلق',restricted:false,notes:'الجرعة تحتاج مراجعة',
+   drugs:[
+     {name:'Amoxicillin 500mg',dose:'1 حبة',freq:'كل 8 ساعات',duration:'7 أيام',route:'فموي PO'},
+   ]},
+];
+
+/* ---- DRUGS ---- */
+var DRUGS_SAMPLE = [
+  {id:1,name:'Tramadol 100mg',cat:'مسكنات',qty:45,unit:'أمبولة',exp:'2027-08-15',min:20,restricted:false,status:'ok',supplier:'Saidal'},
+  {id:2,name:'Amoxicillin 1g',cat:'مضادات حيوية',qty:8,unit:'أمبولة',exp:'2027-06-30',min:20,restricted:false,status:'low',supplier:'Biopharm'},
+  {id:3,name:'Paracetamol 1g IV',cat:'مسكنات',qty:60,unit:'كيس',exp:'2028-01-01',min:30,restricted:false,status:'ok',supplier:'Saidal'},
+  {id:4,name:'Kétamine 50mg/ml',cat:'تخدير',qty:5,unit:'أمبولة',exp:'2027-03-20',min:10,restricted:true,status:'low',supplier:'Pfizer'},
+  {id:5,name:'Héparine 5000UI',cat:'قلب وأوعية',qty:22,unit:'أمبولة',exp:'2027-05-15',min:15,restricted:true,status:'ok',supplier:'Sanofi'},
+  {id:6,name:'Métronidazole 500mg',cat:'مضادات حيوية',qty:0,unit:'كيس',exp:'2027-07-31',min:15,restricted:false,status:'out',supplier:'Saidal'},
+  {id:7,name:'Oméprazole 40mg',cat:'معدة',qty:90,unit:'حبة',exp:'2028-03-01',min:30,restricted:false,status:'ok',supplier:'Biopharm'},
+  {id:8,name:'Bisoprolol 5mg',cat:'قلب وأوعية',qty:14,unit:'حبة',exp:'2027-09-15',min:30,restricted:false,status:'low',supplier:'Novartis'},
+  {id:9,name:'Aspirine 100mg',cat:'قلب وأوعية',qty:200,unit:'حبة',exp:'2028-06-30',min:50,restricted:false,status:'ok',supplier:'Saidal'},
+  {id:10,name:'Ibuprofène 400mg',cat:'مسكنات',qty:65,unit:'حبة',exp:'2027-12-31',min:30,restricted:false,status:'ok',supplier:'Biopharm'},
+];
+
+/* ---- SUPPLIES ---- */
+var SUPPLIES_SAMPLE = [
+  {id:1,name:'قفازات لاتكس M',cat:'قفازات وكمامات',qty:120,unit:'زوج',exp:'2027-06-30',min:50,status:'متوفر',lastMov:'2026-05-14',notes:''},
+  {id:2,name:'ضمادات معقمة 10×10',cat:'ضمادات وشاش',qty:8,unit:'علبة',exp:'2027-03-15',min:20,status:'كمية قليلة',lastMov:'2026-05-15',notes:''},
+  {id:3,name:'حقن 5ml',cat:'حقن وأنابيب',qty:200,unit:'قطعة',exp:'2028-01-01',min:100,status:'متوفر',lastMov:'2026-05-14',notes:''},
+  {id:4,name:'قطن طبي 500g',cat:'ضمادات وشاش',qty:12,unit:'لفة',exp:'2027-09-20',min:10,status:'متوفر',lastMov:'2026-05-13',notes:''},
+  {id:5,name:'كمامات جراحية',cat:'قفازات وكمامات',qty:0,unit:'علبة',exp:'2026-08-31',min:30,status:'منتهي',lastMov:'2026-05-10',notes:''},
+  {id:6,name:'أنبوب تنفس',cat:'مستلزمات الإنعاش',qty:6,unit:'قطعة',exp:'2027-04-15',min:10,status:'كمية قليلة',lastMov:'2026-05-14',notes:''},
+  {id:7,name:'مطهر بوفيدون 500ml',cat:'أدوات تعقيم',qty:25,unit:'قارورة',exp:'2026-11-30',min:10,status:'قريب الانتهاء',lastMov:'2026-05-12',notes:''},
+  {id:8,name:'خيوط جراحية 0/0',cat:'أدوات جراحية',qty:4,unit:'علبة',exp:'2028-03-01',min:10,status:'كمية قليلة',lastMov:'2026-05-11',notes:''},
+];
+
+/* ---- REQUESTS ---- */
+var REQUESTS_SAMPLE = [
+  {id:1,num:'REQ-2026-0041',type:'دواء',item:'Amoxicillin 1g',qty:50,unit:'أمبولة',date:'2026-05-16',sentDate:'2026-05-16',readyDate:'',recvDate:'',status:'sent',priority:'عاجل',notes:'مخزون ناقص جداً',patient:'أحمد بن علي'},
+  {id:2,num:'REQ-2026-0040',type:'مستلزم طبي',item:'كمامات جراحية',qty:200,unit:'قطعة',date:'2026-05-15',sentDate:'2026-05-15',readyDate:'',recvDate:'2026-05-16',status:'delivered',priority:'حرج',notes:'',patient:''},
+  {id:3,num:'REQ-2026-0039',type:'دواء',item:'Métronidazole 500mg',qty:30,unit:'كيس',date:'2026-05-15',sentDate:'2026-05-15',readyDate:'',recvDate:'',status:'sent',priority:'عاجل',notes:'',patient:''},
+  {id:4,num:'REQ-2026-0038',type:'دواء',item:'Bisoprolol 5mg',qty:100,unit:'حبة',date:'2026-05-14',sentDate:'2026-05-14',readyDate:'2026-05-15',recvDate:'2026-05-15',status:'delivered',priority:'عادي',notes:'',patient:'يوسف مصطفى'},
+  {id:5,num:'REQ-2026-0037',type:'مستلزم طبي',item:'خيوط جراحية 0/0',qty:20,unit:'علبة',date:'2026-05-14',sentDate:'2026-05-14',readyDate:'',recvDate:'',status:'rejected',priority:'عادي',notes:'غير متوفر في المخزون المركزي',patient:''},
+  {id:6,num:'REQ-2026-0036',type:'دواء',item:'Tramadol 100mg',qty:100,unit:'أمبولة',date:'2026-05-13',sentDate:'2026-05-13',readyDate:'2026-05-14',recvDate:'2026-05-14',status:'delivered',priority:'عادي',notes:'',patient:''},
+];
+
+/* ---- ALERTS ---- */
+var ALERTS_DATA = [
+  {id:1,type:'danger',icon:'fa-pills',title:'نقص حاد: Métronidazole 500mg',msg:'المخزون صفر. مصلحة الاستعجالات بحاجة ماسة.',time:'منذ 20 دقيقة',read:false,category:'مخزون'},
+  {id:2,type:'danger',icon:'fa-boxes',title:'نقص: Kétamine 50mg/ml',msg:'5 أمبولات فقط. الحد الأدنى 10. دواء مقيد.',time:'منذ ساعة',read:false,category:'مخزون'},
+  {id:3,type:'warn',icon:'fa-clock',title:'قريب الانتهاء: مطهر بوفيدون',msg:'ينتهي في 30/11/2026 — أقل من 6 أشهر.',time:'منذ 2 ساعة',read:false,category:'انتهاء'},
+  {id:4,type:'warn',icon:'fa-file-medical',title:'وصفة تحتاج مراجعة — يوسف مصطفى',msg:'الطبيب د. سارة الزهراني طلبت مراجعة الجرعات.',time:'منذ 3 ساعات',read:false,category:'وصفات'},
+  {id:5,type:'danger',icon:'fa-times-circle',title:'طلب مرفوض: خيوط جراحية',msg:'REQ-2026-0037 — غير متوفر في المخزون المركزي.',time:'منذ يوم',read:false,category:'طلبات'},
+  {id:6,type:'info',icon:'fa-check-circle',title:'طلب تم استلامه: كمامات جراحية',msg:'REQ-2026-0040 — تم استلام الطلب من الصيدلية المركزية.',time:'منذ 30 دقيقة',read:false,category:'طلبات'},
+  {id:7,type:'info',icon:'fa-file-medical',title:'وصفة جديدة — أحمد بن علي',msg:'د. محمد الحسني أضاف وصفة جديدة.',time:'منذ 10 دقائق',read:false,category:'وصفات'},
+];
+
+/* ---- MOVEMENTS ---- */
+var MOVEMENTS = [];
+
+/* ---- LOCAL STORAGE ---- */
+function loadData() {
+  var ps = localStorage.getItem('ps_patients');
+  if (ps) PATIENTS_SAMPLE = JSON.parse(ps);
+  var pp = localStorage.getItem('ps_prescriptions');
+  if (pp) {
+    var saved = JSON.parse(pp);
+    /* إذا كانت البيانات المحفوظة لا تحتوي على الوصفات الجديدة (id 7 و 8)، أضفهم */
+    var ids = saved.map(function(r){return r.id;});
+    PRESCRIPTIONS_SAMPLE.forEach(function(r){
+      if (ids.indexOf(r.id) === -1) saved.push(r);
+    });
+    PRESCRIPTIONS_SAMPLE = saved;
+  }
+  var pd = localStorage.getItem('ps_drugs');
+  if (pd) DRUGS_SAMPLE = JSON.parse(pd);
+  var psu = localStorage.getItem('ps_supplies');
+  if (psu) SUPPLIES_SAMPLE = JSON.parse(psu);
+  var pr = localStorage.getItem('ps_requests');
+  if (pr) REQUESTS_SAMPLE = JSON.parse(pr);
+  var pm = localStorage.getItem('ps_movements');
+  if (pm) MOVEMENTS = JSON.parse(pm);
+  var svc = localStorage.getItem('ps_service');
+  if (svc) { currentService = svc; }
+}
+function saveData() {
+  localStorage.setItem('ps_patients', JSON.stringify(PATIENTS_SAMPLE));
+  localStorage.setItem('ps_prescriptions', JSON.stringify(PRESCRIPTIONS_SAMPLE));
+  localStorage.setItem('ps_drugs', JSON.stringify(DRUGS_SAMPLE));
+  localStorage.setItem('ps_supplies', JSON.stringify(SUPPLIES_SAMPLE));
+  localStorage.setItem('ps_requests', JSON.stringify(REQUESTS_SAMPLE));
+  localStorage.setItem('ps_movements', JSON.stringify(MOVEMENTS));
+  localStorage.setItem('ps_service', currentService);
+}
+
+/* ===== NAVIGATION ===== */
+function navTo(key) {
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
+  var sec = document.getElementById('sec-'+key);
+  if (sec) sec.classList.add('active');
+  var nav = document.getElementById('nav-'+key);
+  if (nav) nav.classList.add('active');
+  var titles = {
+    home:'لوحة التحكم',patients:'المرضى',prescriptions:'الوصفات الطبية',
+    newrx:'الوصفات الجديدة',
+    requests:'الطلبات',drugs:'مخزون الأدوية',supplies:'المستلزمات الطبية',
+    sentorders:'الطلبات المرسلة للمركزية',alerts:'التنبيهات',
+    reports:'التقارير',statistics:'الإحصائيات',settings:'الإعدادات'
+  };
+  document.getElementById('topbarTitle').textContent = titles[key] || 'لوحة التحكم';
+  document.getElementById('topbarSub').textContent = 'مصلحة ' + currentService;
+  if (key==='home') renderHome();
+  if (key==='patients') renderPatients();
+  if (key==='prescriptions') renderPrescriptions();
+  if (key==='newrx') renderNewRx();
+  if (key==='requests') renderRequests();
+  if (key==='drugs') renderDrugs();
+  if (key==='supplies') renderSupplies();
+  if (key==='sentorders') renderSentOrders();
+  if (key==='alerts') renderAlerts();
+  if (key==='statistics') { renderStatsKPI(); setTimeout(renderCharts,100); }
+  closeNotifDropdown();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ===== SERVICE CHANGE ===== */
+function changeService(val) {
+  currentService = val;
+  document.getElementById('sidebarServiceName').textContent = val;
+  document.getElementById('topbarSub').textContent = 'مصلحة ' + val;
+  document.getElementById('homeServiceSubtitle').textContent = 'مصلحة ' + val + ' — صيدلي المصلحة';
+  document.getElementById('patientsSub').textContent = 'قائمة مرضى مصلحة ' + val;
+  document.getElementById('settingService').value = val;
+  saveData();
+  navTo('home');
+  showToast('تم تغيير المصلحة إلى: ' + val, 'info');
+}
+
+/* ===== HOME ===== */
+function renderHome() {
+  var rxNew = PRESCRIPTIONS_SAMPLE.filter(function(r){return r.status==='new';}).length;
+  var rxPending = PRESCRIPTIONS_SAMPLE.filter(function(r){return r.status==='pending';}).length;
+  var suppliesLow = SUPPLIES_SAMPLE.filter(function(s){return s.status!=='متوفر';}).length;
+  var reqPending = REQUESTS_SAMPLE.filter(function(r){return r.status==='sent';}).length;
+  var unreadAlerts = ALERTS_DATA.filter(function(a){return !a.read;}).length;
+
+  /* تحديث الـ badges في الـ Sidebar */
+  document.getElementById('badge-patients').textContent = PATIENTS_SAMPLE.length;
+  var brx=document.getElementById('badge-rx');if(brx)brx.textContent=rxNew;
+  var newrxCountEl=document.getElementById('newrxCount');if(newrxCountEl)newrxCountEl.textContent=rxNew;
+  document.getElementById('badge-req').textContent = reqPending;
+  var bAlerts=document.getElementById('badge-alerts');if(bAlerts)bAlerts.textContent=unreadAlerts;
+  document.getElementById('notifBadge').textContent = unreadAlerts;
+  document.getElementById('homeServiceSubtitle').textContent = 'مصلحة ' + currentService + ' — صيدلي المصلحة';
+
+  /* تحديث الـ persistent stats bar */
+  var psPat=document.getElementById('ps-patients');if(psPat)psPat.textContent=PATIENTS_SAMPLE.length;
+  var psRx=document.getElementById('ps-rx');if(psRx)psRx.textContent=rxNew;
+  var psDrugs=document.getElementById('ps-drugs');if(psDrugs)psDrugs.textContent=DRUGS_SAMPLE.filter(function(d){return d.status==='ok';}).length;
+  var psAlerts=document.getElementById('ps-alerts');if(psAlerts)psAlerts.textContent=unreadAlerts;
+
+  /* الكاردات المتبقية فقط: وصفات جديدة، أدوية متوفرة، المستلزمات */
+  document.getElementById('homeStatsGrid').innerHTML = [
+    {cls:'red',  icon:'fa-file-medical',   val:rxNew,
+     lbl:'وصفات جديدة', trend:'down', trendTxt:'تحتاج معالجة',
+     pct:Math.round(rxNew/Math.max(PRESCRIPTIONS_SAMPLE.length,1)*100), nav:'newrx'},
+    {cls:'green', icon:'fa-pills',
+     val:DRUGS_SAMPLE.filter(function(d){return d.status==='ok';}).length,
+     lbl:'أدوية متوفرة', trend:'up',
+     trendTxt:DRUGS_SAMPLE.length+' إجمالي',
+     pct:Math.round(DRUGS_SAMPLE.filter(function(d){return d.status==='ok';}).length/Math.max(DRUGS_SAMPLE.length,1)*100),
+     nav:'drugs'},
+    {cls:'cyan', icon:'fa-box-open', val:SUPPLIES_SAMPLE.length,
+     lbl:'المستلزمات', trend:'neutral', trendTxt:suppliesLow+' ناقص',
+     pct:70, nav:'supplies'},
+  ].map(function(c){
+    return '<div class="stat-card '+c.cls+'">'+ 
+      '<div class="card-icon"><i class="fas '+c.icon+'"></i></div>'+
+      '<div class="card-val">'+c.val+'</div>'+
+      '<div class="card-label">'+c.lbl+'</div>'+
+      '<span class="card-trend '+c.trend+'">'+c.trendTxt+'</span>'+
+      '<div class="progress-bar-wrap"><div class="progress-bar-track"><div class="progress-bar-fill" style="width:'+c.pct+'%"></div></div>'+
+      '<div class="progress-bar-label"><span>النسبة</span><span>'+c.pct+'%</span></div></div>'+
+    '</div>';
+  }).join('');
+
+  /* تفريغ المحتوى الأسفل بالكامل */
+  document.getElementById('homeDashGrid').innerHTML = '';
+  document.getElementById('homeBottom').innerHTML = '';
+
+  /* قسم معاينة الوصفات الجديدة */
+  renderHomeRxPreview();
+}
+
+/* ===== HOME RX PREVIEW (معاينة فقط — بدون أي إجراءات) ===== */
+function renderHomeRxPreview() {
+  var el = document.getElementById('homeRxPreview');
+  if (!el) return;
+
+  var list = PRESCRIPTIONS_SAMPLE.filter(function(r){ return r.status === 'new'; }).slice(0, 8);
+  var rxCount = PRESCRIPTIONS_SAMPLE.filter(function(r){ return r.status === 'new'; }).length;
+
+  var statusLabels = {
+    new:'جديدة', pending:'قيد المعالجة', approved:'مقبولة',
+    rejected:'مرفوضة', review:'مراجعة', sent:'مرسلة'
+  };
+  var statusClasses = {
+    new:'new', pending:'med', approved:'ok',
+    rejected:'low', review:'warn', sent:'active'
+  };
+
+  var rows = list.length ? list.map(function(rx, i) {
+    var drug1 = rx.drugs && rx.drugs.length ? rx.drugs[0].name : '—';
+    var extraDrugs = rx.drugs && rx.drugs.length > 1
+      ? '<span style="font-size:10px;color:var(--text-muted);margin-right:4px">+' + (rx.drugs.length - 1) + '</span>'
+      : '';
+    var sc = statusClasses[rx.status] || 'med';
+    var sl = statusLabels[rx.status] || rx.status;
+    return '<tr>' +
+      '<td style="color:var(--text-muted);width:32px">' + (i + 1) + '</td>' +
+      '<td>' +
+        '<div style="font-weight:700;font-size:12px">' + rx.patient + '</div>' +
+        '<div style="font-size:10px;color:var(--text-muted);margin-top:2px">' +
+          '<i class="fas fa-user-md" style="margin-left:3px;opacity:0.6"></i>' + rx.doctor +
+        '</div>' +
+      '</td>' +
+      '<td>' +
+        '<div style="font-size:12px;font-weight:600">' + drug1 + extraDrugs + '</div>' +
+        (rx.restricted
+          ? '<div style="font-size:10px;color:var(--red);margin-top:2px"><i class="fas fa-lock" style="margin-left:3px"></i>دواء مقيد</div>'
+          : '') +
+      '</td>' +
+      '<td style="font-size:11px;color:var(--text-muted)">' +
+        '<i class="fas fa-hospital-alt" style="margin-left:4px;opacity:0.5"></i>' + rx.service +
+      '</td>' +
+      '<td style="font-size:11px;color:var(--text-muted)">' +
+        '<i class="fas fa-calendar" style="margin-left:4px;opacity:0.5"></i>' + rx.date +
+      '</td>' +
+      '<td><span class="badge ' + sc + '">' + sl + '</span></td>' +
+    '</tr>';
+  }).join('') :
+  '<tr><td colspan="6"><div class="home-rx-empty">' +
+    '<i class="fas fa-check-circle" style="color:var(--green)"></i>' +
+    '<p>لا توجد وصفات جديدة حالياً — تم معالجة جميع الوصفات ✓</p>' +
+  '</div></td></tr>';
+
+  el.innerHTML =
+    '<div class="home-rx-section" style="margin-top:16px">' +
+      '<div class="home-rx-section-header">' +
+        '<h3>' +
+          '<i class="fas fa-file-prescription" style="color:var(--purple)"></i>' +
+          'الوصفات الجديدة' +
+          (rxCount > 0
+            ? '<span class="home-rx-badge">' + rxCount + '</span>'
+            : '') +
+          '<span class="home-rx-readonly">معاينة فقط</span>' +
+        '</h3>' +
+        '<a onclick="navTo(\'newrx\')">' +
+          '<i class="fas fa-arrow-left" style="font-size:10px"></i>' +
+          'إدارة الوصفات' +
+        '</a>' +
+      '</div>' +
+      '<div class="table-wrap">' +
+        '<table class="home-rx-table">' +
+          '<thead><tr>' +
+            '<th>#</th>' +
+            '<th>المريض / الطبيب</th>' +
+            '<th>الدواء</th>' +
+            '<th>المصلحة</th>' +
+            '<th>التاريخ</th>' +
+            '<th>الحالة</th>' +
+          '</tr></thead>' +
+          '<tbody>' + rows + '</tbody>' +
+        '</table>' +
+      '</div>' +
+    '</div>';
+}
+
+/* ===== PATIENTS ===== */
+function renderPatients(search) {
+  var q = (search || document.getElementById('patientSearch')?.value || '').toLowerCase();
+  var list = PATIENTS_SAMPLE.filter(function(p){
+    return (!q||p.name.toLowerCase().includes(q)||p.file.toLowerCase().includes(q));
+  });
+  var colors = ['#8b5cf6','#3b82f6','#10b981','#f59e0b','#ef4444','#06b6d4'];
+  document.getElementById('patientGrid').innerHTML = list.map(function(p,i){
+    var sc = {مقبول:'ok','تحت المراقبة':'med',حرج:'low'}[p.status]||'ok';
+    return '<div class="patient-card" onclick="openPatientModal('+p.id+')">'+
+      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">'+
+        '<div class="patient-avatar" style="background:'+colors[i%colors.length]+'">'+p.name[0]+'</div>'+
+        '<div style="flex:1">'+
+          '<div style="font-weight:700;font-size:14px">'+p.name+'</div>'+
+          '<div style="font-size:11px;color:var(--text-muted)">'+p.file+' — '+p.age+' سنة — '+p.gender+'</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="patient-info-row"><span><i class="fas fa-hospital-alt" style="color:var(--purple);margin-left:4px"></i>'+p.room+'</span><span><i class="fas fa-user-md" style="color:var(--purple);margin-left:4px"></i>'+p.doctor+'</span></div>'+
+      '<div style="font-size:11px;color:var(--text-muted);margin-top:6px;background:var(--bg);border-radius:8px;padding:6px 8px"><i class="fas fa-stethoscope" style="margin-left:5px"></i>'+p.diag+'</div>'+
+      '<div style="margin-top:8px;display:flex;gap:6px">'+
+        '<button class="btn btn-sm btn-primary" onclick="event.stopPropagation();openPatientModal('+p.id+')"><i class="fas fa-eye"></i>الملف والوصفات</button>'+
+      '</div>'+
+    '</div>';
+  }).join('') || '<div style="text-align:center;padding:40px;color:var(--text-muted)"><i class="fas fa-user-slash" style="font-size:40px;opacity:0.3;display:block;margin-bottom:12px"></i>لا يوجد مرضى</div>';
+}
+
+function openPatientModal(id) {
+  var p = PATIENTS_SAMPLE.find(function(x){return x.id===id;});
+  if (!p) return;
+  var rxList = PRESCRIPTIONS_SAMPLE.filter(function(r){return r.pid===id;});
+  var sc = {مقبول:'ok','تحت المراقبة':'med',حرج:'low'}[p.status]||'ok';
+  document.getElementById('patientDetailBody').innerHTML =
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'+
+      '<div>'+
+        '<div style="background:linear-gradient(135deg,var(--purple),var(--primary));border-radius:14px;padding:18px;color:#fff;margin-bottom:14px">'+
+          '<div style="font-size:32px;font-weight:900;margin-bottom:4px">'+p.name+'</div>'+
+          '<div style="opacity:0.85;font-size:13px">'+p.file+' — '+p.age+' سنة — '+p.gender+'</div>'+
+          '<div style="margin-top:8px"><span style="background:rgba(255,255,255,0.2);padding:3px 10px;border-radius:20px;font-size:11px">'+p.status+'</span></div>'+
+        '</div>'+
+        '<div style="background:var(--bg);border-radius:12px;padding:14px">'+
+          '<div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="fas fa-notes-medical" style="color:var(--purple)"></i>المعلومات الطبية</div>'+
+          '<div style="display:flex;flex-direction:column;gap:9px">'+
+            '<div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:7px 10px;background:var(--card-bg);border-radius:8px;border:1px solid var(--border)"><span style="color:var(--text-muted);display:flex;align-items:center;gap:5px"><i class="fas fa-user" style="color:var(--purple);font-size:11px"></i>الاسم واللقب</span><strong>'+p.name+'</strong></div>'+
+            '<div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:7px 10px;background:var(--card-bg);border-radius:8px;border:1px solid var(--border)"><span style="color:var(--text-muted);display:flex;align-items:center;gap:5px"><i class="fas fa-birthday-cake" style="color:var(--purple);font-size:11px"></i>تاريخ الميلاد</span><strong>'+(p.dob||p.age+' سنة')+'</strong></div>'+
+            '<div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:7px 10px;background:var(--card-bg);border-radius:8px;border:1px solid var(--border)"><span style="color:var(--text-muted);display:flex;align-items:center;gap:5px"><i class="fas fa-calendar-check" style="color:var(--purple);font-size:11px"></i>تاريخ الدخول</span><strong>'+p.admit+'</strong></div>'+
+            '<div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:7px 10px;background:var(--card-bg);border-radius:8px;border:1px solid var(--border)"><span style="color:var(--text-muted);display:flex;align-items:center;gap:5px"><i class="fas fa-door-open" style="color:var(--purple);font-size:11px"></i>رقم الغرفة</span><strong>'+p.room+'</strong></div>'+
+            '<div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:7px 10px;background:var(--card-bg);border-radius:8px;border:1px solid var(--border)"><span style="color:var(--text-muted);display:flex;align-items:center;gap:5px"><i class="fas fa-user-md" style="color:var(--purple);font-size:11px"></i>الطبيب المعالج</span><strong>'+p.doctor+'</strong></div>'+
+            '<div style="font-size:12px;padding:7px 10px;background:var(--card-bg);border-radius:8px;border:1px solid var(--border)"><div style="color:var(--text-muted);display:flex;align-items:center;gap:5px;margin-bottom:5px"><i class="fas fa-stethoscope" style="color:var(--purple);font-size:11px"></i>سبب الدخول</div><div style="font-weight:600">'+p.diag+'</div></div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+      '<div>'+
+        '<div style="font-size:13px;font-weight:700;margin-bottom:12px"><i class="fas fa-file-medical" style="color:var(--purple);margin-left:6px"></i>وصفاته الطبية ('+rxList.length+')</div>'+
+        rxList.map(function(rx){
+          var sc2 = {new:'new',approved:'ok',rejected:'low',pending:'med',review:'warn'}[rx.status]||'med';
+          var sl = {new:'جديدة',approved:'مقبولة',rejected:'مرفوضة',pending:'معلقة',review:'مراجعة'}[rx.status]||rx.status;
+          return '<div style="background:var(--bg);border-radius:10px;padding:10px;margin-bottom:8px;cursor:pointer" onclick="closeModal(\'modalPatientDetail\');openRxModal('+rx.id+')">'+
+            '<div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-weight:600;font-size:12px">'+rx.date+' '+rx.time+'</span><span class="badge '+sc2+'">'+sl+'</span></div>'+
+            '<div style="font-size:11px;color:var(--text-muted)">'+rx.drugs.map(function(d){return d.name;}).join(' — ')+'</div>'+
+          '</div>';
+        }).join('') || '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:12px">لا توجد وصفات لهذا المريض</div>'+
+      '</div>'+
+    '</div>';
+  openModal('modalPatientDetail');
+}
+
+function openRxByPatient(pid) {
+  navTo('prescriptions');
+  currentRxFilter = 'all';
+  renderPrescriptions(null, pid);
+}
+
+/* ===== PRESCRIPTIONS ===== */
+function renderPrescriptions(filter, patientId) {
+  if (filter !== undefined && filter !== null) currentRxFilter = filter;
+  var list = PRESCRIPTIONS_SAMPLE.filter(function(r){
+    if (patientId) return r.pid === patientId;
+    if (currentRxFilter === 'all') return true;
+    return r.status === currentRxFilter;
+  });
+  document.getElementById('rxGrid').innerHTML = list.map(function(rx){
+    var sc = {new:'new',approved:'ok',rejected:'low',pending:'med',review:'warn',sent:'active'}[rx.status]||'med';
+    var sl = {new:'جديدة',approved:'مقبولة',rejected:'مرفوضة',pending:'معلقة',review:'مراجعة',sent:'مرسلة'}[rx.status]||rx.status;
+    return '<div class="rx-card'+(rx.restricted?' restricted-card':'')+'" onclick="openRxModal('+rx.id+')">'+
+      '<div class="rx-header">'+
+        '<div>'+
+          '<div class="rx-patient">'+rx.patient+'</div>'+
+          '<div class="rx-doctor"><i class="fas fa-user-md" style="margin-left:4px"></i>'+rx.doctor+' — '+rx.date+'</div>'+
+        '</div>'+
+        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'+
+          '<span class="badge '+sc+'">'+sl+'</span>'+
+          (rx.restricted?'<span class="badge restricted"><i class="fas fa-lock"></i>مقيد</span>':'')+
+        '</div>'+
+      '</div>'+
+      '<div class="rx-drugs">'+
+        rx.drugs.slice(0,3).map(function(d){
+          return '<div class="rx-drug-item"><span>'+d.name+'</span><span style="color:var(--purple)">'+d.dose+'</span></div>';
+        }).join('')+
+        (rx.drugs.length>3?'<div style="font-size:10px;color:var(--text-muted);padding-top:3px">و '+(rx.drugs.length-3)+' أدوية أخرى...</div>':'')+
+      '</div>'+
+      '<div class="rx-footer">'+
+        '<button class="btn btn-sm btn-primary" onclick="event.stopPropagation();openRxModal('+rx.id+')"><i class="fas fa-eye"></i>عرض</button>'+
+        (rx.status==='new'||rx.status==='pending'?
+          '<button class="btn btn-sm btn-green" onclick="event.stopPropagation();approveRx('+rx.id+')"><i class="fas fa-check"></i>قبول</button>'+
+          '<button class="btn btn-sm btn-red" onclick="event.stopPropagation();rejectRxPrompt('+rx.id+')"><i class="fas fa-times"></i>رفض</button>':'')+
+        (rx.status==='approved'?'<button class="btn btn-sm btn-cyan" onclick="event.stopPropagation();sendRxToCentral('+rx.id+')"><i class="fas fa-paper-plane"></i>إرسال للمركزية</button>':'')+
+        '<button class="btn btn-sm btn-orange" onclick="event.stopPropagation();reviewRxPrompt('+rx.id+')"><i class="fas fa-sync"></i>مراجعة الطبيب</button>'+
+      '</div>'+
+    '</div>';
+  }).join('') || '<div style="text-align:center;padding:40px;color:var(--text-muted);grid-column:1/-1"><i class="fas fa-file-medical" style="font-size:40px;opacity:0.3;display:block;margin-bottom:12px"></i>لا توجد وصفات</div>';
+}
+
+function filterRx(f, el) {
+  document.querySelectorAll('#rxFilterTabs .filter-tab').forEach(function(t){t.classList.remove('active');});
+  if (el) el.classList.add('active');
+  renderPrescriptions(f);
+}
+
+/* ===== NEW RX PAGE (إدارة كاملة للوصفات الجديدة) ===== */
+var currentNewRxFilter = 'new';
+function renderNewRx(filter) {
+  if (filter !== undefined) currentNewRxFilter = filter;
+  var newCount = PRESCRIPTIONS_SAMPLE.filter(function(r){return r.status==='new';}).length;
+  var el = document.getElementById('newrxCount');
+  if (el) el.textContent = newCount;
+  var badge = document.getElementById('badge-rx');
+  if (badge) badge.textContent = newCount;
+  var list = PRESCRIPTIONS_SAMPLE.filter(function(r){
+    if (currentNewRxFilter === 'all') return true;
+    return r.status === currentNewRxFilter;
+  });
+  document.getElementById('newrxGrid').innerHTML = list.map(function(rx){
+    var sc = {new:'new',approved:'ok',rejected:'low',pending:'med',review:'warn',sent:'active'}[rx.status]||'med';
+    var sl = {new:'جديدة',approved:'مقبولة',rejected:'مرفوضة',pending:'معلقة',review:'مراجعة',sent:'مرسلة'}[rx.status]||rx.status;
+    return '<div class="rx-card'+(rx.restricted?' restricted-card':'')+'" onclick="openRxModal('+rx.id+')">'+
+      '<div class="rx-header">'+
+        '<div>'+
+          '<div class="rx-patient">'+rx.patient+'</div>'+
+          '<div class="rx-doctor"><i class="fas fa-user-md" style="margin-left:4px"></i>'+rx.doctor+' — '+rx.date+'</div>'+
+        '</div>'+
+        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'+
+          (rx.restricted?'<span class="badge restricted"><i class="fas fa-lock"></i>مقيد</span>':'')+
+        '</div>'+
+      '</div>'+
+      '<div class="rx-drugs">'+
+        rx.drugs.slice(0,3).map(function(d){
+          return '<div class="rx-drug-item"><span>'+d.name+'</span><span style="color:var(--purple)">'+d.dose+'</span></div>';
+        }).join('')+
+        (rx.drugs.length>3?'<div style="font-size:10px;color:var(--text-muted);padding-top:3px">و '+(rx.drugs.length-3)+' أدوية أخرى...</div>':'')+
+      '</div>'+
+      '<div class="rx-footer">'+
+        '<button class="btn btn-sm btn-primary" onclick="event.stopPropagation();openRxModal('+rx.id+')"><i class="fas fa-eye"></i>عرض</button>'+
+        '<button class="btn btn-sm btn-green" onclick="event.stopPropagation();approveRx('+rx.id+');showToast(\'تم حفظ الوصفة ✓\',\'success\')"><i class="fas fa-save"></i>حفظ</button>'+
+        '<button class="btn btn-sm btn-cyan" onclick="event.stopPropagation();sendRxToCentral('+rx.id+')"><i class="fas fa-paper-plane"></i>إرسال</button>'+
+      '</div>'+
+    '</div>';
+  }).join('') || '<div style="text-align:center;padding:40px;color:var(--text-muted);grid-column:1/-1"><i class="fas fa-file-prescription" style="font-size:40px;opacity:0.3;display:block;margin-bottom:12px"></i>لا توجد وصفات جديدة ✓</div>';
+}
+
+function filterNewRx(f, el) {
+  document.querySelectorAll('#newrxFilterTabs .filter-tab').forEach(function(t){t.classList.remove('active');});
+  if (el) el.classList.add('active');
+  renderNewRx(f);
+}
+
+/* معاينة الوصفات الجديدة من الرئيسية (بدون أزرار إدارة) */
+function openNewRxPreview() {
+  var list = PRESCRIPTIONS_SAMPLE.filter(function(r){return r.status==='new';});
+  document.getElementById('newRxPreviewList').innerHTML = list.length ? list.map(function(rx){
+    return '<div style="background:var(--bg);border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid var(--border);animation:fadeIn 0.3s ease;position:relative">'+
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">'+
+        '<div style="flex:1">'+
+          '<div style="font-weight:700;font-size:14px;margin-bottom:3px">'+rx.patient+'</div>'+
+          '<div style="font-size:11px;color:var(--text-muted)"><i class="fas fa-user-md" style="margin-left:4px;color:var(--purple)"></i>'+rx.doctor+'</div>'+
+          '<div style="font-size:10px;color:var(--text-muted);margin-top:2px"><i class="fas fa-calendar" style="margin-left:4px;color:var(--purple)"></i>'+rx.date+' — '+rx.time+'</div>'+
+        '</div>'+
+        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'+
+          '<span class="badge new">جديدة</span>'+
+          (rx.restricted?'<span class="badge restricted" style="font-size:9px"><i class="fas fa-lock"></i>مقيد</span>':'')+
+        '</div>'+
+      '</div>'+
+      '<div style="display:flex;flex-direction:column;gap:5px">'+
+        rx.drugs.slice(0,3).map(function(d){
+          return '<div style="display:flex;justify-content:space-between;font-size:12px;background:var(--card-bg);padding:6px 10px;border-radius:8px;border:1px solid var(--border)">'+
+            '<span style="font-weight:500">'+d.name+'</span><span style="color:var(--purple);font-weight:700">'+d.dose+'</span></div>';
+        }).join('')+
+        (rx.drugs.length>3?'<div style="font-size:10px;color:var(--text-muted);padding:3px 6px;text-align:center">و '+(rx.drugs.length-3)+' أدوية أخرى...</div>':'')+
+      '</div>'+
+      '<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border);font-size:10px;color:var(--text-muted);display:flex;align-items:center;gap:5px">'+
+        '<i class="fas fa-info-circle" style="color:var(--purple)"></i>'+
+        '<span>معاينة فقط — افتح <strong>الوصفات الجديدة</strong> للمعالجة</span>'+
+      '</div>'+
+    '</div>';
+  }).join('') :
+  '<div style="text-align:center;padding:40px;color:var(--text-muted)"><i class="fas fa-check-circle" style="font-size:40px;color:var(--green);opacity:0.6;display:block;margin-bottom:12px"></i><div style="font-weight:600;margin-bottom:4px">لا توجد وصفات جديدة</div><div style="font-size:11px">جميع الوصفات تمت معالجتها ✓</div></div>';
+  openModal('modalNewRxPreview');
+}
+
+/* ===== RX MODAL (عرض تفاصيل وصفة كاملة) ===== */
+function openRxModal(id) {
+  var rx = PRESCRIPTIONS_SAMPLE.find(function(x){return x.id===id;});
+  if (!rx) return;
+  activeRxId = id;
+  var sc = {new:'new',approved:'ok',rejected:'low',pending:'med',review:'warn',sent:'active'}[rx.status]||'med';
+  var sl = {new:'جديدة',approved:'مقبولة',rejected:'مرفوضة',pending:'معلقة',review:'تحتاج مراجعة',sent:'مرسلة'}[rx.status]||rx.status;
+  document.getElementById('rxViewBody').innerHTML =
+    '<div class="rx-print-wrap">'+
+      '<div class="rx-print-header">'+
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start">'+
+          '<div>'+
+            '<div style="font-size:11px;opacity:0.75;margin-bottom:4px">Ordonnance Médicale — وصفة طبية</div>'+
+            '<div style="font-size:18px;font-weight:800">'+rx.patient+'</div>'+
+            '<div style="font-size:11px;opacity:0.8;margin-top:2px">'+rx.doctor+' — مصلحة '+rx.service+'</div>'+
+          '</div>'+
+          '<div style="text-align:left">'+
+            '<div><span class="badge '+sc+'" style="font-size:12px">'+sl+'</span>'+(rx.restricted?'<span class="badge restricted" style="font-size:12px;margin-right:6px"><i class="fas fa-lock"></i>دواء مقيد</span>':'')+
+            '</div><div style="font-size:11px;opacity:0.8;margin-top:4px">'+rx.date+' — '+rx.time+'</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="rx-print-body">'+
+        '<div style="margin-bottom:12px"><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">التشخيص</div><div style="font-weight:600;font-size:13px">'+rx.diag+'</div></div>'+
+        '<div style="font-size:12px;font-weight:700;margin-bottom:10px">الأدوية الموصوفة ('+rx.drugs.length+')</div>'+
+        '<div class="rx-drug-row header"><span>الدواء</span><span>الجرعة</span><span>التكرار</span><span>المدة</span><span>طريقة الاستعمال</span></div>'+
+        rx.drugs.map(function(d,i){
+          return '<div class="rx-drug-row">'+(rx.restricted?'<span style="font-weight:700;color:var(--red)">🔒 '+d.name+'</span>':'<span style="font-weight:700">'+d.name+'</span>')+
+            '<span>'+d.dose+'</span><span>'+d.freq+'</span><span>'+d.duration+'</span><span>'+d.route+'</span></div>';
+        }).join('')+
+        (rx.notes?'<div style="margin-top:12px;font-size:12px;background:rgba(245,158,11,0.08);border-radius:8px;padding:10px"><i class="fas fa-sticky-note" style="color:var(--orange);margin-left:6px"></i><strong>ملاحظات الطبيب:</strong> '+rx.notes+'</div>':'')+
+        (rx.restricted?'<div style="margin-top:12px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:10px;font-size:12px;color:var(--red)"><i class="fas fa-exclamation-triangle" style="margin-left:6px"></i>هذه الوصفة تحتوي على أدوية مقيدة — يجب الإرسال للصيدلية المركزية للحصول على موافقة خاصة</div>':'')+
+      '</div>'+
+    '</div>';
+
+  var footer = '';
+  if (rx.status==='approved') footer += '<button class="btn btn-cyan" onclick="sendRxToCentral('+id+');closeModal(\'modalViewRx\')"><i class="fas fa-paper-plane"></i>إرسال للصيدلية المركزية</button>';
+  footer += '<button class="btn btn-outline" onclick="window.print()"><i class="fas fa-print"></i>طباعة</button>';
+  footer += '<button class="btn btn-outline" onclick="closeModal(\'modalViewRx\')">إغلاق</button>';
+  document.getElementById('rxViewFooter').innerHTML = footer;
+  openModal('modalViewRx');
+}
+
+function approveRx(id) {
+  var rx = PRESCRIPTIONS_SAMPLE.find(function(x){return x.id===id;});
+  if (rx) { rx.status='approved'; saveData(); renderPrescriptions(); if(document.getElementById('sec-newrx').classList.contains('active'))renderNewRx(); renderHome(); showToast('تم قبول الوصفة ✓','success'); }
+}
+function rejectRxPrompt(id) { activeRxId = id; document.getElementById('rejectNote').value=''; openModal('modalRejectRx'); }
+function confirmRejectRx() {
+  var rx = PRESCRIPTIONS_SAMPLE.find(function(x){return x.id===activeRxId;});
+  if (rx) { rx.status='rejected'; rx.notes=(document.getElementById('rejectNote').value||'مرفوض'); saveData(); renderPrescriptions(); if(document.getElementById('sec-newrx').classList.contains('active'))renderNewRx(); renderHome(); closeModal('modalRejectRx'); showToast('تم رفض الوصفة','error'); }
+}
+function reviewRxPrompt(id) { activeRxId = id; document.getElementById('reviewNote').value=''; openModal('modalReviewReq'); }
+function sendReviewRequest() {
+  var rx = PRESCRIPTIONS_SAMPLE.find(function(x){return x.id===activeRxId;});
+  if (rx) { rx.status='review'; rx.notes=(document.getElementById('reviewNote').value||'طلب مراجعة'); saveData(); renderPrescriptions(); if(document.getElementById('sec-newrx').classList.contains('active'))renderNewRx(); closeModal('modalReviewReq'); showToast('تم إرسال طلب المراجعة للطبيب','info'); }
+}
+function sendRxToCentral(id) {
+  var rx = PRESCRIPTIONS_SAMPLE.find(function(x){return x.id===id;});
+  if (!rx) return;
+  rx.status='sent';
+  var r = {id:Date.now(),num:'REQ-2026-'+String(REQUESTS_SAMPLE.length+1).padStart(4,'0'),type:'دواء',
+    item:rx.drugs.map(function(d){return d.name;}).join(' + '),qty:rx.drugs.length,unit:'وصفة',
+    date:new Date().toISOString().split('T')[0],sentDate:new Date().toISOString().split('T')[0],
+    readyDate:'',recvDate:'',status:'sent',priority:'عادي',notes:'مرسل من الوصفة الطبية',patient:rx.patient};
+  REQUESTS_SAMPLE.unshift(r);
+  saveData(); renderPrescriptions(); if(document.getElementById('sec-newrx').classList.contains('active'))renderNewRx(); renderHome();
+  showToast('تم إرسال الوصفة للصيدلية المركزية ✓','success');
+}
+
+/* ===== REQUESTS ===== */
+function renderRequests(filter) {
+  if (filter !== undefined) currentReqFilter = filter;
+  var list = currentReqFilter==='all' ? REQUESTS_SAMPLE : REQUESTS_SAMPLE.filter(function(r){return r.status===currentReqFilter;});
+  document.getElementById('reqBody').innerHTML = list.map(function(r,i){
+    var sc = {sent:'active',delivered:'done',rejected:'low'}[r.status]||'active';
+    var sl = {sent:'تم الإرسال',delivered:'استلام',rejected:'مرفوض'}[r.status]||r.status;
+    var pc = r.priority==='حرج'?'var(--red)':r.priority==='عاجل'?'var(--orange)':'var(--text-muted)';
+    return '<tr>'+
+      '<td style="color:var(--text-muted)">'+(i+1)+'</td>'+
+      '<td style="font-weight:600;color:var(--purple)">'+r.num+'</td>'+
+      '<td><span class="badge '+(r.type==='دواء'?'active':'info')+'">'+r.type+'</span></td>'+
+      '<td style="font-weight:600">'+r.item+'</td>'+
+      '<td>'+r.qty+' '+r.unit+'</td>'+
+      '<td style="color:var(--text-muted)">'+r.date+'</td>'+
+      '<td><span style="font-weight:700;font-size:11px;color:'+pc+'">'+r.priority+'</span></td>'+
+      '<td><span class="badge '+sc+'">'+sl+'</span></td>'+
+      '<td><div class="table-actions">'+
+        '<button class="btn btn-sm btn-outline btn-icon" onclick="showOrderDetail('+r.id+')" title="تفاصيل"><i class="fas fa-eye"></i></button>'+
+        (r.status==='sent'?'<button class="btn btn-sm btn-red btn-icon" onclick="cancelRequest('+r.id+')" title="إلغاء"><i class="fas fa-times"></i></button>':'')+
+      '</div></td></tr>';
+  }).join('') || '<tr><td colspan="9" style="text-align:center;padding:30px;color:var(--text-muted)">لا توجد طلبات</td></tr>';
+}
+
+function filterReq(f,el){document.querySelectorAll('#reqFilterTabs .filter-tab').forEach(function(t){t.classList.remove('active');});if(el)el.classList.add('active');renderRequests(f);}
+
+function showOrderDetail(id) {
+  var r = REQUESTS_SAMPLE.find(function(x){return x.id===id;});
+  if (!r) return;
+  /* Timeline: 3 مراحل فقط */
+  var steps = ['sent','delivered'];
+  var stepLabels = ['تم الإرسال','استلام'];
+  var stepIcons = ['fa-paper-plane','fa-check-circle'];
+  var curIdx = steps.indexOf(r.status);
+  var timeline = '';
+  steps.forEach(function(s,i){
+    var isDone = r.status==='delivered' && i <= curIdx;
+    var isCur  = i === curIdx && r.status !== 'rejected';
+    timeline += (i>0?'<div class="status-line'+(isDone?' done':'')+'" style="min-width:40px"></div>':'')+
+      '<div class="status-step'+(isDone?' done':isCur?' current':'')+'">'+
+        '<div class="status-dot'+(isDone?' done':isCur?' current':'')+'">'+
+          '<i class="fas '+(isDone?'fa-check':stepIcons[i])+'"></i>'+
+        '</div>'+
+        '<div class="status-lbl">'+stepLabels[i]+'</div>'+
+      '</div>';
+  });
+  document.getElementById('orderDetailBody').innerHTML =
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">'+
+      '<div style="background:var(--bg);border-radius:10px;padding:12px"><div style="font-size:10px;color:var(--text-muted);margin-bottom:8px">معلومات الطلب</div>'+
+        '<div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:6px">'+r.num+'</div>'+
+        '<div style="font-size:12px;margin-bottom:4px"><i class="fas fa-box" style="color:var(--purple);margin-left:5px"></i>'+r.item+'</div>'+
+        '<div style="font-size:12px;margin-bottom:4px"><i class="fas fa-hashtag" style="color:var(--purple);margin-left:5px"></i>الكمية: '+r.qty+' '+r.unit+'</div>'+
+        '<div style="font-size:12px;"><i class="fas fa-calendar" style="color:var(--purple);margin-left:5px"></i>'+r.date+'</div>'+
+      '</div>'+
+      '<div style="background:var(--bg);border-radius:10px;padding:12px"><div style="font-size:10px;color:var(--text-muted);margin-bottom:8px">التواريخ</div>'+
+        '<div style="font-size:12px;margin-bottom:4px">📤 الإرسال: '+(r.sentDate||'—')+'</div>'+
+        '<div style="font-size:12px">✅ الاستلام: '+(r.recvDate||'—')+'</div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;margin-bottom:10px">حالة الطلب</div>'+
+      (r.status==='rejected'
+        ?'<div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:12px;color:var(--red);font-size:12px"><i class="fas fa-times-circle" style="margin-left:6px"></i>الطلب مرفوض'+(r.notes?' — '+r.notes:'')+'</div>'
+        :'<div class="status-timeline">'+timeline+'</div>')+
+    '</div>'+
+    (r.notes&&r.status!=='rejected'?'<div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:10px;font-size:12px"><i class="fas fa-sticky-note" style="color:var(--orange);margin-left:6px"></i>'+r.notes+'</div>':'');
+  openModal('modalOrderDetail');
+}
+
+function cancelRequest(id){
+  confirm2('هل تريد إلغاء هذا الطلب؟',function(){
+    var r = REQUESTS_SAMPLE.find(function(x){return x.id===id;});
+    if(r){r.status='rejected';saveData();renderRequests();showToast('تم إلغاء الطلب','error');}
+  });
+}
+
+function submitNewRequest(){
+  var item = document.getElementById('reqItem').value.trim();
+  if(!item){showToast('يرجى إدخال اسم الصنف','error');return;}
+  var r = {
+    id:Date.now(),num:'REQ-2026-'+String(REQUESTS_SAMPLE.length+1).padStart(4,'0'),
+    type:document.getElementById('reqType').value,
+    item:item,qty:parseInt(document.getElementById('reqQty').value)||1,
+    unit:document.getElementById('reqUnit').value||'وحدة',
+    date:new Date().toISOString().split('T')[0],
+    sentDate:new Date().toISOString().split('T')[0],readyDate:'',recvDate:'',
+    status:'sent',priority:document.getElementById('reqPriority').value,
+    notes:document.getElementById('reqNotes').value,
+    patient:document.getElementById('reqPatient').value
+  };
+  REQUESTS_SAMPLE.unshift(r);
+  saveData();closeModal('modalNewRequest');renderHome();
+  showToast('تم إرسال الطلب للصيدلية المركزية ✓','success');
+}
+
+/* ===== DRUGS ===== */
+function renderDrugs(search) {
+  var q = (search || document.getElementById('drugSearch')?.value || '').toLowerCase();
+  var cat = document.getElementById('drugCatFilter')?.value || '';
+  var st = document.getElementById('drugStatusFilter')?.value || '';
+  var list = DRUGS_SAMPLE.filter(function(d){
+    return (!q||d.name.toLowerCase().includes(q)||d.supplier.toLowerCase().includes(q))
+      && (!cat||d.cat===cat) && (!st||d.status===st);
+  });
+  var pct = function(d){return Math.min(100,Math.round(d.qty/Math.max(d.min*2,1)*100));};
+  var bc = function(d){return d.status==='ok'?'var(--green)':d.status==='low'?'var(--orange)':'var(--red)';};
+  document.getElementById('drugsBody').innerHTML = list.map(function(d,i){
+    var sc = d.status==='ok'?'ok':d.status==='low'?'med':'low';
+    var sl = d.status==='ok'?'متوفر':d.status==='low'?'منخفض':'منتهي';
+    return '<tr>'+
+      '<td style="color:var(--text-muted)">'+(i+1)+'</td>'+
+      '<td style="font-weight:700;color:var(--purple)">'+d.name+'</td>'+
+      '<td><span class="badge active">'+d.cat+'</span></td>'+
+      '<td style="font-weight:700;color:'+(d.qty===0?'var(--red)':d.qty<d.min?'var(--orange)':'var(--text-primary)')+'">'+d.qty+'</td>'+
+      '<td style="color:var(--text-muted)">'+d.unit+'</td>'+
+      '<td style="color:var(--text-muted)">'+d.exp+'</td>'+
+      '<td style="color:var(--text-muted)">'+d.min+'</td>'+
+      '<td><div class="drug-stock-bar"><div class="drug-stock-fill" style="width:'+pct(d)+'%;background:'+bc(d)+'"></div></div></td>'+
+      '<td>'+(d.restricted?'<span class="badge restricted"><i class="fas fa-lock"></i>مقيد</span>':'<span class="badge ok">عادي</span>')+'</td>'+
+      '<td><span class="badge '+sc+'">'+sl+'</span></td>'+
+      '<td><div class="table-actions">'+
+        '<button class="btn btn-sm btn-cyan btn-icon" onclick="openDrugMovModal('+d.id+')" title="تسجيل حركة"><i class="fas fa-exchange-alt"></i></button>'+
+        '<button class="btn btn-sm btn-outline btn-icon" onclick="editDrug('+d.id+')" title="تعديل"><i class="fas fa-edit"></i></button>'+
+      '</div></td></tr>';
+  }).join('') || '<tr><td colspan="11" style="text-align:center;padding:30px;color:var(--text-muted)">لا توجد نتائج</td></tr>';
+}
+
+function requestDrug(name, min) {
+  document.getElementById('reqType').value='دواء';
+  document.getElementById('reqItem').value=name;
+  document.getElementById('reqQty').value=min*2;
+  document.getElementById('reqUnit').value='وحدة';
+  document.getElementById('reqPriority').value='عاجل';
+  openModal('modalNewRequest');
+}
+function editDrug(id){ showToast('يمكنك تعديل الجرعات من الطبيب المعالج فقط','warn'); }
+function exportDrugCSV(){
+  var rows=[['#','الدواء','الصنف','الكمية','الوحدة','الانتهاء','المورد','مقيد','الحالة']];
+  DRUGS_SAMPLE.forEach(function(d,i){rows.push([i+1,d.name,d.cat,d.qty,d.unit,d.exp,d.supplier,d.restricted?'نعم':'لا',d.status]);});
+  downloadCSV(rows,'drugs.csv');
+}
+
+/* ===== SUPPLIES ===== */
+function renderSupplies(search) {
+  var q = (search || document.getElementById('supplySearch')?.value || '').toLowerCase();
+  var cat = document.getElementById('supplyCatFilter')?.value || '';
+  var st = document.getElementById('supplyStatusFilter')?.value || '';
+  var list = SUPPLIES_SAMPLE.filter(function(s){
+    return (!q||s.name.toLowerCase().includes(q)) && (!cat||s.cat===cat) && (!st||s.status===st);
+  });
+  var sc2 = {'متوفر':'ok','كمية قليلة':'med','منتهي':'low','قريب الانتهاء':'warn'};
+  document.getElementById('suppliesBody').innerHTML = list.map(function(s,i){
+    return '<tr>'+
+      '<td style="color:var(--text-muted)">'+(i+1)+'</td>'+
+      '<td style="font-weight:700;color:var(--purple)">'+s.name+'</td>'+
+      '<td><span class="badge active">'+s.cat+'</span></td>'+
+      '<td style="font-weight:700;color:'+(s.qty===0?'var(--red)':s.qty<s.min?'var(--orange)':'var(--text-primary)')+'">'+s.qty+'</td>'+
+      '<td style="color:var(--text-muted)">'+s.unit+'</td>'+
+      '<td style="color:var(--text-muted)">'+s.exp+'</td>'+
+      '<td style="color:var(--text-muted);font-size:11px">'+s.lastMov+'</td>'+
+      '<td><span class="badge '+(sc2[s.status]||'ok')+'">'+s.status+'</span></td>'+
+      '<td><div class="table-actions">'+
+        '<button class="btn btn-sm btn-outline btn-icon" onclick="editSupply('+s.id+')" title="تعديل"><i class="fas fa-edit"></i></button>'+
+        '<button class="btn btn-sm btn-red btn-icon" onclick="deleteSupply('+s.id+')" title="حذف"><i class="fas fa-trash"></i></button>'+
+        '<button class="btn btn-sm btn-cyan btn-icon" onclick="openMovModal('+s.id+')" title="حركة"><i class="fas fa-exchange-alt"></i></button>'+
+      '</div></td></tr>';
+  }).join('') || '<tr><td colspan="9" style="text-align:center;padding:30px;color:var(--text-muted)">لا توجد مستلزمات</td></tr>';
+}
+
+function openAddSupplyModal(){
+  document.getElementById('supExp').value=new Date().toISOString().split('T')[0];
+  ['supName','supType','supQty','supUnit','supBatch','supSupplier','supMin','supNotes'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('supCat').value='';
+  document.getElementById('supNewCatGroup').style.display='none';
+  openModal('modalAddSupply');
+}
+document.addEventListener('change',function(e){
+  if(e.target.id==='supCat'){
+    document.getElementById('supNewCatGroup').style.display=(e.target.value==='__new__'?'':'none');
+  }
+});
+function saveNewSupply(){
+  var name=document.getElementById('supName').value.trim();
+  if(!name){showToast('يرجى إدخال اسم المستلزم','error');return;}
+  var cat=document.getElementById('supCat').value;
+  if(cat==='__new__')cat=document.getElementById('supNewCat').value.trim()||'أخرى';
+  var qty=parseInt(document.getElementById('supQty').value)||0;
+  var min=parseInt(document.getElementById('supMin').value)||10;
+  var status='متوفر';
+  if(qty===0)status='منتهي';
+  else if(qty<min)status='كمية قليلة';
+  SUPPLIES_SAMPLE.unshift({
+    id:Date.now(),name:name,cat:cat,
+    qty:qty,unit:document.getElementById('supUnit').value||'قطعة',
+    exp:document.getElementById('supExp').value,min:min,status:status,
+    lastMov:new Date().toISOString().split('T')[0],
+    notes:document.getElementById('supNotes').value
+  });
+  saveData();renderSupplies();closeModal('modalAddSupply');
+  showToast('تمت إضافة المستلزم ✓','success');
+}
+function editSupply(id){
+  var s=SUPPLIES_SAMPLE.find(function(x){return x.id===id;});
+  if(!s)return;
+  document.getElementById('supName').value=s.name;
+  document.getElementById('supCat').value=s.cat||'أخرى';
+  document.getElementById('supQty').value=s.qty;
+  document.getElementById('supUnit').value=s.unit;
+  document.getElementById('supExp').value=s.exp;
+  document.getElementById('supMin').value=s.min;
+  openModal('modalAddSupply');
+}
+function deleteSupply(id){
+  confirm2('هل تريد حذف هذا المستلزم؟',function(){
+    SUPPLIES_SAMPLE=SUPPLIES_SAMPLE.filter(function(s){return s.id!==id;});
+    saveData();renderSupplies();showToast('تم الحذف','error');
+  });
+}
+function exportSupplyCSV(){
+  var rows=[['#','المستلزم','الفئة','الكمية','الوحدة','الانتهاء','الحالة']];
+  SUPPLIES_SAMPLE.forEach(function(s,i){rows.push([i+1,s.name,s.cat,s.qty,s.unit,s.exp,s.status]);});
+  downloadCSV(rows,'supplies.csv');
+}
+
+function openMovModal(supId){
+  var sel=document.getElementById('movItem');
+  sel.innerHTML=SUPPLIES_SAMPLE.map(function(s){return '<option value="'+s.id+'">'+s.name+'</option>';}).join('');
+  if(supId)sel.value=supId;
+  document.getElementById('movDate').value=new Date().toISOString().split('T')[0];
+  document.getElementById('movQty').value='';document.getElementById('movDept').value='';
+  document.getElementById('movNotes').value='';
+  openModal('modalMovement');
+}
+function saveMovement(){
+  var qty=parseInt(document.getElementById('movQty').value)||0;
+  if(qty<=0){showToast('يرجى إدخال كمية صحيحة','error');return;}
+  var supId=parseInt(document.getElementById('movItem').value);
+  var type=document.getElementById('movType').value;
+  var sup=SUPPLIES_SAMPLE.find(function(s){return s.id===supId;});
+  if(sup){
+    if(type==='دخول')sup.qty+=qty;
+    else if(type==='خروج'||type==='تحويل'){
+      if(sup.qty<qty){showToast('الكمية المتاحة أقل من المطلوب','error');return;}
+      sup.qty-=qty;
+    }
+    if(sup.qty===0)sup.status='منتهي';
+    else if(sup.qty<sup.min)sup.status='كمية قليلة';
+    else sup.status='متوفر';
+    sup.lastMov=new Date().toISOString().split('T')[0];
+  }
+  MOVEMENTS.push({
+    id:Date.now(),type:type,supId:supId,supName:sup?sup.name:'',
+    qty:qty,dept:document.getElementById('movDept').value,
+    resp:document.getElementById('movResp').value,
+    date:document.getElementById('movDate').value,
+    notes:document.getElementById('movNotes').value
+  });
+  saveData();renderSupplies();closeModal('modalMovement');
+  showToast('تم تسجيل الحركة ✓','success');
+}
+
+/* ===== SENT ORDERS ===== */
+function renderSentOrders(){
+  var stats={sent:0,delivered:0,rejected:0};
+  REQUESTS_SAMPLE.forEach(function(r){if(stats[r.status]!==undefined)stats[r.status]++;});
+  document.getElementById('sentOrdersStats').innerHTML = [
+    {lbl:'إجمالي الطلبات',val:REQUESTS_SAMPLE.length,c:'var(--purple)'},
+    {lbl:'تم الإرسال',val:stats.sent,c:'var(--primary)'},
+    {lbl:'استلام',val:stats.delivered,c:'var(--green)'},
+    {lbl:'مرفوض',val:stats.rejected,c:'var(--red)'}
+  ].map(function(s){
+    return '<div class="order-stat"><div class="val" style="color:'+s.c+'">'+s.val+'</div><div class="lbl">'+s.lbl+'</div></div>';
+  }).join('');
+  var sc={'sent':'active','delivered':'done','rejected':'low'};
+  var sl={'sent':'تم الإرسال','delivered':'استلام','rejected':'مرفوض'};
+  document.getElementById('sentOrdersBody').innerHTML = REQUESTS_SAMPLE.map(function(r,i){
+    return '<tr>'+
+      '<td style="color:var(--text-muted)">'+(i+1)+'</td>'+
+      '<td style="font-weight:600;color:var(--purple)">'+r.num+'</td>'+
+      '<td><span class="badge '+(r.type==='دواء'?'active':'info')+'">'+r.type+'</span></td>'+
+      '<td>'+r.item+'</td><td>'+r.qty+' '+r.unit+'</td>'+
+      '<td style="color:var(--text-muted)">'+r.sentDate+'</td>'+
+      '<td style="color:var(--text-muted)">'+(r.recvDate||'—')+'</td>'+
+      '<td><span class="badge '+(sc[r.status]||'active')+'">'+(sl[r.status]||r.status)+'</span></td>'+
+      '<td><div class="table-actions">'+
+        '<button class="btn btn-sm btn-outline btn-icon" onclick="showOrderDetail('+r.id+')" title="تفاصيل"><i class="fas fa-eye"></i></button>'+
+      '</div></td></tr>';
+  }).join('') || '<tr><td colspan="9" style="text-align:center;padding:30px;color:var(--text-muted)">لا توجد طلبات</td></tr>';
+}
+
+/* ===== ALERTS ===== */
+function renderAlerts(){
+  var unread=ALERTS_DATA.filter(function(a){return !a.read;}).length;
+  document.getElementById('alertsSubtitle').textContent=unread+' تنبيه غير مقروء — مصلحة '+currentService;
+  document.getElementById('alertsFullList').innerHTML = ALERTS_DATA.map(function(a){
+    return '<div class="dash-card" style="margin-bottom:10px;opacity:'+(a.read?0.6:1)+';animation:fadeIn 0.3s ease">'+
+      '<div class="dash-card-body" style="padding:12px 16px">'+
+        '<div style="display:flex;gap:12px;align-items:center">'+
+          '<div class="alert-icon '+a.type+'"><i class="fas '+a.icon+'"></i></div>'+
+          '<div style="flex:1">'+
+            '<div style="font-weight:700;font-size:13px;'+(a.read?'opacity:0.6':'')+'">'+a.title+'</div>'+
+            '<div style="font-size:11px;color:var(--text-muted);margin-top:2px">'+a.msg+'</div>'+
+            '<div style="font-size:10px;color:var(--text-muted);margin-top:3px"><i class="fas fa-clock"></i> '+a.time+' — '+a.category+'</div>'+
+          '</div>'+
+          (!a.read?'<button class="btn btn-sm btn-outline" onclick="markAlertRead('+a.id+')"><i class="fas fa-check"></i>قراءة</button>':'<span class="badge ok">مقروء</span>')+
+        '</div>'+
+      '</div></div>';
+  }).join('');
+}
+function markAlertRead(id){
+  var a=ALERTS_DATA.find(function(x){return x.id===id;});
+  if(a){a.read=true;renderAlerts();var u=ALERTS_DATA.filter(function(x){return !x.read;}).length;var ba=document.getElementById('badge-alerts');if(ba)ba.textContent=u;document.getElementById('notifBadge').textContent=u;}
+}
+function markAllAlertsRead(){ALERTS_DATA.forEach(function(a){a.read=true;});renderAlerts();var ba=document.getElementById('badge-alerts');if(ba)ba.textContent=0;document.getElementById('notifBadge').textContent=0;showToast('تم تحديد الكل كمقروء ✓','success');}
+
+/* ===== STATISTICS ===== */
+function renderStatsKPI(){
+  document.getElementById('statsKPIGrid').innerHTML = [
+    {cls:'purple',icon:'fa-file-medical',val:PRESCRIPTIONS_SAMPLE.length,lbl:'إجمالي الوصفات'},
+    {cls:'green',icon:'fa-check-circle',val:PRESCRIPTIONS_SAMPLE.filter(function(r){return r.status==='approved';}).length,lbl:'وصفات مقبولة'},
+    {cls:'red',icon:'fa-times-circle',val:PRESCRIPTIONS_SAMPLE.filter(function(r){return r.status==='rejected';}).length,lbl:'وصفات مرفوضة'},
+    {cls:'cyan',icon:'fa-shopping-cart',val:REQUESTS_SAMPLE.length,lbl:'إجمالي الطلبات'},
+    {cls:'orange',icon:'fa-pills',val:DRUGS_SAMPLE.length,lbl:'إجمالي الأدوية'},
+    {cls:'blue',icon:'fa-box-open',val:SUPPLIES_SAMPLE.length,lbl:'إجمالي المستلزمات'},
+  ].map(function(c){
+    return '<div class="stat-card '+c.cls+'">'+
+      '<div class="card-icon"><i class="fas '+c.icon+'"></i></div>'+
+      '<div class="card-val">'+c.val+'</div>'+
+      '<div class="card-label">'+c.lbl+'</div>'+
+    '</div>';
+  }).join('');
+}
+var chartInstances={};
+function renderCharts(){
+  var days=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  function mkChart(id,cfg){
+    if(chartInstances[id]){chartInstances[id].destroy();}
+    var el=document.getElementById(id);
+    if(el)chartInstances[id]=new Chart(el,cfg);
+  }
+  mkChart('chartWeeklyRx',{type:'line',data:{labels:days,datasets:[
+    {label:'وصفات',data:[3,5,4,7,6,2,5],borderColor:'var(--purple)',tension:0.4,fill:true,backgroundColor:'rgba(139,92,246,0.08)'},
+    {label:'مقبولة',data:[3,4,3,6,5,2,4],borderColor:'var(--green)',tension:0.4}
+  ]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true}}}});
+
+  var cats={};DRUGS_SAMPLE.forEach(function(d){cats[d.cat]=(cats[d.cat]||0)+1;});
+  mkChart('chartDrugCat',{type:'doughnut',data:{labels:Object.keys(cats),datasets:[{data:Object.values(cats),backgroundColor:['#8b5cf6','#3b82f6','#10b981','#f59e0b','#ef4444','#06b6d4','#ec4899'],borderWidth:0}]},options:{responsive:true,plugins:{legend:{position:'bottom'}}}});
+
+  var top=DRUGS_SAMPLE.slice().sort(function(a,b){return b.qty-a.qty;}).slice(0,6);
+  mkChart('chartTopDrugs',{type:'bar',data:{labels:top.map(function(d){return d.name;}),datasets:[{label:'الكمية',data:top.map(function(d){return d.qty;}),backgroundColor:'rgba(139,92,246,0.7)'}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}}});
+
+  var rs={};REQUESTS_SAMPLE.forEach(function(r){rs[r.status]=(rs[r.status]||0)+1;});
+  var sln={'sent':'مرسل','delivered':'استلام','rejected':'مرفوض'};
+  mkChart('chartReqStatus',{type:'pie',data:{labels:Object.keys(rs).map(function(k){return sln[k]||k;}),datasets:[{data:Object.values(rs),backgroundColor:['#f59e0b','#3b82f6','#06b6d4','#10b981','#059669','#ef4444'],borderWidth:0}]},options:{responsive:true,plugins:{legend:{position:'bottom'}}}});
+}
+
+/* ===== REPORTS ===== */
+function generateReport(type){
+  var t={daily:'التقرير اليومي',monthly:'التقرير الشهري',rx:'تقرير الوصفات',drugs:'تقرير الأدوية',supplies:'تقرير المستلزمات',consumption:'تقرير الاستهلاك'}[type];
+  showToast('جاري توليد '+t+' ...','info');
+  setTimeout(function(){showToast(t+' جاهز للطباعة ✓','success');},1200);
+}
+
+/* ===== SETTINGS ===== */
+function saveSettings(){showToast('تم حفظ الإعدادات ✓','success');}
+
+/* ===== NEW PATIENT ===== */
+function saveNewPatient(){
+  var name=document.getElementById('pName').value.trim();
+  if(!name){showToast('يرجى إدخال اسم المريض','error');return;}
+  PATIENTS_SAMPLE.unshift({
+    id:Date.now(),name:name,
+    file:document.getElementById('pFile').value||'P-2026-0'+Date.now(),
+    age:parseInt(document.getElementById('pAge').value)||0,
+    gender:document.getElementById('pGender').value,
+    admit:document.getElementById('pAdmit').value||new Date().toISOString().split('T')[0],
+    room:document.getElementById('pRoom').value,
+    doctor:document.getElementById('pDoctor').value,
+    status:document.getElementById('pStatus').value,
+    diag:document.getElementById('pDiag').value,
+    notes:document.getElementById('pNotes').value
+  });
+  saveData();renderPatients();closeModal('modalAddPatient');
+  showToast('تمت إضافة المريض ✓','success');
+}
+
+/* ===== NOTIFICATIONS ===== */
+function renderNotifDropdown(){
+  document.getElementById('notifList').innerHTML = ALERTS_DATA.filter(function(a){return !a.read;}).slice(0,5).map(function(a){
+    return '<div class="notif-item '+a.type+'" onclick="navTo(\'alerts\');closeNotifDropdown()">'+
+      '<div class="notif-icon"><i class="fas '+a.icon+'"></i></div>'+
+      '<div class="notif-item-text"><h5>'+a.title+'</h5><p>'+a.time+'</p></div></div>';
+  }).join('') || '<div style="text-align:center;padding:18px;font-size:12px;color:var(--text-muted)">لا توجد إشعارات جديدة</div>';
+}
+function toggleNotifDropdown(){document.getElementById('notifDropdown').classList.toggle('open');renderNotifDropdown();}
+function closeNotifDropdown(){document.getElementById('notifDropdown').classList.remove('open');}
+function markAllNotifRead(){markAllAlertsRead();closeNotifDropdown();}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#notifBtn')&&!e.target.closest('#notifDropdown'))closeNotifDropdown();
+});
+
+/* ===== THEME ===== */
+function toggleTheme(){
+  var d=document.documentElement;
+  var isDark=d.getAttribute('data-theme')==='dark';
+  d.setAttribute('data-theme',isDark?'':'dark');
+  document.getElementById('themeBtn').innerHTML='<i class="fas '+(isDark?'fa-moon':'fa-sun')+'"></i>';
+  var t=document.getElementById('darkModeToggle');
+  if(t)t.checked=!isDark;
+  localStorage.setItem('ps_theme',isDark?'':'dark');
+}
+
+/* ===== LANGUAGE ===== */
+function toggleLang(){
+  currentLang=currentLang==='ar'?'fr':'ar';
+  document.getElementById('langBtn').textContent=currentLang==='ar'?'FR':'AR';
+  var t=document.getElementById('langToggle');if(t)t.checked=currentLang==='fr';
+  document.querySelectorAll('[data-ar]').forEach(function(el){
+    el.textContent=currentLang==='ar'?el.getAttribute('data-ar'):el.getAttribute('data-fr');
+  });
+  showToast(currentLang==='ar'?'تم التبديل للعربية':'Basculé en français','info');
+}
+
+/* ===== MODAL HELPERS ===== */
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(function(ov){
+  ov.addEventListener('click',function(e){if(e.target===ov)ov.classList.remove('open');});
+});
+
+/* ===== CONFIRM DIALOG ===== */
+function confirm2(msg, cb, icon){
+  document.getElementById('confirmMsg').textContent=msg;
+  document.getElementById('confirmIcon').textContent=icon||'❓';
+  confirmCallback=cb;
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+function runConfirm(){if(confirmCallback)confirmCallback();closeConfirm();}
+function closeConfirm(){document.getElementById('confirmOverlay').classList.remove('open');confirmCallback=null;}
+
+/* ===== TOAST ===== */
+function showToast(msg,type){
+  type=type||'info';
+  var icons={success:'fa-check-circle',error:'fa-times-circle',info:'fa-info-circle',warn:'fa-exclamation-triangle'};
+  var t=document.createElement('div');
+  t.className='toast '+type;
+  t.innerHTML='<i class="fas '+icons[type]+'"></i><span>'+msg+'</span>';
+  document.getElementById('toastWrap').appendChild(t);
+  setTimeout(function(){t.style.animation='none';t.style.opacity='0';t.style.transform='translateX(-20px)';setTimeout(function(){t.remove();},400);},3500);
+}
+
+/* ===== CLOCK ===== */
+function updateClock(){
+  var now=new Date();
+  var t=now.toLocaleTimeString('ar-DZ');
+  var tc=document.getElementById('topbarClock');if(tc)tc.textContent=t;
+  var dc=document.getElementById('dashClock');if(dc)dc.textContent=t;
+  var dd=document.getElementById('dashDate');
+  if(dd)dd.textContent=now.toLocaleDateString('ar-DZ',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+}
+
+/* ===== GLOBAL SEARCH ===== */
+function globalSearch(q){
+  if(!q)return;
+  q=q.toLowerCase();
+  var found=PATIENTS_SAMPLE.find(function(p){return p.name.toLowerCase().includes(q);});
+  if(found){navTo('patients');return;}
+  var foundRx=PRESCRIPTIONS_SAMPLE.find(function(r){return r.patient.toLowerCase().includes(q)||r.doctor.toLowerCase().includes(q);});
+  if(foundRx){navTo('prescriptions');return;}
+}
+
+/* ===== CSV ===== */
+function downloadCSV(rows,filename){
+  var csv=rows.map(function(r){return r.join(',');}).join('\n');
+  var a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download=filename;a.click();
+  showToast('تم تصدير '+filename+' ✓','success');
+}
+
+/* ===== SERVICE DROPDOWN ===== */
+var ALL_SERVICES = [
+  { group:'الاستعجالات والطوارئ', icon:'fa-ambulance', items:[
+    'الاستعجالات والجراحة',
+    'الإنعاش',
+  ]},
+  { group:'الجراحة', icon:'fa-procedures', items:[
+    'الجراحة العامة',
+    'جراحة الأطفال',
+    'جراحة الأعصاب',
+    'جراحة المسالك البولية',
+    'جراحة العيون',
+    'جراحة الفك والأسنان',
+  ]},
+  { group:'أمراض الباطنة والقلب', icon:'fa-heartbeat', items:[
+    'أمراض القلب والشرايين',
+    'أمراض القلب',
+    'أمراض الضغط',
+    'الطب الداخلي',
+    'العصبية المركزية',
+  ]},
+  { group:'أمراض الأعضاء', icon:'fa-lungs', items:[
+    'أمراض الكلى',
+    'أمراض المعدة',
+    'أمراض الصدر والرئة',
+    'أمراض الدم',
+    'أمراض السكري والغدد',
+  ]},
+  { group:'أمراض الأطفال والنساء', icon:'fa-baby', items:[
+    'أمراض الأطفال',
+    'العفن البريتاني',
+  ]},
+  { group:'الأمراض الخاصة', icon:'fa-virus', items:[
+    'الأمراض المعدية',
+    'الأمراض العقلية',
+    'طب الأورام',
+    'أمراض الجلد',
+    'أمراض العظام',
+    'الصحة الحركية',
+  ]},
+  { group:'الطب التخصصي', icon:'fa-stethoscope', items:[
+    'طب العمل',
+    'الطب الشرعي',
+  ]},
+];
+
+// Flat list with icon reference
+var FLAT_SERVICES = [];
+ALL_SERVICES.forEach(function(g){
+  g.items.forEach(function(name){
+    FLAT_SERVICES.push({ name:name, group:g.group, icon:g.icon });
+  });
+});
+
+/* ===== ADD DRUG ===== */
+function openAddDrugModal(){
+  ['drgName','drgQty','drgUnit','drgSupplier'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('drgCat').value='مضادات حيوية';
+  document.getElementById('drgRestricted').value='false';
+  document.getElementById('drgMin').value='10';
+  document.getElementById('drgExp').value=new Date().toISOString().split('T')[0];
+  openModal('modalAddDrug');
+}
+function saveNewDrug(){
+  var name=document.getElementById('drgName').value.trim();
+  if(!name){showToast('يرجى إدخال اسم الدواء','error');return;}
+  var qty=parseInt(document.getElementById('drgQty').value)||0;
+  var min=parseInt(document.getElementById('drgMin').value)||10;
+  var status='ok';
+  if(qty===0)status='out';
+  else if(qty<min)status='low';
+  DRUGS_SAMPLE.unshift({
+    id:Date.now(),name:name,
+    cat:document.getElementById('drgCat').value,
+    qty:qty,unit:document.getElementById('drgUnit').value||'وحدة',
+    exp:document.getElementById('drgExp').value,min:min,
+    supplier:document.getElementById('drgSupplier').value||'—',
+    restricted:document.getElementById('drgRestricted').value==='true',
+    status:status
+  });
+  saveData();renderDrugs();renderHome();closeModal('modalAddDrug');
+  showToast('تمت إضافة الدواء ✓','success');
+}
+
+/* ===== DRUG MOVEMENT ===== */
+function openDrugMovModal(drugId){
+  var sel=document.getElementById('drgMovItem');
+  sel.innerHTML=DRUGS_SAMPLE.map(function(d){return '<option value="'+d.id+'">'+d.name+'</option>';}).join('');
+  if(drugId)sel.value=drugId;
+  document.getElementById('drgMovDate').value=new Date().toISOString().split('T')[0];
+  document.getElementById('drgMovQty').value='';
+  document.getElementById('drgMovDept').value='';
+  document.getElementById('drgMovNotes').value='';
+  openModal('modalDrugMovement');
+}
+function saveDrugMovement(){
+  var qty=parseInt(document.getElementById('drgMovQty').value)||0;
+  if(qty<=0){showToast('يرجى إدخال كمية صحيحة','error');return;}
+  var drugId=parseInt(document.getElementById('drgMovItem').value);
+  var type=document.getElementById('drgMovType').value;
+  var drug=DRUGS_SAMPLE.find(function(d){return d.id===drugId;});
+  if(drug){
+    if(type==='دخول')drug.qty+=qty;
+    else if(type==='خروج'||type==='تحويل'){
+      if(drug.qty<qty){showToast('الكمية المتاحة أقل من المطلوب','error');return;}
+      drug.qty-=qty;
+    }
+    if(drug.qty===0)drug.status='out';
+    else if(drug.qty<drug.min)drug.status='low';
+    else drug.status='ok';
+  }
+  saveData();renderDrugs();renderHome();closeModal('modalDrugMovement');
+  showToast('تم تسجيل حركة الدواء ✓','success');
+}
+
+
+/* ===== PRINT ===== */
+function printRxList() {
+  window.print();
+}
+
+/* ===== SERVICE PICKER SCREEN ===== */
+function spBuildServices(filter) {
+  var q = (filter||'').trim().toLowerCase();
+  var html = '';
+  var totalCount = 0;
+
+  ALL_SERVICES.forEach(function(g) {
+    var items = q
+      ? g.items.filter(function(n){ return n.toLowerCase().includes(q); })
+      : g.items;
+    if (!items.length) return;
+    totalCount += items.length;
+    html += '<div class="sp-group-title"><i class="fas '+g.icon+'" style="color:var(--purple);font-size:11px"></i>'+g.group+'</div>';
+    html += '<div class="sp-services-grid">';
+    items.forEach(function(name) {
+      var escaped = name.replace(/'/g,"\\'");
+      var found = FLAT_SERVICES.find(function(s){ return s.name === name; });
+      var icon = found ? found.icon : g.icon;
+      html += '<button class="sp-service-btn" onclick="spSelectService(\''+escaped+'\')">' +
+        '<div class="sp-svc-icon"><i class="fas '+icon+'"></i></div>' +
+        '<span>'+name+'</span>' +
+        '</button>';
+    });
+    html += '</div>';
+  });
+
+  if (!totalCount) {
+    html = '<div class="sp-no-results"><i class="fas fa-search-minus"></i>لا توجد نتائج لـ "'+filter+'"</div>';
+  }
+
+  document.getElementById('spServiceBody').innerHTML = html;
+}
+
+function spFilterServices(q) {
+  spBuildServices(q);
+}
+
+function spSelectService(name) {
+  currentService = name;
+  // Update sidebar
+  document.getElementById('sidebarServiceName').textContent = name;
+  var found = FLAT_SERVICES.find(function(s){ return s.name === name; });
+  if (found) {
+    document.getElementById('sidebarServiceIcon').innerHTML = '<i class="fas '+found.icon+'"></i>';
+  }
+  // Update topbar subtitle
+  var sub = document.getElementById('topbarSub');
+  if (sub) sub.textContent = 'مرحباً — ' + name;
+  var homeSub = document.getElementById('homeServiceSubtitle');
+  if (homeSub) homeSub.textContent = name + ' — صيدلي المصلحة';
+  // Hide picker, show app
+  document.getElementById('servicePickerScreen').classList.add('hidden');
+  var layout = document.getElementById('appLayout');
+  layout.style.display = 'flex';
+  layout.style.animation = 'fadeIn 0.4s ease';
+  // Boot app
+  changeService(name);
+  renderHome();
+}
+
+/* ===== LOGOUT ===== */
+function confirmLogout(){
+  confirm2('هل تريد تسجيل الخروج من النظام؟',function(){
+    showToast('جاري تسجيل الخروج...','info');
+    setTimeout(function(){window.location.reload();},1200);
+  },'🚪');
+}
+
+/* ===== INIT ===== */
+function init(){
+  loadData();
+  var theme=localStorage.getItem('ps_theme');
+  if(theme==='dark'){document.documentElement.setAttribute('data-theme','dark');document.getElementById('themeBtn').innerHTML='<i class="fas fa-sun"></i>';}
+  setInterval(updateClock,1000);
+  updateClock();
+  renderNotifDropdown();
+  if(window.innerWidth<=768)document.getElementById('hamburger').style.display='flex';
+  // Build picker list and show it
+  spBuildServices('');
+}
+document.addEventListener('DOMContentLoaded',init);
+</script>
+<script>
+(function pharmacyRealLoader() {
+    var PHARMACY_API_URL = 'pharmacy_api.php?action=list_new';
+
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function splitDateTime(ts) {
+        // "YYYY-MM-DD HH:MM:SS" → {date:'YYYY-MM-DD', time:'HH:MM'}
+        if (!ts) return { date: '', time: '' };
+        var parts = String(ts).split(' ');
+        var time = parts[1] ? parts[1].slice(0, 5) : '';
+        return { date: parts[0] || '', time: time };
+    }
+
+    function mapRow(row) {
+        var dt = splitDateTime(row.created_at);
+        var drugs = Array.isArray(row.medicines) ? row.medicines.map(function (m) {
+            return {
+                name:     m.name || m.medicament || '—',
+                dose:     m.dose || '',
+                freq:     m.freq || '',
+                duration: m.duration || m.duree || '',
+                route:    m.route || ''
+            };
+        }) : [];
+        return {
+            _real:   true,
+            id:      100000 + parseInt(row.id, 10),   // معرّف فريد لا يتعارض مع الـ demo
+            realId:  parseInt(row.id, 10),
+            pid:     parseInt(row.patient_id, 10),
+            patient: row.patient_name || ('مريض #' + row.patient_id),
+            doctor:  row.doctor_name || '—',
+            service: row.service || '—',
+            date:    row.rx_date || dt.date,
+            time:    row.rx_time || dt.time,
+            // الحالة pending في القاعدة → نعرضها كـ 'new' في تبويب "جديدة"
+            status:  (row.status === 'pending' || !row.status) ? 'new' : row.status,
+            diag:    row.diagnostic || '—',
+            restricted: false,
+            notes:   row.notes || '',
+            drugs:   drugs
+        };
+    }
+
+    function loadRealPrescriptions() {
+        if (typeof PRESCRIPTIONS_SAMPLE === 'undefined') return;
+
+        fetch(PHARMACY_API_URL, { credentials: 'same-origin' })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                if (!res || !res.success || !Array.isArray(res.data)) return;
+
+                // 1) أزل الصفوف الحقيقية المضافة سابقاً (تفادي التكرار)
+                for (var i = PRESCRIPTIONS_SAMPLE.length - 1; i >= 0; i--) {
+                    if (PRESCRIPTIONS_SAMPLE[i]._real) PRESCRIPTIONS_SAMPLE.splice(i, 1);
+                }
+                // 2) أزل بيانات الـ demo ذات الحالة 'new' حتى لا تظهر وصفات وهمية
+                for (var j = PRESCRIPTIONS_SAMPLE.length - 1; j >= 0; j--) {
+                    if (!PRESCRIPTIONS_SAMPLE[j]._real && PRESCRIPTIONS_SAMPLE[j].status === 'new') {
+                        PRESCRIPTIONS_SAMPLE.splice(j, 1);
+                    }
+                }
+                // 3) أضف الوصفات الحقيقية لأعلى القائمة
+                res.data.forEach(function (row) {
+                    PRESCRIPTIONS_SAMPLE.unshift(mapRow(row));
+                });
+
+                // 4) أعد رسم ما يلزم دون كسر أي شيء
+                if (typeof renderNewRx === 'function'
+                    && document.getElementById('sec-newrx')
+                    && document.getElementById('sec-newrx').classList.contains('active')) {
+                    renderNewRx();
+                }
+                if (typeof renderHome === 'function') renderHome();
+
+                // حدّث العدادات
+                var newCount = PRESCRIPTIONS_SAMPLE.filter(function (r) { return r.status === 'new'; }).length;
+                var brx = document.getElementById('badge-rx');
+                if (brx) brx.textContent = newCount;
+                var nc = document.getElementById('newrxCount');
+                if (nc) nc.textContent = newCount;
+            })
+            .catch(function (e) { console.warn('[PHARMACY] load real prescriptions failed:', e); });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // مهلة بسيطة لضمان أن loadData/renderHome الأصلية اشتغلت أولاً
+        setTimeout(loadRealPrescriptions, 150);
+    });
+    window.loadRealPrescriptions = loadRealPrescriptions;
+})();
+</script>
+
+</body>
+</html>

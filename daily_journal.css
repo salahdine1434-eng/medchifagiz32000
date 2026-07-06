@@ -1,0 +1,715 @@
+/* ================================================================
+   MedChifaGiz — daily_journal.css
+   Styles for "يومياتي" Daily Health Tracker ONLY
+   RTL | Responsive | Arabic Medical Design
+   ================================================================ */
+
+/* ── Shared Section Card ──────────────────────────────────────── */
+.DJ-CARD {
+  background: rgba(255,255,255,.97);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 4px 16px rgba(0,77,180,.1);
+  margin-bottom: 11px;
+}
+.DJ-STITLE {
+  font-size: 11px;
+  font-weight: 800;
+  color: #00b4d8;
+  letter-spacing: .4px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1.5px solid rgba(0,180,216,.12);
+}
+.DJ-STITLE i { font-size: 12px; }
+
+/* ── Date Badge ───────────────────────────────────────────────── */
+.DJ-DATE-BADGE {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg,rgba(6,214,160,.09),rgba(0,180,216,.09));
+  border-radius: 11px;
+  padding: 9px 13px;
+  margin-bottom: 11px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0077b6;
+}
+.DJ-DATE-BADGE span { color: #9ca3af; font-weight: 600; }
+
+/* ── Mood Tracker ─────────────────────────────────────────────── */
+.DJ-MOOD-ROW {
+  display: flex;
+  gap: 5px;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.DJ-MOOD-BTN {
+  flex: 1;
+  padding: 8px 3px 7px;
+  border-radius: 11px;
+  border: 2px solid rgba(0,180,216,.15);
+  background: rgba(0,180,216,.04);
+  cursor: pointer;
+  text-align: center;
+  font-family: 'Cairo', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: #6b7280;
+  transition: all .18s;
+  -webkit-tap-highlight-color: transparent;
+}
+.DJ-MOOD-BTN .DJ-EMO { font-size: 22px; display: block; margin-bottom: 3px; }
+.DJ-MOOD-BTN:hover   { border-color: rgba(0,180,216,.4); transform: translateY(-2px); }
+.DJ-MOOD-BTN.DJ-SEL  { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,180,216,.22); }
+.DJ-MOOD-BTN[data-mood="5"].DJ-SEL { border-color:#06d6a0; background:rgba(6,214,160,.11); color:#0a9e77; }
+.DJ-MOOD-BTN[data-mood="4"].DJ-SEL { border-color:#00b4d8; background:rgba(0,180,216,.11); color:#0077b6; }
+.DJ-MOOD-BTN[data-mood="3"].DJ-SEL { border-color:#f59e0b; background:rgba(245,158,11,.09); color:#b45309; }
+.DJ-MOOD-BTN[data-mood="2"].DJ-SEL { border-color:#f97316; background:rgba(249,115,22,.09); color:#c2410c; }
+.DJ-MOOD-BTN[data-mood="1"].DJ-SEL { border-color:#ef4444; background:rgba(239,68,68,.09); color:#b91c1c; }
+
+/* ── Vital Signs ──────────────────────────────────────────────── */
+.DJ-VITALS-GRID {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.DJ-VITAL {
+  background: rgba(0,180,216,.04);
+  border: 1.5px solid rgba(0,180,216,.13);
+  border-radius: 11px;
+  padding: 9px 10px;
+}
+.DJ-VITAL-LBL {
+  font-size: 10px;
+  font-weight: 700;
+  color: #9ca3af;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.DJ-VITAL-LBL i { color: #00b4d8; font-size: 11px; }
+.DJ-VITAL-IN {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-family: 'Cairo', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  color: #1a2340;
+  outline: none;
+  padding: 0;
+}
+.DJ-VITAL-UNIT { font-size: 9px; color: #9ca3af; font-weight: 600; }
+.DJ-VITAL.WARN  { border-color: rgba(245,158,11,.45); background: rgba(245,158,11,.05); }
+.DJ-VITAL.DANGER{ border-color: rgba(239,68,68,.45); background: rgba(239,68,68,.05); }
+.DJ-VITAL.OK    { border-color: rgba(6,214,160,.4);  background: rgba(6,214,160,.05); }
+
+/* ── Symptoms Checkboxes ──────────────────────────────────────── */
+.DJ-SYM-GRID {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.DJ-SYM {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 9px;
+  border-radius: 9px;
+  border: 1.5px solid rgba(0,180,216,.12);
+  background: rgba(0,180,216,.03);
+  cursor: pointer;
+  transition: all .15s;
+  font-size: 11px;
+  font-weight: 600;
+  color: #4a5568;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.DJ-SYM:hover { border-color: rgba(0,180,216,.35); background: rgba(0,180,216,.07); }
+.DJ-SYM input[type="checkbox"] { display: none; }
+.DJ-SYM-CHK {
+  width: 16px; height: 16px;
+  border-radius: 5px;
+  border: 2px solid rgba(0,180,216,.3);
+  background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all .15s;
+  font-size: 9px; color: #fff;
+}
+.DJ-SYM.DJ-SEL .DJ-SYM-CHK { background: #ef4444; border-color: #ef4444; }
+.DJ-SYM.DJ-SEL .DJ-SYM-CHK::after { content: '✓'; }
+.DJ-SYM.DJ-SEL { border-color: rgba(239,68,68,.3); background: rgba(239,68,68,.05); color: #b91c1c; }
+
+/* ── Pain Slider ──────────────────────────────────────────────── */
+.DJ-PAIN-ROW {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+.DJ-PAIN-SLIDER {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(90deg,#06d6a0,#f59e0b,#ef4444);
+  outline: none;
+  cursor: pointer;
+  direction: ltr;
+}
+.DJ-PAIN-SLIDER::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #00b4d8;
+  box-shadow: 0 2px 8px rgba(0,180,216,.35);
+  cursor: pointer;
+}
+.DJ-PAIN-SLIDER::-moz-range-thumb {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #00b4d8;
+  box-shadow: 0 2px 8px rgba(0,180,216,.35);
+  cursor: pointer;
+}
+.DJ-PAIN-VAL {
+  font-size: 22px;
+  font-weight: 900;
+  color: #1a2340;
+  min-width: 28px;
+  text-align: center;
+}
+.DJ-PAIN-LABELS {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: #9ca3af;
+  margin-top: 3px;
+}
+
+/* ── Medication / Activity / Nutrition Buttons ────────────────── */
+.DJ-BTN-GROUP {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.DJ-OPT-BTN {
+  flex: 1;
+  min-width: 70px;
+  padding: 8px 6px;
+  border-radius: 9px;
+  border: 2px solid rgba(0,180,216,.15);
+  background: rgba(0,180,216,.04);
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #4a5568;
+  text-align: center;
+  transition: all .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.DJ-OPT-BTN:hover { border-color: rgba(0,180,216,.4); }
+.DJ-OPT-BTN.DJ-SEL { background: rgba(0,180,216,.12); border-color: #00b4d8; color: #0077b6; }
+.DJ-OPT-BTN.DJ-SEL-GREEN  { background: rgba(6,214,160,.12); border-color: #06d6a0; color: #0a9e77; }
+.DJ-OPT-BTN.DJ-SEL-ORANGE { background: rgba(245,158,11,.12); border-color: #f59e0b; color: #b45309; }
+.DJ-OPT-BTN.DJ-SEL-RED    { background: rgba(239,68,68,.1);   border-color: #ef4444; color: #b91c1c; }
+
+/* ── Water Counter ────────────────────────────────────────────── */
+.DJ-WATER-ROW {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+.DJ-WATER-CUPS {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+.DJ-CUP {
+  font-size: 20px;
+  cursor: pointer;
+  opacity: .25;
+  transition: all .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.DJ-CUP.ON { opacity: 1; }
+.DJ-WATER-NUM {
+  font-size: 20px;
+  font-weight: 900;
+  color: #00b4d8;
+  min-width: 30px;
+  text-align: center;
+}
+
+/* ── Sleep ────────────────────────────────────────────────────── */
+.DJ-SLEEP-ROW { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.DJ-SLEEP-HRS-WRAP {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,180,216,.04);
+  border: 1.5px solid rgba(0,180,216,.13);
+  border-radius: 9px;
+  padding: 8px 10px;
+}
+.DJ-SLEEP-BTN {
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  border: none;
+  background: rgba(0,180,216,.1);
+  color: #0077b6;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.DJ-SLEEP-NUM {
+  font-size: 18px;
+  font-weight: 900;
+  color: #1a2340;
+  flex: 1;
+  text-align: center;
+}
+
+/* ── Save Button ──────────────────────────────────────────────── */
+.DJ-SAVE-BTN {
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg,#06d6a0,#00b4d8);
+  color: #fff;
+  font-family: 'Cairo', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(0,180,216,.35);
+  transition: all .2s;
+  margin-top: 6px;
+}
+.DJ-SAVE-BTN:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,180,216,.45); }
+.DJ-SAVE-BTN:active { transform: translateY(0); }
+
+/* ── Results Panel ────────────────────────────────────────────── */
+#DLR { margin-top: 12px; }
+
+.DJ-RESULT-HEADER {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.DJ-SCORE-RING-WRAP { text-align: center; }
+.DJ-SCORE-RING {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  font-size: 22px;
+  font-weight: 900;
+  color: #fff;
+  margin: 0 auto 4px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.15);
+}
+.DJ-SCORE-LBL { font-size: 11px; font-weight: 700; color: #4a5568; }
+
+.DJ-PROGRESS-WRAP { margin-bottom: 12px; }
+.DJ-PROGRESS-TRACK {
+  height: 10px;
+  background: rgba(0,0,0,.07);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.DJ-PROGRESS-BAR {
+  height: 100%;
+  border-radius: 5px;
+  transition: width .8s cubic-bezier(.4,0,.2,1);
+}
+
+.DJ-ALERT-ITEM {
+  background: rgba(239,68,68,.07);
+  border-right: 3px solid #ef4444;
+  padding: 7px 10px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: #1a2340;
+}
+.DJ-TIP-ITEM {
+  background: rgba(6,214,160,.07);
+  border-right: 3px solid #06d6a0;
+  padding: 7px 10px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: #1a2340;
+}
+.DJ-WARN-ITEM {
+  background: rgba(245,158,11,.07);
+  border-right: 3px solid #f59e0b;
+  padding: 7px 10px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: #1a2340;
+}
+
+/* ── Weekly Chart ─────────────────────────────────────────────── */
+.DJ-CHART-WRAP {
+  background: rgba(0,180,216,.04);
+  border-radius: 11px;
+  padding: 11px;
+  margin-top: 4px;
+}
+.DJ-CHART-BARS {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 70px;
+  padding-bottom: 4px;
+}
+.DJ-BAR-COL { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.DJ-BAR {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(180deg,#06d6a0,#00b4d8);
+  transition: height .5s ease;
+  min-height: 4px;
+}
+.DJ-BAR.TODAY { background: linear-gradient(180deg,#0077b6,#00b4d8); box-shadow: 0 -2px 8px rgba(0,119,182,.35); }
+.DJ-BAR-DAY { font-size: 9px; color: #9ca3af; font-weight: 600; }
+.DJ-BAR-VAL { font-size: 9px; color: #4a5568; font-weight: 700; }
+
+/* ── Action Buttons Row ───────────────────────────────────────── */
+.DJ-ACTIONS {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 7px;
+  margin-top: 10px;
+}
+.DJ-ACT-BTN {
+  padding: 9px 6px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: all .18s;
+}
+.DJ-ACT-BTN i { font-size: 16px; }
+.DJ-ACT-BTN.PDF   { background: rgba(0,180,216,.1);  color: #0077b6; border: 1.5px solid rgba(0,180,216,.25); }
+.DJ-ACT-BTN.SHARE { background: rgba(6,214,160,.1);  color: #0a9e77; border: 1.5px solid rgba(6,214,160,.25); }
+.DJ-ACT-BTN.SOS   { background: rgba(239,68,68,.1);  color: #b91c1c; border: 1.5px solid rgba(239,68,68,.25); }
+.DJ-ACT-BTN:hover { transform: translateY(-2px); filter: brightness(1.05); }
+
+/* ── History Tab ──────────────────────────────────────────────── */
+.DJ-HIST-ITEM {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 11px;
+  background: rgba(0,180,216,.04);
+  border: 1.5px solid rgba(0,180,216,.1);
+  margin-bottom: 7px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.DJ-HIST-ITEM:hover { background: rgba(0,180,216,.09); }
+.DJ-HIST-SCORE {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  font-weight: 900;
+  color: #fff;
+  flex-shrink: 0;
+}
+.DJ-HIST-META { flex: 1; }
+.DJ-HIST-DATE { font-size: 12px; font-weight: 700; color: #1a2340; }
+.DJ-HIST-MOOD { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+.DJ-HIST-ARROW { color: #9ca3af; font-size: 13px; }
+
+/* ── Tabs (Form / History) ────────────────────────────────────── */
+.DJ-TABS {
+  display: flex;
+  gap: 4px;
+  background: rgba(0,180,216,.07);
+  border-radius: 9px;
+  padding: 3px;
+  margin-bottom: 12px;
+}
+.DJ-TAB {
+  flex: 1;
+  padding: 7px;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #9ca3af;
+  background: none;
+  transition: all .18s;
+}
+.DJ-TAB.A { background: #fff; color: #00b4d8; box-shadow: 0 2px 6px rgba(0,0,0,.1); }
+
+/* ── Loading Spinner ──────────────────────────────────────────── */
+.DJ-LOADING {
+  text-align: center;
+  padding: 20px;
+}
+.DJ-SPINNER {
+  width: 36px; height: 36px;
+  border: 3px solid rgba(0,180,216,.2);
+  border-top-color: #00b4d8;
+  border-radius: 50%;
+  animation: djSpin .8s linear infinite;
+  margin: 0 auto 8px;
+}
+@keyframes djSpin { to { transform: rotate(360deg); } }
+
+/* ══════════════════════════════════════════════════════════════
+   WEEKLY CALENDAR — DJ-WC-*
+   أُضيف بدون تعديل أي CSS موجود
+   ══════════════════════════════════════════════════════════════ */
+
+/* Wrapper card */
+.DJ-WEEKLY-CAL-WRAP {
+  background: rgba(255,255,255,.97);
+  border-radius: 14px;
+  padding: 12px 12px 10px;
+  box-shadow: 0 4px 16px rgba(0,77,180,.1);
+  margin-bottom: 11px;
+}
+
+/* Header line */
+.DJ-WC-HEADER {
+  font-size: 11px;
+  font-weight: 800;
+  color: #00b4d8;
+  letter-spacing: .4px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1.5px solid rgba(0,180,216,.12);
+}
+
+/* Days row */
+.DJ-WC-DAYS {
+  display: flex;
+  gap: 5px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+.DJ-WC-DAYS::-webkit-scrollbar { display: none; }
+
+/* Single day card */
+.DJ-WC-DAY {
+  flex: 1;
+  min-width: 46px;
+  max-width: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px 7px;
+  border-radius: 11px;
+  border: 2px solid rgba(0,180,216,.13);
+  background: rgba(0,180,216,.03);
+  cursor: pointer;
+  transition: all .18s;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+}
+.DJ-WC-DAY:hover {
+  border-color: rgba(0,180,216,.35);
+  background: rgba(0,180,216,.07);
+  transform: translateY(-2px);
+}
+
+/* TODAY indicator */
+.DJ-WC-DAY.DJ-WC-TODAY {
+  border-color: rgba(0,119,182,.3);
+  background: rgba(0,119,182,.05);
+}
+.DJ-WC-DAY.DJ-WC-TODAY .DJ-WC-DATE {
+  color: #0077b6;
+  font-weight: 900;
+}
+
+/* ACTIVE (selected) */
+.DJ-WC-DAY.DJ-WC-ACTIVE {
+  background: linear-gradient(135deg, rgba(0,180,216,.15), rgba(0,119,182,.12));
+  border-color: #00b4d8;
+  box-shadow: 0 4px 12px rgba(0,180,216,.22);
+  transform: translateY(-3px);
+}
+.DJ-WC-DAY.DJ-WC-ACTIVE .DJ-WC-DAYNAME,
+.DJ-WC-DAY.DJ-WC-ACTIVE .DJ-WC-DATE {
+  color: #0077b6;
+}
+
+/* Day name */
+.DJ-WC-DAYNAME {
+  font-size: 9px;
+  font-weight: 700;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+/* Date number */
+.DJ-WC-DATE {
+  font-size: 13px;
+  font-weight: 900;
+  color: #1a2340;
+  line-height: 1;
+}
+
+/* Dot indicator (has data) */
+.DJ-WC-DOT {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background .2s;
+}
+.DJ-WC-DOT-EMPTY {
+  background: rgba(0,180,216,.12) !important;
+}
+
+/* ── Day Data Panel ──────────────────────────────────────────── */
+.DJ-DAY-DATA-PANEL {
+  margin-bottom: 11px;
+}
+
+/* Data row */
+.DJ-WC-ROW {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(0,180,216,.08);
+  font-size: 12px;
+}
+.DJ-WC-ROW:last-child { border-bottom: none; }
+.DJ-WC-ROW-LBL {
+  font-weight: 700;
+  color: #4a5568;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.DJ-WC-ROW-LBL i { font-size: 12px; }
+.DJ-WC-ROW-VAL {
+  font-weight: 800;
+  font-size: 12px;
+  color: #1a2340;
+}
+
+/* Note box */
+.DJ-WC-NOTE {
+  background: rgba(0,180,216,.05);
+  border-right: 3px solid #00b4d8;
+  border-radius: 7px;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: #1a2340;
+  margin: 6px 0;
+  line-height: 1.6;
+}
+
+/* Vitals mini chips */
+.DJ-WC-VITALS-ROW {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 6px 0;
+}
+.DJ-WC-VIT {
+  background: rgba(0,180,216,.07);
+  border: 1px solid rgba(0,180,216,.18);
+  border-radius: 7px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #0077b6;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.DJ-WC-VIT i { font-size: 10px; color: #00b4d8; }
+.DJ-WC-VIT small { font-size: 9px; color: #9ca3af; font-weight: 600; }
+
+/* Empty state */
+.DJ-WC-EMPTY {
+  text-align: center;
+  padding: 18px 10px;
+}
+
+/* ── Dark Mode Support (weekly calendar) ─────────────────────── */
+/* ── Dark Mode Support ────────────────────────────────────────── */
+body.DK .DJ-WEEKLY-CAL-WRAP   { background: rgba(30,40,60,.97); }
+body.DK .DJ-WC-HEADER         { color: #00d4ff; border-color: rgba(0,212,255,.15); }
+body.DK .DJ-WC-DAY            { background: rgba(0,180,216,.06); border-color: rgba(0,180,216,.18); }
+body.DK .DJ-WC-DAY.DJ-WC-ACTIVE { background: linear-gradient(135deg,rgba(0,180,216,.18),rgba(0,119,182,.15)); border-color: #00d4ff; }
+body.DK .DJ-WC-DAY.DJ-WC-TODAY { border-color: rgba(0,180,216,.3); }
+body.DK .DJ-WC-DAYNAME        { color: #94a3b8; }
+body.DK .DJ-WC-DATE           { color: #e2e8f0; }
+body.DK .DJ-WC-DAY.DJ-WC-ACTIVE .DJ-WC-DAYNAME,
+body.DK .DJ-WC-DAY.DJ-WC-ACTIVE .DJ-WC-DATE { color: #00d4ff; }
+body.DK .DJ-WC-ROW            { border-color: rgba(0,212,255,.1); }
+body.DK .DJ-WC-ROW-LBL        { color: #94a3b8; }
+body.DK .DJ-WC-ROW-VAL        { color: #e2e8f0; }
+body.DK .DJ-WC-NOTE           { background: rgba(0,180,216,.07); color: #e2e8f0; }
+body.DK .DJ-WC-VIT            { background: rgba(0,180,216,.09); border-color: rgba(0,212,255,.2); color: #00d4ff; }
+body.DK .DJ-WC-EMPTY div      { color: #94a3b8 !important; }
+body.DK .DJ-CARD       { background: rgba(30,40,60,.97); }
+body.DK .DJ-STITLE     { color: #00d4ff; border-color: rgba(0,212,255,.15); }
+body.DK .DJ-DATE-BADGE { background: linear-gradient(135deg,rgba(6,214,160,.07),rgba(0,180,216,.07)); color: #00d4ff; }
+body.DK .DJ-VITAL      { background: rgba(0,180,216,.06); border-color: rgba(0,180,216,.18); }
+body.DK .DJ-VITAL-IN   { color: #e2e8f0; }
+body.DK .DJ-VITAL-LBL  { color: #94a3b8; }
+body.DK .DJ-SYM        { background: rgba(0,180,216,.05); border-color: rgba(0,180,216,.15); color: #cbd5e1; }
+body.DK .DJ-MOOD-BTN   { background: rgba(0,180,216,.06); border-color: rgba(0,180,216,.18); color: #94a3b8; }
+body.DK .DJ-OPT-BTN    { background: rgba(0,180,216,.06); border-color: rgba(0,180,216,.18); color: #94a3b8; }
+body.DK .DJ-HIST-ITEM  { background: rgba(0,180,216,.06); border-color: rgba(0,180,216,.15); }
+body.DK .DJ-HIST-DATE  { color: #e2e8f0; }
+body.DK .DJ-SCORE-LBL  { color: #94a3b8; }
+body.DK .DJ-BAR-DAY, body.DK .DJ-BAR-VAL { color: #94a3b8; }
+body.DK .DJ-CHART-WRAP { background: rgba(0,180,216,.07); }
+body.DK .DJ-ALERT-ITEM, body.DK .DJ-TIP-ITEM, body.DK .DJ-WARN-ITEM { color: #e2e8f0; }
+body.DK .DJ-SLEEP-HRS-WRAP { background: rgba(0,180,216,.07); border-color: rgba(0,180,216,.18); }
+body.DK .DJ-SLEEP-NUM  { color: #e2e8f0; }
+body.DK .DJ-SLEEP-BTN  { background: rgba(0,180,216,.15); color: #00d4ff; }
+body.DK .DJ-PAIN-VAL   { color: #e2e8f0; }
+body.DK .DJ-WATER-NUM  { color: #00d4ff; }

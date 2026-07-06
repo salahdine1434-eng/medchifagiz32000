@@ -1,0 +1,1331 @@
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Tajawal', sans-serif;
+}
+
+body {
+    /* الخلفية المتدرجة ثابتة لمنع التقطع في الأسفل */
+    background: linear-gradient(180deg, #6ff36b 0%, #4a55ec 100%) no-repeat fixed;
+   
+   
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.container {
+    width: 100%;
+    max-width: 315px; /* عرض نحيف ومثالي للموبايل */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+/* اللوجو مع توهج أبيض خلفه */
+.logo-area {
+    margin-bottom: -75px; 
+    z-index: 10;
+    position: relative;
+}
+
+.logo-area::before {
+    content: "";
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px; height: 100px;
+    background: rgba(255, 255, 255, 0.45);
+    filter: blur(30px);
+    z-index: -1;
+}
+
+.logo-area img {
+    width: 170px;
+    filter: drop-shadow(0 5px 12px rgba(0,0,0,0.2));
+}
+
+/* الكارد: شفاف، مرفوع للأعلى، حواف حادة */
+.card {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    
+    /* تقليل الـ padding العلوي لرفع العناصر داخل الكارد */
+    padding: 75px 15px 20px 15px; 
+    border-radius: 20px; /* حواف حادة احترافية */
+    width: 100%;
+    
+    /* تحديد أسود خفيف + ظل غامق للطفو */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+    
+    display: flex;
+    flex-direction: column;
+}
+
+/* رفع العنوان لأقصى حد */
+h2 {
+    color: #2c3e50;
+    font-size: 20px;
+    margin-top: -15px; 
+    margin-bottom: 25px;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* تنسيق العناصر مع مسافات متساوية وتحديد أسود */
+.input-group {
+    position: relative;
+    margin-bottom: 12px; /* مسافة متناسقة لتقليل طول الكارد */
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12));
+    transition: transform 0.3s ease;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 42px; /* حشو متساوٍ للأيقونات */
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.18); 
+    background: rgba(255, 255, 255, 0.95);
+    font-size: 13.5px;
+    outline: none;
+    text-align: right;
+    transition: all 0.3s ease;
+}
+
+/* حركة التوهج الأبيض/الأزرق عند النقر */
+.input-group input:focus {
+    border-color: #378dbd;
+    box-shadow: 0 0 15px rgba(55, 141, 189, 0.5);
+    background: #ffffff;
+}
+
+.input-group .icon {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #444;
+    font-size: 16px;
+}
+
+/* أيقونة العين داخل الحقل جهة اليسار */
+.toggle-pass {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    cursor: pointer;
+    z-index: 5;
+}
+
+/* زر التالي: صغير، لليمين، تحديد أسود، شادو غامق */
+.next-btn {
+    width: 100px;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #378dbd 0%, #7ed957 100%);
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    
+    /* تحديد أسود خفيف وشادو مطابق للعناصر */
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+    
+    /* دفعه لأقصى اليمين */
+    align-self: flex-end; 
+    
+    transition: 0.3s;
+    text-align: center;
+}
+
+.next-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+/* تنسيق الواجهة لتكون في المنتصف تماماً */
+body {
+    background: linear-gradient(180deg, #6ff36b 0%, #4a55ec 100%) no-repeat fixed;
+   
+   
+    flex-direction: column;
+    justify-content: center; /* توسيط عمودي */
+    align-items: center; /* توسيط أفقي */
+    padding: 10px;
+    overflow: hidden;
+}
+
+.container {
+    width: 100%;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: -30px; /* رفع المجموعة بالكامل للأعلى قليلاً لتتوسط الشاشة بصرياً */
+}
+
+/* اللوجو مع حركة نبض ذكية */
+.logo-area {
+    margin-bottom: -65px; 
+    z-index: 10;
+    animation: intelligentPulse 4s infinite ease-in-out;
+}
+
+@keyframes intelligentPulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255,255,255,0.4)); }
+    50% { transform: scale(1.05); filter: drop-shadow(0 0 25px rgba(255,255,255,0.7)); }
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    padding: 70px 20px 25px 20px;
+    border-radius: 24px;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+/* حركة التوهج عند الكتابة */
+.input-group input:focus {
+    border-color: #378dbd;
+    box-shadow: 0 0 20px rgba(55, 141, 189, 0.4);
+    background: rgba(255, 255, 255, 1);
+}
+
+/* زر التالي مع تحديد أسود خفيف وشادو ذكي */
+.next-btn {
+    align-self: flex-end; /* لليمين */
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+/* رفع كل شيء داخل الكارد لأقصى حد */
+.card {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 60px 18px 15px 18px; /* تقليل الـ Padding السفلي والعلوي */
+    border-radius: 20px;
+    width: 100%;
+    max-width: 315px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+}
+
+/* رفع عنوان إنشاء حساب لأقصى حافة الكارد */
+h2 {
+    color: #2c3e50;
+    font-size: 20px;
+    margin-top: -30px; /* رفعه لأقصى حد ممكن */
+    margin-bottom: 25px;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* تقليل المسافات بين الحقول لتقليص طول الكارد */
+.input-group {
+    position: relative;
+    margin-bottom: 10px; /* مسافة صغيرة جداً بين الحقول */
+}
+
+/* زر التالي جهة اليمين */
+.next-btn {
+    width: 100px;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #378dbd 0%, #7ed957 100%);
+    color: white;
+    font-weight: 700;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    align-self: flex-start; /* إذا كان الموقع بالعربي (RTL) فإن flex-start هو اليمين */
+}
+
+/* الحالة النشطة لأيقونة العين (الضوء الأخضر) */
+.toggle-pass.active {
+    color: #6ff36b !important;
+    filter: drop-shadow(0 0 5px rgba(111, 243, 107, 0.8));
+    transform: translateY(-50%) scale(1.2);
+}
+/* تصغير العرض وضبط التناسق */
+.container {
+    max-width: 290px; /* تقليل العرض ليكون أنحف وأجمل */
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px);
+    padding: 55px 15px 15px 15px;
+    border-radius: 22px;
+    /* تحديد أنعم للزر والحواف */
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    opacity: 0; /* للـ JS */
+    transform: translateY(30px); /* للـ JS */
+}
+
+/* شريط الخطوات (Step Progress) */
+.step-container {
+    width: 100%;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.step-text {
+    font-size: 11px;
+    color: #1a3a5a;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    border: 0.5px solid rgba(0,0,0,0.05);
+}
+
+.progress-fill {
+    width: 33%; /* الخطوة 1 من 3 */
+    height: 100%;
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
+    box-shadow: 0 0 10px rgba(79, 172, 254, 0.8);
+    transition: width 0.5s ease;
+}
+
+/* زر التالي الاحترافي */
+.next-btn {
+    width: 90px;
+    padding: 9px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #378dbd, #7ed957);
+    color: white;
+    font-size: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    cursor: pointer;
+    align-self: flex-start; /* لليمين */
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.next-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
+
+/* تأثير ضوء أيقونة العين */
+.toggle-pass.active {
+    color: #65f89b !important;
+    text-shadow: 0 0 8px rgba(134, 238, 141, 0.9);
+}
+/* تصغير العرض وزيادة الطول مع الحفاظ على التوسط */
+.container {
+    max-width: 280px; /* أنحف ليكون طويلاً */
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    /* تقليل الحشو لرفع العناصر وزيادة الطول البصري */
+    padding: 65px 15px 25px 15px; 
+    border-radius: 25px;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    
+}
+
+/* اللوجو: تكبير وتمركز دقيق */
+.logo-area {
+    margin-bottom: -60px;
+    z-index: 10;
+    text-align: center;
+}
+
+.logo-area img {
+    width: 180px; /* تكبير الحجم */
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
+}
+
+/* عنوان إنشاء حساب في أقصى الأعلى */
+h2 {
+    color: #1a3a5a;
+    font-size: 20px;
+    margin-top: -15px; /* رفعه للأعلى */
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+/* شريط التقدم بين العنوان وأول عنصر */
+.progress-container {
+    width: 100%;
+    margin-bottom: 25px; /* مسافة بين الشريط وأول حقل */
+    text-align: center;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.progress-fill {
+    width: 33%; /* الخطوة الأولى */
+    height: 100%;
+    background: linear-gradient(90deg, #00f2fe, #4facfe);
+    box-shadow: 0 0 10px rgba(79, 172, 254, 0.8);
+    transition: width 0.4s ease;
+}
+
+.step-text {
+    font-size: 11px;
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+/* الحالة الافتراضية لأيقونة العين (اللون العادي) */
+.toggle-pass {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* الحالة النشطة (عند إظهار كلمة السر) */
+.toggle-pass.active {
+    color: #759ef8 !important; /* ضوء أخضر */
+    filter: drop-shadow(0 0 5px rgba(112, 163, 231, 0.8));
+}
+.input-group {
+    position: relative; /* ضروري لكي تظهر العين داخل الحقل */
+}
+.toggle-pass {
+    z-index: 10;
+    cursor: pointer;
+    position: absolute;
+    left: 15px; /* تأكد أنها جهة اليسار داخل المستطيل */
+    top: 50%;
+    transform: translateY(-50%);
+}
+/* 1. إضافة ضوء (Aura) خلف الكارد ليعطي إيحاء بالذكاء الاصطناعي */
+.container::before {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(111, 243, 107, 0.3) 0%, rgba(74, 85, 236, 0.2) 70%);
+    filter: blur(50px);
+    z-index: -1;
+    animation: pulseAura 6s infinite alternate;
+}
+
+@keyframes pulseAura {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(1.3); opacity: 0.8; }
+}
+
+/* 2. شريط تقدم متطور (Neon Animated Progress) */
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    border: 0.5px solid rgba(255, 255, 255, 0.2);
+}
+
+.progress-fill {
+    width: 33%;
+    height: 100%;
+    background: linear-gradient(90deg, #00f2fe, #4facfe, #00f2fe);
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite; /* حركة تموج الضوء داخل الشريط */
+    box-shadow: 0 0 15px rgba(79, 172, 254, 0.9);
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* 3. زر التالي مع توهج الحواف عند الضغط (Neon Border Glow) */
+.next-btn {
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.next-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 0 20px rgba(111, 243, 107, 0.8); /* ضوء أخضر قوي عند الضغط */
+    border-color: #6ff36b;
+}
+
+/* إضافة لمسة زجاجية إضافية للحقول */
+.input-group input {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.user-type-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 أيقونات في كل صف */
+    gap: 15px;
+    margin-top: 15px;
+    width: 100%;
+}
+
+/* لضمان أن الأيقونة السابعة (المتبرع) تأتي في المنتصف إذا كانت وحيدة في الصف الأخير */
+.user-option:last-child:nth-child(3n-2) {
+    grid-column-start: 2;
+}
+
+.icon-circle {
+    width: 55px; /* تصغير بسيط جداً لتناسب الحجم الجديد */
+    height: 55px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    margin-bottom: 5px;
+    color: #1a3a5a;
+    font-size: 22px;
+}
+
+/* التوهج عند الضغط */
+.user-option.selected .icon-circle {
+    background: #ffffff;
+    border-color: #7ed957;
+    color: #378dbd;
+    box-shadow: 0 0 15px rgba(126, 217, 87, 0.7), 
+                0 0 30px rgba(55, 141, 189, 0.4);
+    transform: scale(1.1) translateY(-5px);
+}
+/* تقليل حجم الكارد الكلي */
+.card {
+    width: 290px;
+    
+    padding: 55px 15px 15px 15px;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* تصغير الأيقونات والدوائر */
+.user-type-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px; /* تقليل المسافة بين الأيقونات */
+    margin-top: 10px;
+    width: 100%;
+}
+
+.icon-circle {
+    width: 48px;  /* تصغير الدائرة */
+    height: 48px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1.5px solid rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+    color: #1a3a5a;
+    font-size: 18px; /* تصغير حجم الأيقونة داخل الدائرة */
+}
+
+.user-option span {
+    font-size: 9px; /* تصغير النص */
+    font-weight: 700;
+    margin-top: 4px;
+}
+
+/* حركة التوهج عند الاختيار */
+.user-option.selected .icon-circle {
+    background: #ffffff;
+    border-color: #6ff36b;
+    box-shadow: 0 0 15px rgba(111, 243, 107, 0.6);
+    transform: scale(1.05);
+}
+
+/* زر التالي في أقصى اليمين */
+.footer-action {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end; /* أقصى اليمين */
+    margin-top: 20px; /* مسافة بسيطة عوضاً عن auto لتقصير الكارد */
+}
+
+.next-btn {
+    width: 90px;
+    padding: 8px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #7ed957, #378dbd);
+    color: white;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+}
+/* الكارد: أبعاد مطابقة للواجهة الأولى 100% */
+.card {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 50px 15px 15px 15px;
+    border-radius: 25px;
+    width: 290px;
+   /* تحديد طول ثابت يطابق الواجهة الأولى لمنع التمدد */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+
+    /* حركة الدخول المتناغمة مع الواجهة 1 */
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+}
+
+.card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* شبكة الأيقونات: جعلها أكثر انضغاطاً */
+.user-type-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px; /* تقليل الفراغات */
+    width: 100%;
+    margin-top: 10px;
+}
+
+.icon-circle {
+    width: 45px; /* حجم أصغر للأيقونة الدائرية */
+    height: 45px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    transition: 0.3s ease;
+    color: #1a3a5a;
+    font-size: 16px;
+}
+
+/* تأثير الضوء عند الاختيار */
+.user-option.selected .icon-circle {
+    background: #ffffff;
+    border-color: #6ff36b;
+    box-shadow: 0 0 15px rgba(111, 243, 107, 0.8);
+    transform: scale(1.1);
+}
+
+.user-option span {
+    font-size: 9px;
+    font-weight: 700;
+    color: #1a3a5a;
+    margin-top: 3px;
+}
+
+/* زر التالي: أقصى اليمين وبوضعية ثابتة */
+
+
+.next-btn {
+    width: 85px;
+    padding: 8px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #7ed957, #378dbd);
+    color: white;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+/* الكارد: أبعاد مطابقة للواجهة الأولى 100% */
+.card {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 50px 15px 15px 15px;
+    border-radius: 25px;
+    width: 290px;
+   /* تحديد طول ثابت يطابق الواجهة الأولى لمنع التمدد */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+
+    /* حركة الدخول المتناغمة مع الواجهة 1 */
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+}
+
+.card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* شبكة الأيقونات: جعلها أكثر انضغاطاً */
+.user-type-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px; /* تقليل الفراغات */
+    width: 100%;
+    margin-top: 10px;
+}
+
+.icon-circle {
+    width: 45px; /* حجم أصغر للأيقونة الدائرية */
+    height: 45px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    transition: 0.3s ease;
+    color: #1a3a5a;
+    font-size: 16px;
+}
+
+/* تأثير الضوء عند الاختيار */
+.user-option.selected .icon-circle {
+    background: #ffffff;
+    border-color: #6ff36b;
+    box-shadow: 0 0 15px rgba(111, 243, 107, 0.8);
+    transform: scale(1.1);
+}
+
+.user-option span {
+    font-size: 9px;
+    font-weight: 700;
+    color: #1a3a5a;
+    margin-top: 3px;
+}
+
+
+
+.next-btn {
+    width: 85px;
+    padding: 8px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #7ed957, #378dbd);
+    color: white;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+/* شريط التقدم: تعديل الاتجاه ليكون من اليمين لليسار */
+.progress-bar {
+    width: 100%; 
+    height: 6px; 
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px; 
+    overflow: hidden;
+    display: flex;
+    /* التعديل هنا: اتجاه من اليمين لليسار */
+    flex-direction: row; 
+}
+
+.progress-fill {
+    /* سيمتد الآن من اليمين تلقائياً إذا كان الأب يدعم RTL */
+    width: 66%; 
+    height: 100%;
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
+    float: right; /* ضمان التموضع يميناً */
+}
+
+/* شبكة الأيقونات: ضبط التمركز التام */
+.user-type-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 10px;
+    width: 100%;
+    padding: 0; /* تأكد أن الحشو صفر لتجنب الميل لليسار */
+    justify-items: center; /* تمركز العناصر داخل الأعمدة */
+}
+
+/* تأثيرات الأيقونة: الارتفاع عند الحوم (Hover) والتوهج عند الضغط */
+.user-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* 1. تأثير الارتفاع عند وضع الفأرة (Hover) */
+.user-option:hover {
+    transform: translateY(-8px); /* ترفع الأيقونة للأعلى */
+}
+
+.icon-circle {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1.5px solid rgba(255, 255, 255, 0.5);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    color: #1a3a5a;
+    font-size: 20px;
+}
+
+/* 2. تأثير التوهج الضوئي القوي عند الضغط (Selected) */
+.user-option.selected .icon-circle {
+    background: #ffffff;
+    border-color: #6ff36b;
+    color: #3b82f6;
+    /* توهج احترافي */
+    box-shadow: 0 0 25px rgba(111, 243, 107, 0.9), 
+                0 0 10px rgba(59, 130, 246, 0.5);
+    transform: scale(1.1); /* تكبير بسيط عند الاختيار */
+}
+
+.user-option span {
+    font-size: 10px;
+    font-weight: 700;
+    margin-top: 5px;
+    color: #1a3a5a;
+}
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    /* السر هنا: اتجاه العناصر داخل الشريط */
+    display: flex;
+    flex-direction: row; 
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00f2fe, #4facfe);
+    border-radius: 10px;
+    transition: width 0.5s ease-in-out;
+}
+/* هذا الكود يضمن أن التحميل يبدأ من اليسار ويتجه لليمين في الواجهتين */
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    /* تأكد أن الاتجاه عادي (من اليسار لليمين) */
+    display: flex;
+    flex-direction:row-reverse; 
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00f2fe, #4facfe);
+    border-radius: 10px;
+    transition: width 0.5s ease-in-out;
+    /* إزالة أي float أو row-reverse قديمة */
+}
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    /* نجعله يبدأ من اليسار في كلتا الواجهتين */
+    display: flex;
+    flex-direction: row; 
+    direction: ltr; /* إجبار الاتجاه من اليسار لليمين داخل الشريط فقط */
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00f2fe, #4facfe);
+    border-radius: 10px;
+    transition: width 0.5s ease-in-out;
+}
+
+
+/* منطقة البصمة وتأثير المسح */
+.fingerprint-section {
+    position: relative;
+    margin: 40px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 120px;
+    height: 120px;
+}
+
+.fingerprint-icon {
+    font-size: 80px;
+    color: #1a3a5a;
+    filter: drop-shadow(0 0 10px rgba(79, 172, 254, 0.3));
+}
+
+/* خط المسح الضوئي المتحرك */
+.scan-line {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: #6ff36b;
+    box-shadow: 0 0 15px #6ff36b;
+    top: 0;
+    z-index: 5;
+    animation: scanning 2.5s infinite ease-in-out;
+}
+
+
+
+.instruction-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a3a5a;
+    margin-bottom: 30px;
+}
+
+/* تنسيق الأزرار لتكون بنفس عرض الحقول السابقة */
+.action-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.primary-btn, .secondary-btn {
+    width: 250px; /* العرض الموحد مع الواجهات السابقة */
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, #7ed957, #378dbd);
+    color: white;
+}
+
+.secondary-btn {
+    background: rgba(255, 255, 255, 0.3);
+    color: #1a3a5a;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.secondary-btn:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+/* الكارد الموحد بنفس أبعاد الواجهة 1 و 2 */
+.card {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    width: 290px;
+    
+    padding: 50px 15px 25px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+    margin: auto;
+}
+
+
+
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    border: 0.5px solid rgba(255, 255, 255, 0.2);
+}
+
+.progress-fill {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #00f2fe, #4facfe, #00f2fe);
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite; /* حركة تموج الضوء داخل الشريط */
+    box-shadow: 0 0 15px rgba(79, 172, 254, 0.9);
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+/* مساحة المنتصف لملئ الفراغ */
+.scan-area {
+    flex-grow: 1; /* تجعلها تأخذ كل المساحة المتاحة في الوسط */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.instruction-text {
+    margin-bottom: 25px;
+}
+
+/* حاوية البصمة والخط */
+.fingerprint-wrapper {
+    position: relative;
+    width: 110px;
+    height: 140px;
+}
+
+.fingerprint-icon {
+    width: 100%;
+    height: 100%;
+    fill: #4adebd;
+    opacity: 0.3; /* خفيفة في البداية */
+}
+
+/* الخط الأزرق النيوني */
+.scan-bar.blue-neon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #00e5ff; /* أزرق سكان */
+    box-shadow: 0 0 15px #00e5ff, 0 0 30px rgba(0, 229, 255, 0.5);
+    z-index: 10;
+    display: none; /* مخفي */
+}
+
+/* الأزرار في الأسفل تماماً */
+.action-buttons {
+    margin-top: auto; 
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.card {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    width: 290px;
+    
+    padding: 50px 15px 25px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+    margin: auto;
+}
+/* =========================
+   FORCE CENTER LAYOUT
+   (بدون تغيير الستايل)
+========================= */
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center; /* توسيط أفقي */
+    align-items: center;     /* توسيط عمودي */
+    background: linear-gradient(180deg, #6ff36b 0%, #4a55ec 100%) no-repeat fixed;
+    font-family: 'Tajawal', sans-serif;
+}
+
+/* الحاوية */
+.container {
+    width: 100%;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* الكارد (نفس الستايل تاعك 100%) */
+.card {
+    width: 290px;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 25px;
+    padding: 50px 15px 25px 15px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+
+    /* هذا هو السطر السحري */
+    margin: 0 auto;
+}
+
+/* =========================
+   FIX STEP 3 CARD ONLY
+   ========================= */
+
+/* لا تمد الكارد */
+.scan-area {
+    flex-grow: 0 !important;
+    margin: 10px 0;
+}
+
+/* صغّر البصمة */
+.fingerprint-wrapper {
+    width: 85px;
+    height: 150px;
+    margin: 0 auto 10px;
+}
+
+/* خفف النص */
+.instruction-text {
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+/* الأزرار ما تزيدش الطول */
+.action-buttons {
+    width: 100%;
+    margin-top: 10px;
+    gap: 8px;
+}
+.fingerprint-wrapper {
+    width: 75px;
+    height: 110px;
+}
+
+.primary-btn, .secondary-btn {
+    padding: 10px;
+    font-size: 14px;
+}
+/* توحيد الكارد في جميع الصفحات */
+.card {
+    width: 280px;
+    padding: 20px 14px 18px;
+}
+@media (max-width: 500px) {
+    .card {
+        width: 270px;
+        padding: 20px 12px 18px;
+    }
+}
+/* تعديل خاص بكارد تسجيل الدخول فقط */
+.login-card {
+    min-height: 280px;
+    display: block;
+    flex-direction: column;
+    padding-top: 40px;
+}
+.login-card h2 {
+    margin-bottom: 25px;
+}
+.login-card .input-group {
+    margin-top: 10px;
+}
+
+.login-card .input-field {
+    margin-bottom: 10px;
+}
+.login-card .action-buttons {
+    margin-top: 20px;
+}
+/* LOGIN ONLY FIX */
+.card .input-group {
+    margin-top: 10px;
+}
+
+.card .input-group .input-field {
+    margin-bottom: 10px !important;
+}
+/* توحيد عرض أزرار تسجيل الدخول مع الحقول */
+.login-card .primary-btn,
+.login-card .secondary-btn {
+    width: 90%;
+    max-width: 100%;
+    height: 44px;
+}
+.login-card .primary-btn:hover {
+    opacity: 0.9;
+}
+
+.login-card .secondary-btn:hover {
+    background: #e9eef5;
+}
+/* ============================= */
+/* FIX نهائي لواجهة إنشاء حساب فقط */
+/* ============================= */
+
+.register-card {
+    min-height: 300px;          /* نفس login */
+    padding-top: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* نخلي المحتوى يهبط شوية */
+.register-card .input-group {
+    margin-top: 2px;
+}
+
+/* المسافة بين الحقول */
+.register-card .input-field {
+    margin-bottom: 1px;
+}
+
+/* زر "التالي" يبقى لتحت */
+.register-card .footer-action,
+.register-card button {
+    margin-top: auto;
+}
+/* تعديل خاص بـ step 3 فقط */
+.step3-card {
+    margin-top: -10px; /* طلعيها شوية */
+}
+.register-card {
+    margin-top: -10px; /* طلعيها شوية */
+}
+.card {
+    margin-top: -10px; /* طلعيها شوية */
+}
+/* ===== STEP 3 FIX ONLY ===== */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: 0.3s ease;
+  z-index: 9999;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.forgot-pass{
+margin-top:30px;
+text-align:center;
+}
+
+.forgot-pass a{
+color:#3b82f6;
+text-decoration:none;
+font-size:14px;
+}
+
+.forgot-pass a:hover{
+text-decoration:underline;
+}
+.skip-btn{
+font-size: 14px;
+display:block;
+margin-top:3px;
+color:#2b6cb0;
+text-decoration:none;
+font-weight:bold;
+}
+
+.skip-btn:hover{
+text-decoration:underline;
+}
+.footer-action {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+}
+.success-msg{
+    color:#28a745;
+    text-align:center;
+    margin-bottom:15px;
+    font-size:14px;
+}
+.error-msg{
+    color:#dc3545;
+ 
+}
+.dual-input {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.input-half {
+    flex: 1;
+}
+
+.input-half select,
+.input-half input[type="file"] {
+    width: 100%;
+    height: 55px;
+    border: none;
+    border-radius: 15px;
+    padding: 0 15px;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .dual-input {
+        flex-direction: column;
+    }
+
+    .input-half {
+        width: 100%;
+    }
+}
+
+
+

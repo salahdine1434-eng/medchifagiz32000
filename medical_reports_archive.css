@@ -1,0 +1,190 @@
+/* ════════════════════════════════════════════════════════════════
+   medical_reports_archive.css
+   أنماط ميزة «أرشيف التقارير الطبية». كل الأصناف مسبوقة بـ mra-
+   لتفادي أي تعارض مع باقي المشروع.
+   ════════════════════════════════════════════════════════════════ */
+
+#mra-root {
+    --mra-primary:   #0ea5e9;
+    --mra-dark:      #0284c7;
+    --mra-emerald:   #10b981;
+    --mra-emerald-d: #059669;
+    --mra-red:       #ef4444;
+    --mra-bg:        #f8fafc;
+    --mra-card:      #ffffff;
+    --mra-text:      #0f172a;
+    --mra-muted:     #64748b;
+    --mra-border:    rgba(14, 165, 233, 0.18);
+    --mra-radius:    16px;
+    font-family: 'Cairo', sans-serif;
+    color: var(--mra-text);
+    direction: rtl;
+}
+
+/* ── شريط البحث ── */
+.mra-toolbar {
+    display: flex; align-items: center; gap: .8rem; flex-wrap: wrap;
+    margin-bottom: 1.2rem;
+}
+.mra-search {
+    flex: 1 1 240px;
+    position: relative;
+}
+.mra-search input {
+    width: 100%;
+    padding: .8rem 2.6rem .8rem 1rem;
+    border: 1.5px solid var(--mra-border);
+    border-radius: 12px;
+    font-family: inherit; font-size: .95rem;
+    background: var(--mra-bg); color: var(--mra-text);
+    box-sizing: border-box;
+    transition: border-color .2s, box-shadow .2s;
+}
+.mra-search input:focus {
+    outline: none; border-color: var(--mra-primary);
+    box-shadow: 0 0 0 4px rgba(14,165,233,.12);
+}
+.mra-search i {
+    position: absolute; top: 50%; right: 1rem; transform: translateY(-50%);
+    color: var(--mra-muted); pointer-events: none;
+}
+.mra-count { color: var(--mra-muted); font-size: .88rem; font-weight: 600; }
+
+/* ── قائمة التقارير ── */
+.mra-list { display: grid; gap: .8rem; }
+
+.mra-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    flex-wrap: wrap;
+    background: var(--mra-card);
+    border: 1px solid var(--mra-border);
+    border-radius: var(--mra-radius);
+    padding: 1rem 1.3rem;
+    box-shadow: 0 3px 14px rgba(14,165,233,.06);
+    transition: transform .15s, box-shadow .2s;
+}
+.mra-item:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(14,165,233,.12); }
+
+.mra-item-info { display: flex; flex-direction: column; gap: .35rem; min-width: 0; }
+.mra-item-name {
+    font-weight: 800; font-size: 1.06rem; color: var(--mra-dark);
+    display: flex; align-items: center; gap: .5rem;
+}
+.mra-item-meta {
+    display: flex; flex-wrap: wrap; gap: .4rem .9rem;
+    font-size: .82rem; color: var(--mra-muted);
+}
+.mra-item-meta span { display: inline-flex; align-items: center; gap: .35rem; }
+.mra-chip {
+    background: rgba(14,165,233,.1); color: var(--mra-dark);
+    padding: .15rem .6rem; border-radius: 20px; font-weight: 700; font-size: .76rem;
+}
+
+.mra-view-btn {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .6rem 1.2rem; border: none; border-radius: 11px;
+    background: linear-gradient(135deg, var(--mra-primary), var(--mra-dark));
+    color: #fff; font-family: inherit; font-weight: 700; font-size: .9rem;
+    cursor: pointer; transition: transform .12s, box-shadow .2s;
+    box-shadow: 0 6px 16px rgba(14,165,233,.25); white-space: nowrap;
+}
+.mra-view-btn:hover { transform: translateY(-1px); box-shadow: 0 9px 22px rgba(14,165,233,.34); }
+
+/* ── حالات ── */
+.mra-state { text-align: center; padding: 2.5rem 1rem; color: var(--mra-muted); }
+.mra-spinner {
+    width: 46px; height: 46px; margin: 0 auto 1rem;
+    border: 5px solid rgba(14,165,233,.18); border-top-color: var(--mra-primary);
+    border-radius: 50%; animation: mra-spin .8s linear infinite;
+}
+@keyframes mra-spin { to { transform: rotate(360deg); } }
+
+.mra-empty { text-align: center; padding: 3rem 1.5rem; }
+.mra-empty .mra-empty-icon {
+    width: 92px; height: 92px; margin: 0 auto 1.2rem;
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, rgba(14,165,233,.12), rgba(16,185,129,.12));
+    border-radius: 50%; color: var(--mra-primary); font-size: 2.4rem;
+}
+.mra-empty h3 { margin: 0 0 .5rem; color: var(--mra-dark); font-size: 1.2rem; font-weight: 800; }
+.mra-empty p { margin: 0; color: var(--mra-muted); font-size: .95rem; line-height: 1.8; }
+
+/* ── النافذة (Modal) ── */
+.mra-modal-overlay {
+    position: fixed; inset: 0; z-index: 100000;
+    background: rgba(15,23,42,.55); backdrop-filter: blur(3px);
+    display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.mra-modal-overlay.is-active { display: flex; animation: mra-fade .25s ease; }
+@keyframes mra-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.mra-modal {
+    background: var(--mra-card);
+    width: min(820px, 100%);
+    max-height: 90vh; display: flex; flex-direction: column;
+    border-radius: 20px; overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,.35);
+    animation: mra-pop .28s ease;
+}
+@keyframes mra-pop { from { transform: translateY(16px) scale(.98); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.mra-modal-head {
+    background: linear-gradient(135deg, var(--mra-primary), var(--mra-dark));
+    color: #fff; padding: 1.2rem 1.6rem;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+}
+.mra-modal-head h3 { margin: 0 0 .3rem; font-size: 1.25rem; font-weight: 800; display:flex; align-items:center; gap:.5rem; }
+.mra-modal-sub { font-size: .82rem; opacity: .92; display: flex; flex-wrap: wrap; gap: .3rem 1rem; }
+.mra-close { background: rgba(255,255,255,.2); border: none; color: #fff; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; font-size: 1rem; transition: background .18s; }
+.mra-close:hover { background: rgba(255,255,255,.34); }
+
+.mra-modal-body {
+    padding: 1.7rem 2rem; overflow-y: auto; line-height: 2.05; font-size: 1.02rem;
+    background: repeating-linear-gradient(transparent, transparent 39px, rgba(14,165,233,.04) 40px);
+}
+.mra-modal-body .mra-h {
+    font-weight: 800; color: var(--mra-dark); margin: 1.2rem 0 .35rem;
+    padding-bottom: .3rem; border-bottom: 2px solid rgba(14,165,233,.18); font-size: 1.07rem;
+}
+.mra-modal-body .mra-h:first-child { margin-top: 0; }
+.mra-modal-body p { margin: .35rem 0; }
+.mra-modal-body .mra-disclaimer {
+    margin-top: 1.5rem; padding: 1rem 1.2rem; background: #fffbeb;
+    border: 1px dashed #f59e0b; border-radius: 12px; color: #92400e;
+    font-size: .9rem; font-weight: 600; line-height: 1.7;
+}
+
+.mra-modal-actions {
+    display: flex; flex-wrap: wrap; gap: .7rem;
+    padding: 1.1rem 1.6rem; border-top: 1px solid var(--mra-border); background: var(--mra-bg);
+}
+.mra-action-btn {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .65rem 1.1rem; border-radius: 11px;
+    border: 1.5px solid var(--mra-border); background: #fff;
+    color: var(--mra-dark); font-family: inherit; font-weight: 700; font-size: .9rem;
+    cursor: pointer; transition: background .18s, transform .12s, border-color .18s;
+}
+.mra-action-btn:hover { background: #eff6ff; transform: translateY(-1px); border-color: var(--mra-primary); }
+.mra-action-btn.mra-pdf { background: var(--mra-emerald); color: #fff; border-color: var(--mra-emerald); }
+.mra-action-btn.mra-pdf:hover { background: var(--mra-emerald-d); }
+.mra-action-btn.mra-del { margin-inline-start: auto; background: #fef2f2; color: var(--mra-red); border-color: #fecaca; }
+.mra-action-btn.mra-del:hover { background: var(--mra-red); color: #fff; border-color: var(--mra-red); }
+
+.mra-toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--mra-emerald-d); color: #fff; padding: .8rem 1.4rem;
+    border-radius: 12px; font-family: 'Cairo', sans-serif; font-weight: 700; font-size: .92rem;
+    box-shadow: 0 10px 28px rgba(0,0,0,.2);
+    opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; z-index: 100001;
+}
+.mra-toast.is-active { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 600px) {
+    .mra-item { flex-direction: column; align-items: stretch; }
+    .mra-view-btn { justify-content: center; }
+    .mra-modal-body { padding: 1.2rem 1.1rem; }
+    .mra-action-btn { flex: 1 1 auto; justify-content: center; }
+    .mra-action-btn.mra-del { margin-inline-start: 0; }
+}

@@ -1,0 +1,173 @@
+/* ================================================================
+   MedChifaGiz — dr_statistics.css
+   صفحة الإحصائيات (رسوم بيانية فقط — لا بطاقات / لا عدّادات)
+   تعتمد على متغيّرات النظام (var(--...)) فيدعم الوضع الليلي تلقائياً.
+   ضعه في <head> بعد باقي ملفات الـ CSS:
+   <link rel="stylesheet" href="dr_statistics.css">
+================================================================ */
+
+/* مساحة الصفحة */
+#stats-interface .stats-wrap {
+    display: flex;            /* يطابق display:flex الذي يضبطه الـ JS */
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 22px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* ── الصف الأول: كاردتان جنب بعض (50% / 50%) ──
+   في RTL يظهر العنصر الأول (الملفات) على اليمين والثاني (النشاط) على اليسار */
+#stats-interface .stats-wrap > .stat-panel:nth-child(1),   /* إحصائيات الملفات */
+#stats-interface .stats-wrap > .stat-panel:nth-child(2) {  /* النشاط الأسبوعي */
+    flex: 1 1 calc((100% - 22px) / 2);
+    min-width: 0;
+}
+
+/* إذابة حاوية الـ Doughnut حتى تنضمّ الكاردات الثلاث لنفس الصف */
+#stats-interface .stats-wrap > .stat-doughnut-grid {
+    display: contents;
+}
+
+/* ── الصف الثاني: ثلاث كاردات جنب بعض (المرضى / الرجال / النساء) ── */
+#stats-interface .stats-wrap > .stat-panel:nth-child(3),        /* المرضى المقيمون */
+#stats-interface .stat-doughnut-grid > .stat-panel:nth-child(1), /* الرجال */
+#stats-interface .stat-doughnut-grid > .stat-panel:nth-child(2) { /* النساء */
+    flex: 1 1 calc((100% - 44px) / 3);
+    min-width: 0;
+}
+
+/* لوحة رسم بياني (ليست بطاقة أرقام — حاوية للمخطط فقط) */
+.stat-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md, 16px);
+    box-shadow: var(--shadow-card, 0 2px 12px rgba(14,165,233,.08));
+    padding: 20px 22px 24px;
+    transition: var(--transition, all .3s ease);
+}
+
+.stat-panel:hover {
+    box-shadow: var(--shadow-md, 0 4px 16px rgba(0,0,0,.1));
+    border-color: rgba(14, 165, 233, .28);
+}
+
+/* رأس اللوحة */
+.stat-panel-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.stat-panel-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    color: #fff;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    box-shadow: 0 4px 12px rgba(14, 165, 233, .3);
+}
+
+.stat-panel-titles { display: flex; flex-direction: column; gap: 2px; }
+
+.stat-panel-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    font-family: 'Cairo', sans-serif;
+}
+
+.stat-panel-sub {
+    font-size: .76rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* حاوية المخطط (الارتفاع لازم لأن Chart.js responsive) */
+.stat-canvas-box {
+    position: relative;
+    width: 100%;
+    height: 320px;
+}
+
+.stat-canvas-box.tall { height: 340px; }
+
+/* الصف الثاني: تصغير ارتفاع المخططات قليلاً لتظهر الثلاثة متناسقة */
+#boxResidency,
+#boxMen,
+#boxWomen { height: 250px; }
+
+/* حالة لا توجد بيانات */
+.stat-empty {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    color: var(--text-muted);
+    font-size: .85rem;
+    text-align: center;
+    font-family: 'Cairo', sans-serif;
+}
+
+.stat-empty i { font-size: 1.8rem; color: var(--primary); opacity: .55; }
+.stat-canvas-box.is-empty .stat-empty { display: flex; }
+.stat-canvas-box.is-empty canvas { opacity: 0; }
+
+/* مؤشر التحميل */
+.stats-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 60px 20px;
+    color: var(--text-muted);
+    font-size: .9rem;
+    font-family: 'Cairo', sans-serif;
+}
+.stats-loading i { color: var(--primary); animation: statspin 1s linear infinite; font-size: 1.2rem; }
+@keyframes statspin { to { transform: rotate(360deg); } }
+
+/* خطأ */
+.stats-error {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 18px;
+    border-radius: var(--radius-sm, 10px);
+    background: rgba(239, 68, 68, .08);
+    color: var(--urgent-red, #ef4444);
+    font-size: .85rem;
+    font-family: 'Cairo', sans-serif;
+    border: 1px solid rgba(239, 68, 68, .2);
+}
+
+/* ── Responsive ── */
+@media (max-width: 992px) {
+    /* الكل بعرض كامل، كل كارد في سطر */
+    #stats-interface .stats-wrap > .stat-panel:nth-child(1),
+    #stats-interface .stats-wrap > .stat-panel:nth-child(2),
+    #stats-interface .stats-wrap > .stat-panel:nth-child(3),
+    #stats-interface .stat-doughnut-grid > .stat-panel:nth-child(1),
+    #stats-interface .stat-doughnut-grid > .stat-panel:nth-child(2) {
+        flex: 1 1 100%;
+    }
+    #boxResidency, #boxMen, #boxWomen { height: 290px; }
+}
+
+@media (max-width: 600px) {
+    .stat-panel { padding: 16px 14px 18px; }
+    .stat-canvas-box { height: 280px; }
+}

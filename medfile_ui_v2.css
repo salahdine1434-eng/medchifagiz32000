@@ -1,0 +1,910 @@
+/* ================================================================
+   medfile_ui_v2.css — MedChifaGiz
+   تحسين UI/UX للملف الطبي — CSS فقط، بدون أي تغيير في Logic
+   أضفه في <head> آخر stylesheet:
+   <link rel="stylesheet" href="medfile_ui_v2.css">
+================================================================ */
+
+/* ══════════════════════════════════════════════════════════
+   § 0 — CSS VARIABLES (موروثة من النظام + تحسينات)
+══════════════════════════════════════════════════════════ */
+:root {
+    --med-blue:        #0ea5e9;
+    --med-blue-dark:   #0284c7;
+    --med-cyan:        #06b6d4;
+    --med-green:       #10b981;
+    --med-purple:      #7c3aed;
+    --med-amber:       #f59e0b;
+    --med-red:         #ef4444;
+
+    --med-surface:     #ffffff;
+    --med-surface-2:   #f8fafc;
+    --med-border:      rgba(14, 165, 233, 0.13);
+    --med-border-soft: rgba(148, 163, 184, 0.12);
+    --med-text:        #0f172a;
+    --med-text-sub:    #475569;
+    --med-text-muted:  #94a3b8;
+
+    --med-shadow-sm:   0 1px 4px rgba(14,165,233,0.07);
+    --med-shadow-md:   0 4px 16px rgba(14,165,233,0.11);
+    --med-shadow-lg:   0 8px 32px rgba(14,165,233,0.16);
+
+    --med-radius-sm:   8px;
+    --med-radius-md:   12px;
+    --med-radius-lg:   16px;
+    --med-radius-xl:   20px;
+
+    --med-transition:  all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ══════════════════════════════════════════════════════════
+   § 1 — HEADER / CONTENT-HEADER تقليل الارتفاع وتنظيف
+══════════════════════════════════════════════════════════ */
+
+/* Header بطاقة إضافة مريض */
+#addPatientFormSection .content-header {
+    padding: 12px 18px !important;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%) !important;
+    border-bottom: 1px solid var(--med-border) !important;
+    gap: 10px !important;
+}
+
+#addPatientFormSection .content-header h2 {
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+    color: var(--med-text) !important;
+    margin: 0 !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#addPatientFormSection .content-header button {
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 8px !important;
+    background: rgba(14,165,233,0.08) !important;
+    border: 1px solid var(--med-border) !important;
+    color: var(--med-blue) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--med-transition) !important;
+}
+#addPatientFormSection .content-header button:hover {
+    background: rgba(239,68,68,0.1) !important;
+    border-color: rgba(239,68,68,0.3) !important;
+    color: var(--med-red) !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   § 2 — ACCORDION SECTIONS — تقليل spacing وتحسين hierarchy
+══════════════════════════════════════════════════════════ */
+
+.pif-accordion {
+    gap: 6px !important;
+    padding: 10px !important;
+}
+
+.pif-section {
+    border-radius: var(--med-radius-md) !important;
+    border: 1px solid var(--med-border-soft) !important;
+    box-shadow: var(--med-shadow-sm) !important;
+    transition: var(--med-transition) !important;
+}
+
+.pif-section:hover {
+    border-color: var(--med-border) !important;
+    box-shadow: var(--med-shadow-md) !important;
+}
+
+.pif-section.pif-open {
+    border-color: rgba(14,165,233,0.25) !important;
+    box-shadow: var(--med-shadow-md) !important;
+}
+
+/* Section Header — أكثر كثافة وأوضح */
+.pif-sec-header {
+    padding: 10px 14px !important;
+    gap: 9px !important;
+    min-height: 48px;
+}
+
+.pif-sec-icon {
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 8px !important;
+    font-size: 0.78rem !important;
+}
+
+.pif-sec-title {
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.1px !important;
+}
+
+.pif-sec-status {
+    font-size: 0.63rem !important;
+    padding: 2px 7px !important;
+}
+
+/* Section Body — تقليل الـ padding الداخلي */
+.pif-sec-body-inner {
+    padding: 12px 14px !important;
+}
+
+.pif-sec-body-inner .form-group {
+    margin-bottom: 10px !important;
+}
+
+.pif-sec-body-inner .form-group label {
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    color: var(--med-text-sub) !important;
+    margin-bottom: 4px !important;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.pif-sec-body-inner .form-group input,
+.pif-sec-body-inner .form-group textarea,
+.pif-sec-body-inner .form-group select {
+    padding: 8px 11px !important;
+    font-size: 0.82rem !important;
+    border-radius: var(--med-radius-sm) !important;
+    border: 1.5px solid rgba(14,165,233,0.15) !important;
+    background: var(--med-surface-2) !important;
+    transition: var(--med-transition) !important;
+}
+
+.pif-sec-body-inner .form-group input:focus,
+.pif-sec-body-inner .form-group textarea:focus,
+.pif-sec-body-inner .form-group select:focus {
+    border-color: var(--med-blue) !important;
+    background: var(--med-surface) !important;
+    box-shadow: 0 0 0 3px rgba(14,165,233,0.09) !important;
+}
+
+/* Grid 2 — ضيق أكثر */
+.pif-grid-2 {
+    gap: 8px !important;
+}
+
+/* Action Rows — ضغط أكثر */
+.pif-actions-row {
+    padding: 10px 14px !important;
+    gap: 7px !important;
+}
+
+.pif-btn {
+    padding: 8px 13px !important;
+    font-size: 0.77rem !important;
+    border-radius: var(--med-radius-sm) !important;
+    font-weight: 700 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: var(--med-transition) !important;
+}
+
+.pif-btn-primary {
+    background: linear-gradient(135deg, #0ea5e9, #0284c7) !important;
+    box-shadow: 0 3px 10px rgba(14,165,233,0.2) !important;
+}
+.pif-btn-primary:hover {
+    box-shadow: 0 5px 14px rgba(14,165,233,0.32) !important;
+    transform: translateY(-1px) !important;
+}
+
+.pif-btn-success {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    box-shadow: 0 3px 10px rgba(16,185,129,0.2) !important;
+}
+.pif-btn-success:hover {
+    box-shadow: 0 5px 14px rgba(16,185,129,0.32) !important;
+    transform: translateY(-1px) !important;
+}
+
+.pif-btn-ghost {
+    background: rgba(14,165,233,0.06) !important;
+    border: 1.5px solid var(--med-border) !important;
+    color: var(--med-blue) !important;
+}
+.pif-btn-ghost:hover {
+    background: rgba(14,165,233,0.11) !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   § 3 — FICHE DE TRAITEMENT — إعادة تصميم بصري احترافي
+══════════════════════════════════════════════════════════ */
+
+/* Section wrapper */
+#apf-sec-fiche.pif-open,
+#pif-sec-fiche.pif-open {
+    border-color: rgba(124,58,237,0.2) !important;
+    box-shadow: 0 4px 16px rgba(124,58,237,0.08) !important;
+}
+
+/* الهيدر */
+#apf-sec-fiche .pif-sec-header,
+[id^="pif-sec-fiche"] .pif-sec-header {
+    border-left: 3px solid transparent;
+}
+
+#apf-sec-fiche.pif-open .pif-sec-header,
+[id^="pif-sec-fiche"].pif-open .pif-sec-header {
+    background: linear-gradient(135deg, #7c3aed, #6d28d9) !important;
+}
+
+/* Info banner */
+#apf-sec-fiche .pif-sec-body-inner > div[style*="background:#f0f9ff"],
+[id^="pif-sec-fiche"] .pif-sec-body-inner > div[style*="background:#f0f9ff"] {
+    background: linear-gradient(135deg, #faf5ff, #f3e8ff) !important;
+    border: 1px solid rgba(124,58,237,0.15) !important;
+    border-radius: var(--med-radius-md) !important;
+    padding: 14px !important;
+    margin-bottom: 0 !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* شريط زخرفي على اليسار */
+#apf-sec-fiche .pif-sec-body-inner > div[style*="background:#f0f9ff"]::before,
+[id^="pif-sec-fiche"] .pif-sec-body-inner > div[style*="background:#f0f9ff"]::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, #7c3aed, #a78bfa);
+}
+
+/* نص تعريفي الفيش */
+#apf-sec-fiche .pif-sec-body-inner > div[style*="background:#f0f9ff"] > p,
+[id^="pif-sec-fiche"] .pif-sec-body-inner > div[style*="background:#f0f9ff"] > p {
+    background: rgba(124,58,237,0.07) !important;
+    border-radius: var(--med-radius-sm) !important;
+    padding: 7px 10px !important;
+    font-size: 0.73rem !important;
+    font-weight: 600 !important;
+    color: #5b21b6 !important;
+    border-right: 2px solid #7c3aed !important;
+    margin-bottom: 12px !important;
+}
+
+/* Label التشخيص */
+#apf-sec-fiche label[for="apf_fiche_diagnostic"],
+#apf-sec-fiche .form-group:first-of-type label,
+[id^="pif-sec-fiche"] .form-group:first-of-type label {
+    color: #5b21b6 !important;
+    font-weight: 800 !important;
+    font-size: 0.75rem !important;
+}
+
+/* Textarea التشخيص */
+#apf_fiche_diagnostic,
+textarea[id$="fiche_diagnostic"] {
+    border-color: rgba(124,58,237,0.2) !important;
+    background: rgba(250,245,255,0.6) !important;
+    min-height: 72px;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    color: var(--med-text) !important;
+}
+#apf_fiche_diagnostic:focus,
+textarea[id$="fiche_diagnostic"]:focus {
+    border-color: #7c3aed !important;
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.1) !important;
+    background: #fff !important;
+}
+
+/* Label الأدوية */
+#apf-sec-fiche .form-group:nth-of-type(2) label,
+[id^="pif-sec-fiche"] .form-group:nth-of-type(2) label {
+    color: #059669 !important;
+    font-weight: 800 !important;
+}
+
+/* Textarea الأدوية */
+#apf_fiche_medications,
+textarea[id$="fiche_medications"] {
+    border-color: rgba(16,185,129,0.2) !important;
+    background: rgba(240,253,248,0.6) !important;
+    min-height: 88px;
+    font-size: 0.85rem !important;
+    font-family: 'Courier New', 'Cairo', monospace !important;
+    letter-spacing: 0.2px;
+    line-height: 1.7 !important;
+}
+#apf_fiche_medications:focus,
+textarea[id$="fiche_medications"]:focus {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16,185,129,0.1) !important;
+    background: #fff !important;
+}
+
+/* Fiche buttons */
+#apf-sec-fiche .pif-actions-row,
+[id^="pif-sec-fiche"] .pif-actions-row {
+    background: linear-gradient(135deg, rgba(124,58,237,0.03), rgba(16,185,129,0.03)) !important;
+    border-top: 1px solid rgba(124,58,237,0.08) !important;
+}
+
+#apf-fiche-save-btn,
+[id$="fiche-save-btn"] {
+    background: linear-gradient(135deg, #7c3aed, #6d28d9) !important;
+    box-shadow: 0 3px 10px rgba(124,58,237,0.25) !important;
+}
+#apf-fiche-save-btn:hover,
+[id$="fiche-save-btn"]:hover {
+    box-shadow: 0 5px 14px rgba(124,58,237,0.38) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   § 4 — RAPPORT MÉDICAL — إعادة تصميم ورقة طبية رسمية
+══════════════════════════════════════════════════════════ */
+
+/* Section wrapper */
+#apf-sec-rapport.pif-open,
+[id^="pif-sec-rapport"].pif-open {
+    border-color: rgba(2,132,199,0.22) !important;
+    box-shadow: 0 6px 24px rgba(2,132,199,0.1) !important;
+}
+
+#apf-sec-rapport.pif-open .pif-sec-header,
+[id^="pif-sec-rapport"].pif-open .pif-sec-header {
+    background: linear-gradient(135deg, #0284c7, #0369a1) !important;
+}
+
+/* badge التقرير */
+#apf-rapport-status-badge,
+[id$="rapport-status-badge"] {
+    transition: var(--med-transition) !important;
+}
+
+/* بطاقة التقرير الرئيسية */
+.pif-rapport-sheet {
+    border-radius: var(--med-radius-lg) !important;
+    border: 1px solid rgba(14,165,233,0.18) !important;
+    box-shadow: 0 4px 20px rgba(14,165,233,0.08), 0 1px 4px rgba(0,0,0,0.04) !important;
+    overflow: hidden !important;
+    background: var(--med-surface) !important;
+}
+
+/* Header المؤسسة — أكثر كثافة وأقل ارتفاع */
+.pif-rapport-header {
+    padding: 12px 16px 10px !important;
+    gap: 10px !important;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%) !important;
+    border-bottom: 2px solid rgba(14,165,233,0.18) !important;
+    position: relative;
+}
+
+/* خط زخرفي سفلي */
+.pif-rapport-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #0ea5e9, #06b6d4, transparent);
+}
+
+/* اسم المؤسسة */
+.pif-rapport-institution .inst-main {
+    font-size: 0.74rem !important;
+    letter-spacing: 0.3px !important;
+}
+
+/* شعار CHU */
+.pif-rapport-logo-chu {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 14px rgba(14,165,233,0.3) !important;
+}
+
+.pif-rapport-logo-chu span {
+    font-size: 1.2rem !important;
+}
+
+/* عنوان التقرير */
+.pif-rapport-title-bar {
+    padding: 10px 18px !important;
+    background: #fafcff !important;
+    border-bottom: 1px solid rgba(14,165,233,0.09) !important;
+}
+
+.pif-rapport-title-bar h2 {
+    font-size: 0.95rem !important;
+    letter-spacing: 4px !important;
+    color: #0f172a !important;
+}
+
+.rapport-title-line {
+    height: 2px !important;
+    width: 50px !important;
+    margin: 6px auto 0 !important;
+}
+
+/* حقول بيانات المريض داخل التقرير */
+.pif-rapport-patient-info {
+    padding: 10px 16px !important;
+    gap: 6px 16px !important;
+    background: rgba(248,250,252,0.7) !important;
+}
+
+.pif-rapport-info-row {
+    font-size: 0.78rem !important;
+    padding: 3px 0 !important;
+    border-bottom: 1px dashed rgba(14,165,233,0.15) !important;
+}
+
+.pif-rapport-info-row label {
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    color: var(--med-text-sub) !important;
+    min-width: 60px !important;
+}
+
+.pif-rapport-info-row input {
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    padding: 1px 4px !important;
+}
+
+/* منطقة المحتوى — الجسم الرئيسي للتقرير */
+.pif-rapport-body {
+    padding: 14px 18px !important;
+    min-height: 160px !important;
+    background: repeating-linear-gradient(
+        transparent,
+        transparent 31px,
+        rgba(14,165,233,0.055) 31px,
+        rgba(14,165,233,0.055) 32px
+    ) !important;
+    position: relative;
+}
+
+/* Label "محتوى التقرير" */
+.pif-rapport-body-label {
+    font-size: 0.68rem !important;
+    letter-spacing: 1.5px !important;
+    margin-bottom: 6px !important;
+    color: var(--med-blue) !important;
+}
+
+/* Textarea التقرير */
+#apf_rapport_content,
+textarea[id*="rapport_content"] {
+    min-height: 150px !important;
+    font-size: 0.9rem !important;
+    line-height: 32px !important;
+    font-family: 'Times New Roman', Times, 'Cairo', serif !important;
+    color: #1e293b !important;
+    letter-spacing: 0.2px !important;
+}
+#apf_rapport_content:focus,
+textarea[id*="rapport_content"]:focus {
+    outline: none !important;
+    background: rgba(255,255,255,0.5) !important;
+}
+
+/* Footer التوقيع */
+.pif-rapport-footer {
+    padding: 10px 18px 14px !important;
+    background: rgba(248,252,255,0.8) !important;
+    border-top: 1px dashed rgba(14,165,233,0.12) !important;
+}
+
+.pif-rapport-signature-label {
+    font-size: 0.7rem !important;
+    color: var(--med-text-sub) !important;
+    margin-bottom: 28px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.pif-rapport-signature-line {
+    width: 130px !important;
+    font-size: 0.62rem !important;
+    color: var(--med-text-muted) !important;
+}
+
+/* أزرار التقرير */
+#apf-sec-rapport .pif-actions-row,
+[id^="pif-sec-rapport"] .pif-actions-row {
+    background: linear-gradient(135deg, rgba(14,165,233,0.04), rgba(6,182,212,0.02)) !important;
+    border-top: 1px solid rgba(14,165,233,0.07) !important;
+}
+
+#apf-rapport-save-btn,
+[id$="rapport-save-btn"] {
+    background: linear-gradient(135deg, #0284c7, #0369a1) !important;
+    box-shadow: 0 3px 10px rgba(2,132,199,0.25) !important;
+}
+#apf-rapport-save-btn:hover,
+[id$="rapport-save-btn"]:hover {
+    box-shadow: 0 5px 14px rgba(2,132,199,0.38) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   § 5 — VR-WRAP (view_record.php) — تحسينات عرض الملف
+══════════════════════════════════════════════════════════ */
+
+.vr-wrap {
+    gap: 10px !important;
+}
+
+.vr-group {
+    border-radius: var(--med-radius-md) !important;
+    box-shadow: var(--med-shadow-sm) !important;
+}
+
+.vr-group-head {
+    padding: 8px 13px !important;
+    font-size: 0.76rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.2px !important;
+}
+
+.vr-group-body {
+    padding: 10px 12px !important;
+    gap: 7px !important;
+}
+
+.vr-field {
+    padding: 7px 9px !important;
+    border-radius: var(--med-radius-sm) !important;
+}
+
+.vr-field-label {
+    font-size: 0.61rem !important;
+    letter-spacing: 0.6px !important;
+}
+
+.vr-field-value {
+    font-size: 0.81rem !important;
+    font-weight: 600 !important;
+    line-height: 1.5 !important;
+}
+
+/* Vitals chips — أكثر إحكاماً */
+.vr-vitals-grid {
+    padding: 10px 12px !important;
+    gap: 7px !important;
+}
+
+.vr-vital-chip {
+    padding: 9px 7px !important;
+    border-radius: var(--med-radius-sm) !important;
+}
+
+.vr-vital-chip .chip-label {
+    font-size: 0.58rem !important;
+}
+
+.vr-vital-chip .chip-value {
+    font-size: 0.9rem !important;
+    font-weight: 800 !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   § 6 — FICHE + RAPPORT داخل view_record.php
+   (قسم العرض بعد الحفظ — أضيف في view_record.php سابقاً)
+══════════════════════════════════════════════════════════ */
+
+/* بطاقة فيش العلاج في العرض */
+.vr-group[style*="rgba(139,92,246"] {
+    border-color: rgba(124,58,237,0.2) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.vr-group[style*="rgba(139,92,246"]::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, #7c3aed, #a78bfa);
+}
+
+/* بطاقة التقرير في العرض */
+.vr-group[style*="rgba(14,165,233,0.2)"] {
+    border-color: rgba(14,165,233,0.2) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.vr-group[style*="rgba(14,165,233,0.2)"]::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, #0ea5e9, #06b6d4);
+}
+
+/* ══════════════════════════════════════════════════════════
+   § 7 — PATIENT-ITEM inline file — تحسين شامل
+══════════════════════════════════════════════════════════ */
+
+.patient-item {
+    border-radius: var(--med-radius-lg) !important;
+    border: 1px solid rgba(14,165,233,0.1) !important;
+    box-shadow: var(--med-shadow-sm) !important;
+    margin-bottom: 8px !important;
+}
+
+.patient-item-row {
+    padding: 12px 16px !important;
+}
+
+.patient-avatar-circle {
+    width: 38px !important;
+    height: 38px !important;
+    font-size: 0.92rem !important;
+}
+
+.patient-item-name {
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+}
+
+.patient-item-time {
+    font-size: 0.72rem !important;
+}
+
+/* patient-file-inner */
+.patient-file-inner {
+    padding: 0 12px 12px !important;
+}
+
+.patient-file-header {
+    padding: 12px 0 8px !important;
+    margin-bottom: 10px !important;
+}
+
+.patient-file-title {
+    font-size: 0.84rem !important;
+    font-weight: 800 !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   § 8 — FOLLOWUP SECTION — تحسين بصري
+══════════════════════════════════════════════════════════ */
+
+.mfu-section {
+    margin-top: 6px !important;
+}
+
+.mfu-section-head {
+    padding: 10px 13px !important;
+    border-radius: var(--med-radius-md) var(--med-radius-md) 0 0 !important;
+}
+
+.mfu-section-title {
+    font-size: 0.8rem !important;
+    font-weight: 800 !important;
+    gap: 7px !important;
+}
+
+.mfu-add-btn {
+    padding: 6px 13px !important;
+    font-size: 0.76rem !important;
+    border-radius: var(--med-radius-sm) !important;
+    box-shadow: 0 2px 8px rgba(16,185,129,0.25) !important;
+}
+
+.mfu-item {
+    padding: 12px !important;
+}
+
+.mfu-date-badge {
+    font-size: 0.7rem !important;
+    padding: 2px 9px !important;
+    margin-bottom: 7px !important;
+}
+
+.mfu-row-label {
+    font-size: 0.63rem !important;
+    min-width: 80px !important;
+}
+
+.mfu-row-value {
+    font-size: 0.78rem !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   § 9 — PILL BADGES POUR STATUS
+══════════════════════════════════════════════════════════ */
+
+/* Badge "تم الحفظ" dynamique via JS */
+.med-badge-saved {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: rgba(16,185,129,0.12);
+    color: #059669;
+    border: 1px solid rgba(16,185,129,0.2);
+    white-space: nowrap;
+}
+
+.med-badge-draft {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: rgba(245,158,11,0.1);
+    color: #d97706;
+    border: 1px solid rgba(245,158,11,0.2);
+    white-space: nowrap;
+}
+
+/* ══════════════════════════════════════════════════════════
+   § 10 — RESPONSIVE MOBILE
+══════════════════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+    .pif-rapport-header {
+        grid-template-columns: 1fr !important;
+        padding: 10px 12px 8px !important;
+        gap: 8px !important;
+    }
+
+    .pif-rapport-header-left,
+    .pif-rapport-header-right {
+        text-align: center !important;
+    }
+
+    .pif-rapport-patient-info {
+        grid-template-columns: 1fr !important;
+        padding: 8px 12px !important;
+    }
+
+    .pif-rapport-body {
+        padding: 10px 12px !important;
+    }
+
+    .pif-rapport-footer {
+        justify-content: center !important;
+    }
+
+    .pif-btn {
+        min-width: 80px !important;
+        padding: 7px 10px !important;
+        font-size: 0.72rem !important;
+    }
+
+    .pif-grid-2 {
+        grid-template-columns: 1fr !important;
+    }
+
+    .pif-actions-row {
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+    }
+
+    .patient-action-btns {
+        display: none !important;
+    }
+
+    .vr-group-body {
+        grid-template-columns: 1fr !important;
+    }
+
+    .vr-vitals-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (max-width: 360px) {
+    .pif-rapport-title-bar h2 {
+        font-size: 0.82rem !important;
+        letter-spacing: 2px !important;
+    }
+
+    .pif-rapport-logo-chu {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    .pif-rapport-logo-chu span {
+        font-size: 1rem !important;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════
+   § 11 — DARK MODE overrides
+══════════════════════════════════════════════════════════ */
+
+body.dark-mode .pif-rapport-header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+}
+
+body.dark-mode .pif-rapport-title-bar {
+    background: #0f172a !important;
+}
+
+body.dark-mode .pif-rapport-patient-info {
+    background: rgba(15,23,42,0.5) !important;
+}
+
+body.dark-mode .pif-rapport-footer {
+    background: #0f172a !important;
+}
+
+body.dark-mode .pif-rapport-sheet {
+    background: #1e293b !important;
+    border-color: rgba(14,165,233,0.12) !important;
+}
+
+body.dark-mode #apf-sec-fiche .pif-sec-body-inner > div[style*="background:#f0f9ff"],
+body.dark-mode [id^="pif-sec-fiche"] .pif-sec-body-inner > div[style*="background:#f0f9ff"] {
+    background: linear-gradient(135deg, #1e1327, #1a1033) !important;
+    border-color: rgba(124,58,237,0.2) !important;
+}
+
+body.dark-mode #apf_fiche_diagnostic,
+body.dark-mode textarea[id$="fiche_diagnostic"] {
+    background: rgba(30,19,39,0.6) !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode #apf_fiche_medications,
+body.dark-mode textarea[id$="fiche_medications"] {
+    background: rgba(15,30,25,0.6) !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .vr-group[style*="rgba(139,92,246"],
+body.dark-mode .vr-group[style*="rgba(14,165,233,0.2)"] {
+    background: #1a2235 !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   § 12 — ANIMATIONS (بسيطة، لا تؤثر على الـ logic)
+══════════════════════════════════════════════════════════ */
+
+/* Section open animation */
+.pif-section.pif-open .pif-sec-body-inner {
+    animation: pifFadeIn 0.22s ease forwards;
+}
+
+@keyframes pifFadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Rapport sheet appear */
+.pif-rapport-sheet {
+    animation: rapportReveal 0.3s ease forwards;
+}
+
+@keyframes rapportReveal {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Buttons press effect */
+.pif-btn:active {
+    transform: translateY(0) scale(0.98) !important;
+    box-shadow: none !important;
+}

@@ -1,0 +1,115 @@
+<!-- ════════════════════════════════════════════════════════════════
+     MedChifaGiz — تفعيل إرسال الوصفة للصيدلية + إرسال fiche للممرض
+     يُلصق كما هو قرب نهاية dr_dashboard.php (انظر تعليمات التركيب).
+     إضافة فقط: يتجاوز (override) الدالتين stub الموجودتين دون حذف أي سطر:
+        apfSendPrescriptionToPharmacy()  → الزر "إرسال الوصفة للصيدلي"
+        apfSendFicheToNurse()            → الزر "إرسال fiche للممرض"
+     يستخدم window._apfCurrentRecordId (نفس مصدر rapport/fiche) و showAddPatientToast.
+     ════════════════════════════════════════════════════════════════ -->
+<script>
+(function doctorSendModule() {
+    var PHARMACY_URL = window.PHARMACY_API_URL || 'pharmacy_api.php';
+    var NURSE_URL    = window.NURSE_API_URL    || 'nurse_treatment_api.php';
+
+    function toast(msg, type) {
+        if (typeof window.showAddPatientToast === 'function') window.showAddPatientToast(msg, type);
+        else alert(msg);
+    }
+    function gv(id) {
+        var el = document.getElementById(id);
+        return el ? el.value.trim() : '';
+    }
+    function currentPatientId() {
+        return parseInt(window._apfCurrentRecordId, 10) || 0;
+    }
+    // ذكر → men / أنثى → women
+    function aileFromGender(g) {
+        if (g === 'ذكر') return 'men';
+        if (g === 'أنثى') return 'women';
+        return '';
+    }
+    // جمع بيانات المريض المشتركة من واجهة الطبيب الحالية
+    function patientCommon() {
+        var gender = gv('apf_gender');
+        return {
+            patient_id:   currentPatientId(),
+            patient_name: gv('apf_full_name') || gv('apf_rx_patient_name'),
+            birth_info:   gv('apf_birth_info'),
+            gender:       gender,
+            room:         gv('apf_room_number'),
+            service:      window.HOSPITAL_SERVICE || '',
+            aile:         aileFromGender(gender),
+            doctor_name:  window.DOCTOR_NAME || '',
+            diagnostic:   gv('apf_fiche_diagnostic')
+        };
+    }
+
+    /* ════════ إرسال الوصفة للصيدلية ════════ */
+    window.apfSendPrescriptionToPharmacy = function () {
+        var c = patientCommon();
+        var prescription = gv('apf_rx_prescription');
+
+        if (c.patient_id <= 0) { toast('⚠️ لا يوجد مريض مفتوح — احفظ ملف المريض أولاً', 'warn'); return; }
+        if (!prescription)     { toast('⚠️ لا يمكن إرسال وصفة فارغة — اكتب الأدوية أولاً', 'warn'); return; }
+
+        var fd = new FormData();
+        fd.append('action', 'send_prescription');
+        fd.append('patient_id',   c.patient_id);
+        fd.append('patient_name', c.patient_name);
+        fd.append('birth_info',   c.birth_info);
+        fd.append('gender',       c.gender);
+        fd.append('room',         c.room);
+        fd.append('service',      c.service);
+        fd.append('aile',         c.aile);
+        fd.append('doctor_name',  c.doctor_name);
+        fd.append('diagnostic',   c.diagnostic);
+        fd.append('rx_date',      gv('apf_rx_date'));
+        fd.append('notes',        gv('apf_rx_doctor_notes'));
+        // الوصفة نص حر: كل سطر = دواء (الـ API يحوّلها لـ JSON دون فقدان أي معلومة)
+        fd.append('medicines',    prescription);
+
+        toast('📤 جاري إرسال الوصفة للصيدلية...', 'info');
+        fetch(PHARMACY_URL, { method: 'POST', body: fd, credentials: 'same-origin' })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                if (res && res.success) toast('✅ ' + (res.message || 'تم إرسال الوصفة للصيدلية'), 'success');
+                else toast('❌ ' + (res && res.message ? res.message : 'فشل الإرسال'), 'error');
+            })
+            .catch(function () { toast('❌ تعذّر الاتصال بالخادم', 'error'); });
+    };
+
+    /* ════════ إرسال fiche العلاج للممرض ════════ */
+    window.apfSendFicheToNurse = function () {
+        var c = patientCommon();
+        var medications = gv('apf_fiche_medications');
+
+        if (c.patient_id <= 0) { toast('⚠️ لا يوجد مريض مفتوح — احفظ ملف المريض أولاً', 'warn'); return; }
+        if (!medications)      { toast('⚠️ لا يمكن إرسال fiche فارغة — اكتب العلاجات أولاً', 'warn'); return; }
+
+        var fd = new FormData();
+        fd.append('action', 'send_treatment');
+        fd.append('patient_id',     c.patient_id);
+        fd.append('patient_name',   c.patient_name);
+        fd.append('birth_info',     c.birth_info);
+        fd.append('gender',         c.gender);
+        fd.append('room',           c.room);
+        fd.append('service',        c.service);
+        fd.append('aile',           c.aile);
+        fd.append('doctor_name',    c.doctor_name);
+        fd.append('motif',          gv('apf_reason_exam'));
+        fd.append('diagnostic',     c.diagnostic);
+        fd.append('admission_date', gv('apf_admission_date'));
+        // العلاجات نص حر: كل سطر = علاج (الـ API يحوّلها لـ JSON)
+        fd.append('treatments',     medications);
+
+        toast('📤 جاري إرسال fiche العلاج للممرض...', 'info');
+        fetch(NURSE_URL, { method: 'POST', body: fd, credentials: 'same-origin' })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                if (res && res.success) toast('✅ ' + (res.message || 'تم إرسال fiche للممرض'), 'success');
+                else toast('❌ ' + (res && res.message ? res.message : 'فشل الإرسال'), 'error');
+            })
+            .catch(function () { toast('❌ تعذّر الاتصال بالخادم', 'error'); });
+    };
+})();
+</script>

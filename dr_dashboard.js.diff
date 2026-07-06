@@ -1,0 +1,147 @@
+--- /mnt/user-data/uploads/dr_dashboard.js	2026-07-02 20:28:06.023232000 +0000
++++ /home/claude/fix/dr_dashboard.js	2026-07-02 20:58:38.041483215 +0000
+@@ -5,6 +5,13 @@
+ let currentChatUser = null;
+ let chatMessages = {};
+ let currentFollowupPatient = null;
++
++// تتبّع آخر حالة تم عرضها فعلياً في نافذة محادثة المتابعة (Follow-up chat) لمنع
++// أي Flicker: مفاتيح الرسائل المعروضة حالياً + عدد الرسائل "غير المؤكدة" (إن
++// وُجدت) في نهاية القائمة، حتى نضيف الجديد فقط دون مسح المحادثة كاملة.
++let medLastRenderedRecordId = null;
++let medLastRenderedKeys = [];
++let medLastRenderedPendingCount = 0;
+ // بيانات وهمية للمحادثات
+ const chatUsersData = {
+     patients: [
+@@ -4384,6 +4391,53 @@
+ // أن يكون الطبيب قد بدّل المحادثة إلى مريض آخر.
+ let medicalMessagesRequestId = 0;
+ 
++// مفتاح ثابت لكل رسالة (يعتمد على id الحقيقي القادم من قاعدة البيانات عبر
++// get_medical_messages.php) يُستخدم لمقارنة ما هو معروض حالياً بما تم جلبه
++// حديثاً، حتى نضيف الرسائل الجديدة فقط دون إعادة بناء المحادثة بالكامل.
++function medMsgKey(msg) {
++    return "id:" + msg.id;
++}
++
++// اتجاه ولون الرسالة يُبنيان الآن فقط من مقارنة sender_id بمعرف المستخدم
++// الحالي في الجلسة (window.CURRENT_USER_ID) — وليس من sender_role — حتى
++// يبقى السلوك ثابتاً: رسالتي أنا (الطبيب الحالي) دائماً زرقاء ويمين، ورسالة
++// الطرف الآخر دائماً بيضاء ويسار، بغض النظر عن أي تحديث أو Polling لاحق.
++// نستخدم غلافاً بـ direction:ltr ثابتة فقط لضبط الجهة الفيزيائية بدقة
++// (يمين/يسار حقيقيين) بمعزل عن اتجاه rtl العام للصفحة، ثم نعيد rtl داخل
++// الفقاعة نفسها لعرض النص العربي بشكل طبيعي.
++function buildDoctorMsgRow(msg) {
++    const type = msg.sender_role === "doctor" ? "doctor" : "patient"; // يبقى فقط لأي تنسيق آخر غير اللون/الجهة
++
++    const currentUserId = parseInt(window.CURRENT_USER_ID, 10) || 0;
++    const isMine = parseInt(msg.sender_id, 10) === currentUserId;
++
++    const wrapper = document.createElement("div");
++    wrapper.style.display = "flex";
++    wrapper.style.width = "100%";
++    wrapper.style.direction = "ltr";
++    wrapper.style.justifyContent = isMine ? "flex-end" : "flex-start";
++
++    const bubbleColor = isMine
++        ? "background-color:var(--primary, #2f6fed); color:#ffffff;"
++        : "background-color:#ffffff; color:#111111;";
++
++    const row = document.createElement("div");
++    row.className = "message " + type;
++    row.style.direction = "rtl";
++    row.innerHTML = `
++                <div class="bubble" style="${bubbleColor}">
++                    ${msg.message}
++                </div>
++
++                <span class="msg-time">
++                    ${msg.created_at.substring(11,16)}
++                </span>
++    `;
++
++    wrapper.appendChild(row);
++    return wrapper;
++}
++
+ async function loadMedicalMessages(recordId) {
+ 
+     const requestId = ++medicalMessagesRequestId;
+@@ -4406,26 +4460,59 @@
+ 
+     if (!container) return;
+ 
+-let html = "";
+-    messages.forEach(msg => {
++    /* ── عرض بدون Flicker ────────────────────────────────────
++       بدل مسح المحادثة كاملة (container.innerHTML = html) في كل تحديث، نقارن
++       الرسائل الجديدة بما هو معروض حالياً عبر مفاتيحها (id): إذا كانت النتيجة
++       الجديدة هي نفس المعروض بالضبط لا نلمس الـ DOM إطلاقاً، وإذا كانت مجرد
++       رسائل جديدة أُضيفت في النهاية نضيفها فقط دون مسح التاريخ السابق، ونحافظ
++       على موضع التمرير الحالي إلا إذا كان الطبيب أصلاً قرب آخر المحادثة أو
++       عند فتح محادثة مريض آخر تماماً. */
++    const newKeys = messages.map(medMsgKey);
++    const sameConversation = (recordId === medLastRenderedRecordId);
++
++    let sameAsRendered = sameConversation && newKeys.length === medLastRenderedKeys.length;
++    if (sameAsRendered) {
++        for (let i = 0; i < newKeys.length; i++) {
++            if (newKeys[i] !== medLastRenderedKeys[i]) { sameAsRendered = false; break; }
++        }
++    }
++
++    if (sameAsRendered) {
++        // لا تغيير فعلي في المحادثة: لا نلمس الـ DOM إطلاقاً (يمنع أي وميض)
++        return;
++    }
+ 
+-        const type = msg.sender_role === "doctor" ? "doctor" : "patient";
++    const wasNearBottom = (container.scrollHeight - container.scrollTop - container.clientHeight) < 60;
+ 
+-       html += `
+-            <div class="message ${type}">
+-                <div class="bubble">
+-                    ${msg.message}
+-                </div>
++    let isPureAppend = false;
++    if (sameConversation && newKeys.length >= medLastRenderedKeys.length) {
++        isPureAppend = true;
++        for (let i = 0; i < medLastRenderedKeys.length; i++) {
++            if (medLastRenderedKeys[i] !== newKeys[i]) { isPureAppend = false; break; }
++        }
++    }
+ 
+-                <span class="msg-time">
+-                    ${msg.created_at.substring(11,16)}
+-                </span>
+-            </div>
+-       ` ;
++    if (isPureAppend) {
++        // إضافة الرسائل الجديدة فقط في نهاية المحادثة دون مسح ما قبلها
++        const fragment = document.createDocumentFragment();
++        for (let i = medLastRenderedKeys.length; i < messages.length; i++) {
++            fragment.appendChild(buildDoctorMsgRow(messages[i]));
++        }
++        container.appendChild(fragment);
++    } else {
++        // تغيّر حقيقي (فتح محادثة مريض آخر، أو بيانات مختلفة فعلياً) — إعادة بناء كاملة مرة واحدة فقط
++        container.innerHTML = "";
++        const fragment = document.createDocumentFragment();
++        messages.forEach(msg => fragment.appendChild(buildDoctorMsgRow(msg)));
++        container.appendChild(fragment);
++    }
+ 
+-    });
++    medLastRenderedRecordId = recordId;
++    medLastRenderedKeys = newKeys;
++    medLastRenderedPendingCount = 0;
+ 
+-container.innerHTML = html;
+-    container.scrollTop = container.scrollHeight;
++    if (wasNearBottom || !sameConversation) {
++        container.scrollTop = container.scrollHeight;
++    }
+ 
+ }
+\ No newline at end of file

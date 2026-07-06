@@ -1,0 +1,100 @@
+<!-- ════════════════════════════════════════════════════════════════
+     MedChifaGiz — جلب الوصفات الحقيقية للصيدلية
+     يُلصق قبل </body> مباشرة في pharmacie_service.html (في الأخير).
+     إضافة فقط: لا يحذف أي كود. يجلب الوصفات الحقيقية من قاعدة البيانات،
+     يحقن صفوفها في قسم "الوصفات الجديدة" بنفس شكل البطاقات الحالي،
+     ويزيل بيانات الـ demo ذات الحالة 'new' حتى لا تظهر بيانات وهمية.
+     لا يستعمل LocalStorage للبيانات الحقيقية.
+     عدّل PHARMACY_API_URL إذا كان مسار الـ API مختلفاً.
+     ════════════════════════════════════════════════════════════════ -->
+<script>
+(function pharmacyRealLoader() {
+    var PHARMACY_API_URL = 'pharmacy_api.php?action=list_new';
+
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function splitDateTime(ts) {
+        // "YYYY-MM-DD HH:MM:SS" → {date:'YYYY-MM-DD', time:'HH:MM'}
+        if (!ts) return { date: '', time: '' };
+        var parts = String(ts).split(' ');
+        var time = parts[1] ? parts[1].slice(0, 5) : '';
+        return { date: parts[0] || '', time: time };
+    }
+
+    function mapRow(row) {
+        var dt = splitDateTime(row.created_at);
+        var drugs = Array.isArray(row.medicines) ? row.medicines.map(function (m) {
+            return {
+                name:     m.name || m.medicament || '—',
+                dose:     m.dose || '',
+                freq:     m.freq || '',
+                duration: m.duration || m.duree || '',
+                route:    m.route || ''
+            };
+        }) : [];
+        return {
+            _real:   true,
+            id:      100000 + parseInt(row.id, 10),   // معرّف فريد لا يتعارض مع الـ demo
+            realId:  parseInt(row.id, 10),
+            pid:     parseInt(row.patient_id, 10),
+            patient: row.patient_name || ('مريض #' + row.patient_id),
+            doctor:  row.doctor_name || '—',
+            service: row.service || '—',
+            date:    row.rx_date || dt.date,
+            time:    row.rx_time || dt.time,
+            // الحالة pending في القاعدة → نعرضها كـ 'new' في تبويب "جديدة"
+            status:  (row.status === 'pending' || !row.status) ? 'new' : row.status,
+            diag:    row.diagnostic || '—',
+            restricted: false,
+            notes:   row.notes || '',
+            drugs:   drugs
+        };
+    }
+
+    function loadRealPrescriptions() {
+        if (typeof PRESCRIPTIONS_SAMPLE === 'undefined') return;
+
+        fetch(PHARMACY_API_URL, { credentials: 'same-origin' })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                if (!res || !res.success || !Array.isArray(res.data)) return;
+
+                // 1) أزل الصفوف الحقيقية المضافة سابقاً (تفادي التكرار)
+                for (var i = PRESCRIPTIONS_SAMPLE.length - 1; i >= 0; i--) {
+                    if (PRESCRIPTIONS_SAMPLE[i]._real) PRESCRIPTIONS_SAMPLE.splice(i, 1);
+                }
+                // 2) أزل بيانات الـ demo ذات الحالة 'new' حتى لا تظهر وصفات وهمية
+                for (var j = PRESCRIPTIONS_SAMPLE.length - 1; j >= 0; j--) {
+                    if (!PRESCRIPTIONS_SAMPLE[j]._real && PRESCRIPTIONS_SAMPLE[j].status === 'new') {
+                        PRESCRIPTIONS_SAMPLE.splice(j, 1);
+                    }
+                }
+                // 3) أضف الوصفات الحقيقية لأعلى القائمة
+                res.data.forEach(function (row) {
+                    PRESCRIPTIONS_SAMPLE.unshift(mapRow(row));
+                });
+
+                // 4) أعد رسم ما يلزم دون كسر أي شيء
+                if (typeof renderNewRx === 'function'
+                    && document.getElementById('sec-newrx')
+                    && document.getElementById('sec-newrx').classList.contains('active')) {
+                    renderNewRx();
+                }
+                if (typeof renderHome === 'function') renderHome();
+
+                // حدّث العدادات
+                var newCount = PRESCRIPTIONS_SAMPLE.filter(function (r) { return r.status === 'new'; }).length;
+                var brx = document.getElementById('badge-rx');
+                if (brx) brx.textContent = newCount;
+                var nc = document.getElementById('newrxCount');
+                if (nc) nc.textContent = newCount;
+            })
+            .catch(function (e) { console.warn('[PHARMACY] load real prescriptions failed:', e); });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // مهلة بسيطة لضمان أن loadData/renderHome الأصلية اشتغلت أولاً
+        setTimeout(loadRealPrescriptions, 150);
+    });
+    window.loadRealPrescriptions = loadRealPrescriptions;
+})();
+</script>

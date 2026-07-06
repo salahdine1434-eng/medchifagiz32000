@@ -1,0 +1,47 @@
+--- patient_dashboard_original.php	2026-05-06 23:36:35.839996782 +0000
++++ patient_dashboard.php	2026-05-06 23:36:57.975563021 +0000
+@@ -2672,6 +2672,15 @@
+     const wilaya    = document.getElementById("WDO").value;
+     const commune   = document.getElementById("COM_CDO").value;
+     const specialty = document.getElementById("SPF").value;
++
++    // FILTER-FIX: التخصص إلزامي — إذا فارغ، امسح النتائج وأوقف الطلب
++    if (!specialty) {
++        allDoctors = [];
++        currentPage = 1;
++        displayDoctors();
++        return;
++    }
++
+     document.getElementById("map").style.display = "none";
+     fetch(`get_doctors.php?wilaya=${encodeURIComponent(wilaya)}&commune=${encodeURIComponent(commune)}&specialty=${encodeURIComponent(specialty)}`)
+         .then(function(r) {
+@@ -2704,8 +2713,16 @@
+     container.innerHTML = "";
+ 
+     if (allDoctors.length === 0) {
+-        container.innerHTML = "❌ لا يوجد أطباء";
++        // FILTER-FIX: placeholder مختلف حسب السبب
++        const specialty = document.getElementById("SPF") ? document.getElementById("SPF").value : "";
++        if (!specialty) {
++            container.innerHTML = '<p style="text-align:center;color:#888;padding:20px;font-size:0.95em;">🩺 اختر التخصص أولاً لعرض الأطباء</p>';
++        } else {
++            container.innerHTML = "❌ لا يوجد أطباء";
++        }
+         pagination.style.display = "none";
++        document.getElementById("prevBtn").style.display = "none";
++        document.getElementById("nextBtn").style.display = "none";
+         return;
+     }
+ 
+@@ -3284,8 +3301,8 @@
+     // الأطباء
+     loadSpecialties();
+     loadWilayas();
+-    // BUG-FIX: تحميل الأطباء عند فتح الصفحة مباشرة
+-    setTimeout(loadDoctors, 300);
++    // FILTER-FIX: لا نحمّل الأطباء عند فتح الصفحة — ننتظر اختيار التخصص
++    displayDoctors();
+ 
+     // تحميل مسبق لكل الأصناف (الصفحة الرئيسية)
+     loadSection('pharmacies',      'ph-lst',   'WPH',  'COM_CPH');

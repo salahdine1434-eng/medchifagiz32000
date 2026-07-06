@@ -1,0 +1,346 @@
+/* ================================================================
+   patient_compact.css — Compact Layout Override
+   أضفه في <head> بعد patient_inline_v2.css:
+   <link rel="stylesheet" href="patient_compact.css">
+   لا يُعدَّل أي PHP أو JS أو API — CSS فقط
+================================================================ */
+
+/* ════════════════════════════════════════════════════════════════
+   1. PATIENT-ITEM ROW — تقليل padding البطاقة الرئيسية
+════════════════════════════════════════════════════════════════ */
+.patient-item {
+    margin-bottom: 6px !important;
+}
+
+.patient-item-row {
+    padding: 9px 14px !important;
+    gap: 8px !important;
+}
+
+.patient-avatar-circle {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 0.82rem !important;
+}
+
+.patient-item-name {
+    font-size: 0.82rem !important;
+    margin-bottom: 1px !important;
+}
+
+.patient-item-time {
+    font-size: 0.68rem !important;
+}
+
+.pat-btn-present,
+.pat-btn-absent {
+    padding: 4px 9px !important;
+    font-size: 0.68rem !important;
+}
+
+.patient-expand-btn {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 0.72rem !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   2. PATIENT FILE INNER — تقليل padding الغلاف الداخلي
+════════════════════════════════════════════════════════════════ */
+.patient-file-inner {
+    padding: 0 10px 10px !important;
+}
+
+.patient-file-header {
+    padding: 8px 0 7px !important;
+    margin-bottom: 8px !important;
+}
+
+.patient-file-title {
+    font-size: 0.78rem !important;
+    gap: 6px !important;
+}
+
+.patient-file-title i {
+    font-size: 0.85rem !important;
+}
+
+.patient-file-id {
+    font-size: 0.62rem !important;
+    padding: 2px 8px !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   3. ACCORDION SECTIONS — تقليل gaps والـ headers
+════════════════════════════════════════════════════════════════ */
+.pif-accordion {
+    gap: 5px !important;
+}
+
+.pif-sec-header {
+    padding: 7px 12px !important;
+    gap: 8px !important;
+}
+
+.pif-sec-icon {
+    width: 26px !important;
+    height: 26px !important;
+    font-size: 0.72rem !important;
+    border-radius: 7px !important;
+}
+
+.pif-sec-title {
+    font-size: 0.76rem !important;
+}
+
+.pif-sec-status {
+    font-size: 0.58rem !important;
+    padding: 1px 7px !important;
+}
+
+.pif-sec-arrow {
+    font-size: 0.65rem !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   4. SECTION BODY — ضغط padding الداخلي
+════════════════════════════════════════════════════════════════ */
+.pif-sec-body-inner {
+    padding: 10px 12px 10px !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   5. FORM GROUPS — تصغير label والـ inputs وتقليل المسافات
+════════════════════════════════════════════════════════════════ */
+.pif-sec-body-inner .form-group {
+    margin-bottom: 7px !important;
+}
+
+.pif-sec-body-inner .form-group label {
+    font-size: 0.64rem !important;
+    margin-bottom: 3px !important;
+    letter-spacing: 0.04em !important;
+}
+
+.pif-sec-body-inner .form-group input,
+.pif-sec-body-inner .form-group select {
+    padding: 5px 9px !important;
+    font-size: 0.78rem !important;
+    border-radius: 6px !important;
+}
+
+/* Textarea — ارتفاع صغير قابل للتمدد */
+.pif-sec-body-inner .form-group textarea {
+    padding: 5px 9px !important;
+    font-size: 0.78rem !important;
+    border-radius: 6px !important;
+    min-height: 52px !important;
+    max-height: 120px !important;
+    resize: vertical !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   6. COMPACT GRID SYSTEM — 3 أعمدة افتراضي، 4 للشاشات الكبيرة
+════════════════════════════════════════════════════════════════ */
+
+/* كل حقول form-group داخل الأقسام تصبح في grid تلقائي */
+.pif-sec-body-inner {
+    --compact-cols: 3;
+}
+
+/* Grid wrapper تلقائي لكل الحقول */
+.pif-sec-body-inner > .form-group,
+.pif-sec-body-inner > .row > .form-group,
+.pif-sec-body-inner > .col > .form-group {
+    display: contents; /* تُسحب داخل الـ grid */
+}
+
+/* حاوية الحقول تصبح grid */
+.pif-sec-body-inner > .form-row,
+.pif-sec-body-inner > .form-grid,
+.pif-sec-body-inner > .row {
+    display: grid !important;
+    grid-template-columns: repeat(var(--compact-cols), 1fr) !important;
+    gap: 6px 10px !important;
+    margin-bottom: 7px !important;
+}
+
+/* إذا لم توجد row/form-row، الحقول المباشرة تُنظَّم في grid */
+.pif-sec-body-inner {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px 10px !important;
+    align-items: start !important;
+}
+
+/* عناصر تأخذ عرض كامل دائماً */
+.pif-sec-body-inner .form-group.full-width,
+.pif-sec-body-inner .pif-rx-sheet,
+.pif-sec-body-inner .preg-sub-card,
+.pif-sec-body-inner .pif-grid-2,
+.pif-sec-body-inner .pif-accordion,
+.pif-sec-body-inner hr,
+.pif-sec-body-inner h5,
+.pif-sec-body-inner h6,
+.pif-sec-body-inner p,
+.pif-sec-body-inner .alert,
+.pif-sec-body-inner .note,
+.pif-sec-body-inner div:not(.form-group),
+.pif-sec-body-inner table {
+    grid-column: 1 / -1 !important;
+}
+
+/* form-group داخل pif-sec-body-inner تأخذ 1 عمود */
+.pif-sec-body-inner .form-group {
+    grid-column: span 1 !important;
+    margin-bottom: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* حقول نصية طويلة (textarea) تأخذ 3 أعمدة */
+.pif-sec-body-inner .form-group:has(textarea) {
+    grid-column: 1 / -1 !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   7. PIF-GRID-2 الموجود — تحويله إلى 4 أعمدة على الشاشات الكبيرة
+════════════════════════════════════════════════════════════════ */
+.pif-grid-2 {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+}
+
+.pif-grid-2 .form-group {
+    padding: 7px 10px !important;
+    margin-bottom: 0 !important;
+}
+
+.pif-grid-2 .form-group label {
+    font-size: 0.6rem !important;
+    margin-bottom: 2px !important;
+}
+
+.pif-grid-2 .form-group input {
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    padding: 2px 0 !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   8. PREGNANCY SUB-CARDS — تقليل padding
+════════════════════════════════════════════════════════════════ */
+.preg-sub-card {
+    padding: 9px 12px !important;
+    margin-bottom: 7px !important;
+    border-radius: 8px !important;
+}
+
+.preg-sub-title {
+    font-size: 0.66rem !important;
+    margin-bottom: 7px !important;
+    gap: 4px !important;
+}
+
+/* داخل preg-sub-card: grid 3 أعمدة */
+.preg-sub-card {
+    display: grid !important;
+    grid-template-columns: auto repeat(3, 1fr) !important;
+    gap: 6px 10px !important;
+    align-items: start !important;
+}
+
+.preg-sub-card .preg-sub-title {
+    grid-column: 1 / -1 !important;
+    display: flex !important;
+    margin-bottom: 4px !important;
+}
+
+.preg-sub-card .form-group {
+    grid-column: span 1 !important;
+    margin-bottom: 0 !important;
+}
+
+.preg-sub-card .form-group:has(textarea) {
+    grid-column: 1 / -1 !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   9. PRESCRIPTION SHEET — تقليل padding
+════════════════════════════════════════════════════════════════ */
+.pif-rx-sheet {
+    padding: 12px 14px !important;
+    border-radius: 9px !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   10. ACTION BUTTONS ROW — تصغير
+════════════════════════════════════════════════════════════════ */
+.pif-actions-row {
+    padding: 7px 12px !important;
+    gap: 6px !important;
+}
+
+.pif-btn {
+    padding: 6px 11px !important;
+    font-size: 0.72rem !important;
+    min-width: 75px !important;
+    border-radius: 7px !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   11. RESPONSIVE ADJUSTMENTS
+════════════════════════════════════════════════════════════════ */
+
+/* شاشات كبيرة جداً: 4 أعمدة */
+@media (min-width: 1200px) {
+    .pif-sec-body-inner {
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+
+    .pif-grid-2 {
+        grid-template-columns: repeat(5, 1fr) !important;
+    }
+}
+
+/* شاشات متوسطة: 3 أعمدة */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .pif-sec-body-inner {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+
+/* شاشات صغيرة: عمودين */
+@media (min-width: 480px) and (max-width: 767px) {
+    .pif-sec-body-inner {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .pif-grid-2 {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .preg-sub-card {
+        grid-template-columns: auto repeat(2, 1fr) !important;
+    }
+}
+
+/* موبايل: عمود واحد */
+@media (max-width: 479px) {
+    .pif-sec-body-inner {
+        grid-template-columns: 1fr !important;
+    }
+
+    .pif-grid-2 {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    .preg-sub-card {
+        grid-template-columns: 1fr !important;
+    }
+
+    .patient-item-row {
+        padding: 8px 11px !important;
+    }
+}

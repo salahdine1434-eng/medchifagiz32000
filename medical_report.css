@@ -1,0 +1,206 @@
+/* ════════════════════════════════════════════════════════════════
+   medical_report.css
+   أنماط خاصة بميزة «توليد التقارير الطبية بالذكاء الاصطناعي».
+   كل الأصناف مسبوقة بـ mrai- لتفادي أي تعارض مع باقي المشروع.
+   ════════════════════════════════════════════════════════════════ */
+
+#mrai-root {
+    --mrai-primary:   #0ea5e9;
+    --mrai-dark:      #0284c7;
+    --mrai-emerald:   #10b981;
+    --mrai-emerald-d: #059669;
+    --mrai-bg:        #f8fafc;
+    --mrai-card:      #ffffff;
+    --mrai-text:      #0f172a;
+    --mrai-muted:     #64748b;
+    --mrai-border:    rgba(14, 165, 233, 0.18);
+    --mrai-radius:    18px;
+    font-family: 'Cairo', sans-serif;
+    color: var(--mrai-text);
+    direction: rtl;
+}
+
+/* ── شريط الإدخال ── */
+.mrai-panel {
+    background: var(--mrai-card);
+    border: 1px solid var(--mrai-border);
+    border-radius: var(--mrai-radius);
+    padding: 1.5rem;
+    box-shadow: 0 6px 24px rgba(14, 165, 233, 0.08);
+}
+
+.mrai-field { margin-bottom: 1.1rem; }
+
+.mrai-field label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    color: var(--mrai-dark);
+}
+
+.mrai-field select,
+.mrai-field textarea {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1.5px solid var(--mrai-border);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--mrai-text);
+    background: var(--mrai-bg);
+    transition: border-color .2s, box-shadow .2s;
+    box-sizing: border-box;
+}
+.mrai-field select:focus,
+.mrai-field textarea:focus {
+    outline: none;
+    border-color: var(--mrai-primary);
+    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.12);
+}
+.mrai-field textarea { resize: vertical; min-height: 90px; }
+
+/* ── زر التوليد ── */
+.mrai-generate-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    width: 100%;
+    justify-content: center;
+    padding: 1rem 1.5rem;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--mrai-primary), var(--mrai-emerald));
+    color: #fff;
+    font-family: inherit;
+    font-size: 1.05rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .2s, opacity .2s;
+    box-shadow: 0 8px 22px rgba(16, 185, 129, 0.28);
+}
+.mrai-generate-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(16,185,129,.36); }
+.mrai-generate-btn:disabled { opacity: .65; cursor: not-allowed; }
+
+/* ── حالة التحميل ── */
+.mrai-loading {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2.5rem 1rem;
+    text-align: center;
+    color: var(--mrai-muted);
+}
+.mrai-loading.is-active { display: flex; }
+.mrai-spinner {
+    width: 52px; height: 52px;
+    border: 5px solid rgba(14,165,233,.18);
+    border-top-color: var(--mrai-primary);
+    border-radius: 50%;
+    animation: mrai-spin .8s linear infinite;
+}
+@keyframes mrai-spin { to { transform: rotate(360deg); } }
+
+/* ── رسالة الخطأ ── */
+.mrai-alert {
+    display: none;
+    margin-top: 1rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: 12px;
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+    font-size: 0.92rem;
+    font-weight: 600;
+}
+.mrai-alert.is-active { display: block; }
+
+.mrai-toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--mrai-emerald-d); color: #fff;
+    padding: 0.8rem 1.4rem; border-radius: 12px;
+    font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 0.92rem;
+    box-shadow: 0 10px 28px rgba(0,0,0,.2);
+    opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; z-index: 99999;
+}
+.mrai-toast.is-active { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── بطاقة التقرير ── */
+.mrai-result { display: none; margin-top: 1.6rem; }
+.mrai-result.is-active { display: block; animation: mrai-fade .4s ease; }
+@keyframes mrai-fade { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+.mrai-report-card {
+    background: var(--mrai-card);
+    border: 1px solid var(--mrai-border);
+    border-radius: var(--mrai-radius);
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(14,165,233,.10);
+}
+.mrai-report-head {
+    background: linear-gradient(135deg, var(--mrai-primary), var(--mrai-dark));
+    color: #fff;
+    padding: 1.3rem 1.6rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+}
+.mrai-report-head h3 { margin: 0; font-size: 1.25rem; font-weight: 800; display:flex; align-items:center; gap:.5rem; }
+.mrai-report-meta { font-size: 0.82rem; opacity: .92; }
+
+.mrai-report-body {
+    padding: 1.8rem 2rem;
+    line-height: 2.05;
+    font-size: 1.02rem;
+    color: var(--mrai-text);
+    background:
+        repeating-linear-gradient(transparent, transparent 39px, rgba(14,165,233,.04) 40px);
+}
+.mrai-report-body .mrai-h {
+    font-weight: 800;
+    color: var(--mrai-dark);
+    margin: 1.25rem 0 .35rem;
+    padding-bottom: .3rem;
+    border-bottom: 2px solid rgba(14,165,233,.18);
+    font-size: 1.08rem;
+}
+.mrai-report-body .mrai-h:first-child { margin-top: 0; }
+.mrai-report-body p { margin: .35rem 0; }
+.mrai-report-body .mrai-disclaimer {
+    margin-top: 1.6rem; padding: 1rem 1.2rem;
+    background: #fffbeb; border: 1px dashed #f59e0b; border-radius: 12px;
+    color: #92400e; font-size: .9rem; font-weight: 600; line-height: 1.7;
+}
+
+/* ── أزرار الإجراءات ── */
+.mrai-actions {
+    display: flex; flex-wrap: wrap; gap: .7rem;
+    padding: 1.1rem 1.6rem;
+    border-top: 1px solid var(--mrai-border);
+    background: var(--mrai-bg);
+}
+.mrai-action-btn {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .65rem 1.1rem; border-radius: 11px;
+    border: 1.5px solid var(--mrai-border); background: #fff;
+    color: var(--mrai-dark); font-family: inherit; font-weight: 700; font-size: .9rem;
+    cursor: pointer; transition: background .18s, transform .12s, border-color .18s;
+}
+.mrai-action-btn:hover { background: #eff6ff; transform: translateY(-1px); border-color: var(--mrai-primary); }
+.mrai-action-btn.mrai-pdf { background: var(--mrai-emerald); color:#fff; border-color: var(--mrai-emerald); }
+.mrai-action-btn.mrai-pdf:hover { background: var(--mrai-emerald-d); }
+
+.mrai-empty { padding: 1rem; color: var(--mrai-muted); font-size: .92rem; text-align:center; }
+
+@media (max-width: 600px) {
+    .mrai-report-body { padding: 1.2rem 1.1rem; }
+    .mrai-action-btn { flex: 1 1 auto; justify-content: center; }
+}
+
+/* ── الطباعة: تقرير نظيف فقط ── */
+@media print {
+    body * { visibility: hidden !important; }
+    .mrai-print-area, .mrai-print-area * { visibility: visible !important; }
+    .mrai-print-area { position: absolute; inset: 0; padding: 0; }
+    .mrai-actions, .mrai-report-head .mrai-report-meta { display: none !important; }
+}

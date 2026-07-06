@@ -1,0 +1,216 @@
+--- /mnt/user-data/uploads/patient_medcomm.js	2026-07-02 20:28:52.510138000 +0000
++++ /home/claude/fix/patient_medcomm.js	2026-07-02 20:58:57.205374619 +0000
+@@ -19,6 +19,14 @@
+   // و medcommRefreshActiveMessages معاً) — يمنع تطبيق رد "قديم" يصل متأخراً بعد رد أحدث منه.
+   var medcommMessagesRequestId = 0;
+ 
++  // تتبّع آخر حالة تم عرضها فعلياً في الـ DOM لمنع أي Flicker: نحتفظ بمفاتيح
++  // الرسائل المعروضة حالياً وعدد الرسائل "غير المؤكدة" (المرسلة محلياً ولم يصل
++  // بعد ردّ قاعدة البيانات بها) في نهاية القائمة، حتى نستطيع عند كل تحديث إضافة
++  // الجديد فقط دون مسح المحادثة كاملة وإعادة بنائها.
++  var medcommLastRenderedId = null;
++  var medcommLastRenderedKeys = [];
++  var medcommLastRenderedPendingCount = 0;
++
+   function medcommEl(id) { return document.getElementById(id); }
+ 
+   /* ── عرض قائمة الأطباء ─────────────────────────────────── */
+@@ -39,7 +47,13 @@
+     }
+ 
+     list.forEach(function (d) {
+-      var last = d.messages[d.messages.length - 1];
++      // معاينة آخر رسالة في القائمة: إذا كانت المحادثة قد فُتحت فعلاً وتم تحميل
++      // رسائلها الحقيقية من قاعدة البيانات نعرض آخر رسالة منها، وإلا نعرض المعاينة
++      // القادمة أصلاً من get_patient_conversations.php (last_message) فقط كنص عرض
++      // في القائمة — دون استخدامها إطلاقاً كأساس لبناء محتوى المحادثة نفسها.
++      var last = d.messages.length
++        ? d.messages[d.messages.length - 1]
++        : (d.previewText ? { text: d.previewText, time: d.previewTime } : null);
+       var unread = MEDCOMM_UNREAD[d.id] || 0;
+ 
+       var item = document.createElement("div");
+@@ -101,15 +115,29 @@
+ }
+ 
+ /* تحويل الحقول القادمة من قاعدة البيانات (sender_role, message, created_at)
+-   إلى الشكل الذي تستخدمه الواجهة داخلياً (from, text, time) */
++   إلى الشكل الذي تستخدمه الواجهة داخلياً (from, text, time)
++   ملاحظة: الاتجاه (from) يُبنى فقط من sender_role القادم من قاعدة البيانات،
++   وليس من هوية من فتح الصفحة — بذلك يبقى ثابتاً وصحيحاً دائماً بغض النظر
++   عن الطرف الذي يعرض المحادثة. */
+ function medcommMapServerMessage(m) {
+     return {
++        id: m.id,
++        pending: false,
++        senderId: m.sender_id,
+         from: m.sender_role === "doctor" ? "doc" : "patient",
+         text: m.message,
+         time: medcommFormatTime(m.created_at)
+     };
+ }
+ 
++/* مفتاح ثابت لكل رسالة يُستخدم لمقارنة ما هو معروض حالياً بما تم جلبه حديثاً،
++   حتى نضيف الرسائل الجديدة فقط دون إعادة بناء المحادثة بالكامل (منع الوميض) */
++function medcommMsgKey(m) {
++    return (m.id !== undefined && m.id !== null && !m.pending)
++        ? ("id:" + m.id)
++        : ("pending:" + m.from + "|" + m.text);
++}
++
+ function medcommFormatTime(dateStr) {
+     if (!dateStr) return "";
+     var d = new Date(dateStr.replace(" ", "T"));
+@@ -157,33 +185,109 @@
+     }
+   };
+ 
+-  /* ── عرض الرسائل ───────────────────────────────────────── */
++  /* ── عرض الرسائل (بدون Flicker) ────────────────────────────
++     بدل مسح المحادثة كاملة (box.innerHTML = "") وإعادة بنائها في كل تحديث،
++     نقارن الرسائل الجديدة بما هو معروض حالياً:
++     - إذا لم يتغيّر شيء: لا نلمس الـ DOM إطلاقاً.
++     - إذا كانت الإضافة الوحيدة رسائل جديدة في النهاية: نضيفها فقط.
++     - نزيل فقط الرسائل "غير المؤكدة" (المرسلة محلياً بانتظار تأكيد
++       قاعدة البيانات) من نهاية العرض عند استبدالها بالنسخة الحقيقية،
++       دون المساس بأي رسالة سابقة في تاريخ المحادثة.
++     - نحافظ على موضع التمرير: لا نُنزّل الشاشة تلقائياً إلا إذا كان
++       المستخدم أصلاً قرب آخر المحادثة، أو عند فتح محادثة جديدة تماماً. */
+   function medcommRenderMessages(id) {
+     var d = medcommGetDoctor(id);
+     var box = medcommEl("medcommMessages");
+     if (!box || !d) return;
+ 
+-    box.innerHTML = "";
+-    d.messages.forEach(function (m) {
+-      box.appendChild(medcommBuildMsgRow(m, d));
+-    });
+-    medcommScrollBottom();
++    var newKeys = d.messages.map(medcommMsgKey);
++    var sameConversation = (id === medcommLastRenderedId);
++
++    var confirmedPrefixLen = sameConversation
++      ? Math.max(0, medcommLastRenderedKeys.length - medcommLastRenderedPendingCount)
++      : 0;
++
++    var confirmedPrefixMatches = sameConversation;
++    if (confirmedPrefixMatches) {
++      for (var i = 0; i < confirmedPrefixLen; i++) {
++        if (newKeys[i] !== medcommLastRenderedKeys[i]) { confirmedPrefixMatches = false; break; }
++      }
++    }
++
++    var newPendingCount = 0;
++    for (var k = d.messages.length - 1; k >= 0 && d.messages[k].pending; k--) newPendingCount++;
++
++    var wasNearBottom = (box.scrollHeight - box.scrollTop - box.clientHeight) < 60;
++    var changed = false;
++
++    if (confirmedPrefixMatches) {
++      // إزالة الرسائل غير المؤكدة السابقة فقط (إن وُجدت) من نهاية العرض
++      for (var r = 0; r < medcommLastRenderedPendingCount; r++) {
++        if (box.lastElementChild) { box.removeChild(box.lastElementChild); changed = true; }
++      }
++      // إضافة أي رسالة جديدة بعد الجزء المؤكد فقط، دون لمس ما قبلها
++      for (var j = confirmedPrefixLen; j < d.messages.length; j++) {
++        box.appendChild(medcommBuildMsgRow(d.messages[j], d));
++        changed = true;
++      }
++    } else {
++      // تغيّر حقيقي في المحادثة (فتح محادثة أخرى) — إعادة بناء كاملة مرة واحدة فقط
++      box.innerHTML = "";
++      d.messages.forEach(function (m) {
++        box.appendChild(medcommBuildMsgRow(m, d));
++      });
++      changed = true;
++    }
++
++    medcommLastRenderedId = id;
++    medcommLastRenderedKeys = newKeys;
++    medcommLastRenderedPendingCount = newPendingCount;
++
++    if (changed && (wasNearBottom || !sameConversation)) {
++      medcommScrollBottom();
++    }
+   }
+ 
++  /* اتجاه ولون الرسالة يُبنيان الآن فقط من مقارنة senderId بمعرف المستخدم
++     الحالي في الجلسة (window.CURRENT_USER_ID) — وليس من from/sender_role —
++     حتى يبقى السلوك ثابتاً: رسالتي أنا (المريض الحالي) دائماً زرقاء ويمين،
++     ورسالة الطرف الآخر دائماً بيضاء ويسار، بغض النظر عن أي تحديث أو Polling
++     لاحق. الرسالة المرسلة محلياً وقيد التأكيد (pending) تُعتبر دائماً "لي"
++     لأنها بالتعريف من المستخدم الحالي نفسه. نستخدم غلافاً بـ direction:ltr
++     ثابتة فقط لضبط الجهة الفيزيائية بدقة (يمين/يسار حقيقيين) بمعزل عن اتجاه
++     rtl العام للصفحة، ثم نعيد rtl داخل الفقاعة نفسها لعرض النص العربي بشكل
++     طبيعي. from يبقى مستخدماً فقط لاختيار الأفتار المناسب (طبيب/مريض). */
+   function medcommBuildMsgRow(m, d) {
++    var isDoc = m.from === "doc"; // فقط لاختيار الأفتار، لا علاقة له بالجهة/اللون
++
++    var currentUserId = parseInt(window.CURRENT_USER_ID, 10) || 0;
++    var isMine = m.pending ? true : (parseInt(m.senderId, 10) === currentUserId);
++
++    var wrapper = document.createElement("div");
++    wrapper.style.display = "flex";
++    wrapper.style.width = "100%";
++    wrapper.style.direction = "ltr";
++    wrapper.style.justifyContent = isMine ? "flex-end" : "flex-start";
++
++    var bubbleColor = isMine
++      ? "background-color:var(--primary, #2f6fed); color:#ffffff;"
++      : "background-color:#ffffff; color:#111111;";
++
+     var row = document.createElement("div");
+-    var isDoc = m.from === "doc";
+     row.className = "medcomm-msg-row " + (isDoc ? "medcomm-from-doc" : "medcomm-from-patient");
++    row.style.direction = "rtl";
+ 
+     var avatarText = isDoc ? d.initials : (medcommPatientInitials());
+ 
+     row.innerHTML =
+       '<div class="medcomm-msg-avatar">' + avatarText + '</div>' +
+       '<div class="medcomm-bubble-col">' +
+-        '<div class="medcomm-bubble">' + medcommEscape(m.text) + '</div>' +
++        '<div class="medcomm-bubble" style="' + bubbleColor + '">' + medcommEscape(m.text) + '</div>' +
+         '<div class="medcomm-msg-time">' + m.time + '</div>' +
+       '</div>';
+-    return row;
++
++    wrapper.appendChild(row);
++    return wrapper;
+   }
+ 
+   function medcommPatientInitials() {
+@@ -228,9 +332,12 @@
+     if (!d) return;
+     if (!d.recordId) return;
+ 
+-    var msg = { from: "patient", text: text, time: medcommNowTime() };
++    // pending:true تعني رسالة أُرسلت محلياً ولم يصل بعد تأكيد قاعدة البيانات؛
++    // تُعرض فوراً عبر medcommRenderMessages (إضافة فقط، دون مسح المحادثة) ثم
++    // تُستبدل بنسخة قاعدة البيانات الحقيقية بعد الحفظ دون أي وميض للمحادثة كاملة.
++    var msg = { id: null, pending: true, from: "patient", text: text, time: medcommNowTime() };
+     d.messages.push(msg);
+-    medcommEl("medcommMessages").appendChild(medcommBuildMsgRow(msg, d));
++    medcommRenderMessages(medcommActiveId);
+     medcommScrollBottom();
+     input.value = "";
+     medcommRenderList(medcommEl("medcommSearchInput") ? medcommEl("medcommSearchInput").value : "");
+@@ -317,11 +424,13 @@
+         initials: d.full_name.substring(0,2),
+         online: false,
+ 
+-        messages: d.last_message ? [{
+-            from: "doc",
+-            text: d.last_message,
+-            time: medcommFormatTime(d.last_time)
+-        }] : []
++        // معاينة فقط لعرضها في قائمة المحادثات قبل فتحها — لا تُستخدم كأساس
++        // لبناء المحادثة الفعلية. المحادثة الحقيقية الكاملة (لكل الطرفين)
++        // تُجلب دائماً من get_medical_messages.php عبر medcommSelectDoctor.
++        previewText: d.last_message || "",
++        previewTime: d.last_time || "",
++
++        messages: []
+     }));
+ 
+     medcommRenderList("");

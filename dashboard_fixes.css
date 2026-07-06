@@ -1,0 +1,786 @@
+/* ================================================================
+   MedChifaGiz — Phase 2 Fixes
+   أضف هذا الملف في <head> بعد dr_dashboard.css
+   <link rel="stylesheet" href="dashboard_fixes.css">
+================================================================ */
+
+/* ════════════════════════════════════════════════════════
+   1) SIDEBAR — لون موحد مع الـ Dashboard (نهاري)
+      بدل الأسود نستخدم نفس لون الخلفية مع gradient ناعم
+════════════════════════════════════════════════════════ */
+
+:root {
+    /* ألوان نيون للـ sidebar الجديد */
+    --sidebar-surface: rgba(255, 255, 255, 0.96);
+    --sidebar-border-line: rgba(14, 165, 233, 0.14);
+    --sidebar-neon-1: #0ea5e9;
+    --sidebar-neon-2: #06b6d4;
+    --sidebar-neon-glow: rgba(14, 165, 233, 0.18);
+    --sidebar-text-main: #0f172a;
+    --sidebar-text-muted: #64748b;
+    --sidebar-active-bg: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+}
+
+/* ── الـ Sidebar الرئيسي ──────────────────────────────── */
+.sidebar {
+    background: var(--sidebar-surface) !important;
+    border-left: 1px solid var(--sidebar-border-line) !important;
+    box-shadow:
+        -1px 0 0 rgba(14, 165, 233, 0.08),
+        -8px 0 32px rgba(14, 165, 233, 0.08),
+        -2px 0 60px rgba(0, 0, 0, 0.04) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+}
+
+/* خلفية الـ sidebar بدل الـ gradient الداكن */
+.sidebar::before {
+    background:
+        radial-gradient(ellipse at top right, rgba(14, 165, 233, 0.06) 0%, transparent 60%),
+        radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.04) 0%, transparent 60%) !important;
+}
+
+/* ── النيون Line العلوي ─────────────────────────────── */
+.sidebar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--sidebar-neon-1), var(--sidebar-neon-2), transparent);
+    z-index: 2;
+}
+
+/* ── شعار اللوغو ─────────────────────────────────────── */
+.sidebar-logo {
+    border-bottom: 1px solid var(--sidebar-border-line) !important;
+}
+
+.sidebar-logo-text .brand {
+    color: var(--sidebar-neon-1) !important;
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.sidebar-logo-text .tagline {
+    color: var(--sidebar-text-muted) !important;
+}
+
+/* ── بطاقة الطبيب ────────────────────────────────────── */
+.sidebar-doctor {
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.06), rgba(6, 182, 212, 0.04)) !important;
+    border: 1px solid rgba(14, 165, 233, 0.15) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar-doctor::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.08), transparent);
+    pointer-events: none;
+}
+
+.sidebar-doctor-info .doc-name {
+    color: var(--sidebar-text-main) !important;
+}
+
+.sidebar-doctor-info .doc-role {
+    color: var(--sidebar-text-muted) !important;
+}
+
+/* ── Section Labels ──────────────────────────────────── */
+.nav-section-label {
+    color: rgba(14, 165, 233, 0.55) !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.5px !important;
+    font-size: 0.6rem !important;
+}
+
+/* ════════════════════════════════════════════════════════
+   SIDEBAR ACTIVE/HOVER — نظام نظيف قائم على الـ Click
+   Active = click فقط | Hover = مؤقت خفيف
+════════════════════════════════════════════════════════ */
+
+/* ── العناصر الرئيسية (headers / direct items) ─────── */
+.snav-header,
+.snav-direct {
+    transition:
+        background 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Hover — خفيف ومؤقت */
+.snav-header:hover:not(.snav-active-direct),
+.snav-direct:hover:not(.snav-active-direct) {
+    background: rgba(14, 165, 233, 0.07) !important;
+    border-color: rgba(14, 165, 233, 0.15) !important;
+}
+.snav-header:hover:not(.snav-active-direct) > span,
+.snav-direct:hover:not(.snav-active-direct) > span {
+    color: #0ea5e9 !important;
+}
+.snav-header:hover:not(.snav-active-direct) > i:first-child,
+.snav-direct:hover:not(.snav-active-direct) > i:first-child {
+    color: #0ea5e9 !important;
+    transform: scale(1.08) !important;
+}
+
+/* Active direct (مثل الإعدادات) — ثابت بعد الكليك */
+.snav-direct.snav-active-direct,
+.snav-header.snav-active-direct {
+    background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%) !important;
+    border-color: transparent !important;
+    box-shadow:
+        0 4px 14px rgba(14, 165, 233, 0.32),
+        0 1px 3px rgba(14, 165, 233, 0.18) !important;
+    border-radius: 9px !important;
+}
+.snav-direct.snav-active-direct > span,
+.snav-header.snav-active-direct > span {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+.snav-direct.snav-active-direct > i,
+.snav-header.snav-active-direct > i {
+    color: #ffffff !important;
+}
+.snav-direct.snav-active-direct::after {
+    display: none !important;
+}
+
+/* ── Sub-items (عناصر الـ dropdown) ────────────────── */
+.snav-item {
+    transition:
+        background 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Hover — خفيف */
+.snav-item:not(.snav-item-active):hover {
+    background: rgba(14, 165, 233, 0.08) !important;
+}
+.snav-item:not(.snav-item-active):hover span {
+    color: #0ea5e9 !important;
+}
+.snav-item:not(.snav-item-active):hover i {
+    color: #0ea5e9 !important;
+    transform: translateX(-2px) !important;
+}
+
+/* Active — ثابت وواضح */
+.snav-item.snav-item-active {
+    background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%) !important;
+    box-shadow:
+        0 4px 12px rgba(14, 165, 233, 0.28),
+        0 1px 4px rgba(14, 165, 233, 0.15) !important;
+    border-radius: 7px !important;
+}
+.snav-item.snav-item-active span {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+.snav-item.snav-item-active i {
+    color: #ffffff !important;
+    transform: none !important;
+}
+.snav-item.snav-item-active::before {
+    background: rgba(255, 255, 255, 0.7) !important;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* نصوص اللون الموحد — gray داكن مريح */
+.snav-header > span,
+.snav-direct > span {
+    color: #4b5563 !important;
+    font-weight: 600 !important;
+}
+.snav-header > i:first-child,
+.snav-direct > i:first-child {
+    color: #6b7280 !important;
+}
+.snav-item span {
+    color: #4b5563 !important;
+}
+.snav-item i {
+    color: #6b7280 !important;
+}
+
+/* ── Header مفتوح (accordion open) — لا يكون active gradient ── */
+.snav-header.snav-open:not(.snav-active-direct) {
+    background: rgba(14, 165, 233, 0.07) !important;
+    border-color: rgba(14, 165, 233, 0.18) !important;
+    box-shadow: none !important;
+}
+.snav-header.snav-open:not(.snav-active-direct) > span {
+    color: #0f172a !important;
+    font-weight: 700 !important;
+}
+.snav-header.snav-open:not(.snav-active-direct) > i:first-child {
+    color: #0ea5e9 !important;
+}
+
+/* ── Dropdown Animation ناعم ─────────────────────────── */
+.snav-body {
+    transition:
+        max-height 0.38s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.32s ease !important;
+}
+
+/* ── Arrow rotation ناعم ─────────────────────────────── */
+.snav-arrow {
+    transition:
+        transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        color 0.25s ease !important;
+}
+.snav-header.snav-open .snav-arrow {
+    transform: rotate(180deg) !important;
+    color: #0ea5e9 !important;
+}
+.snav-header:not(.snav-open) .snav-arrow {
+    transform: rotate(0deg) !important;
+    color: #9ca3af !important;
+}
+
+/* ── Nav Items (old class compat) ───────────────────── */
+.nav-item {
+    color: #4b5563 !important;
+    border-radius: 12px !important;
+    transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    margin-bottom: 2px !important;
+}
+.nav-item i { color: #6b7280 !important; }
+.nav-item span { color: #4b5563 !important; }
+
+.nav-item:not(.active):hover {
+    background: rgba(14, 165, 233, 0.07) !important;
+}
+.nav-item:not(.active):hover i { color: #0ea5e9 !important; }
+.nav-item:not(.active):hover span { color: #0ea5e9 !important; }
+
+/* Active */
+.nav-item.active {
+    background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%) !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow:
+        0 4px 14px rgba(14, 165, 233, 0.32),
+        0 1px 3px rgba(14, 165, 233, 0.15) !important;
+}
+.nav-item.active i,
+.nav-item.active span { color: #fff !important; }
+
+/* Footer logout */
+.sidebar-footer {
+    border-top: 1px solid var(--sidebar-border-line) !important;
+    background: rgba(239, 68, 68, 0.02);
+}
+
+.nav-item.logout-item {
+    color: #dc2626 !important;
+}
+
+.nav-item.logout-item i {
+    color: #dc2626 !important;
+}
+
+.nav-item.logout-item span {
+    color: #dc2626 !important;
+}
+
+.nav-item.logout-item:hover {
+    background: rgba(239, 68, 68, 0.07) !important;
+}
+
+/* Dark mode: نعيد الـ sidebar للوضع الداكن مناسب */
+body.dark-mode .sidebar {
+    background: rgba(15, 23, 42, 0.97) !important;
+}
+
+body.dark-mode .nav-item {
+    color: rgba(255,255,255,0.55) !important;
+}
+
+body.dark-mode .nav-item span {
+    color: rgba(255,255,255,0.55) !important;
+}
+
+body.dark-mode .nav-item i {
+    color: rgba(255,255,255,0.4) !important;
+}
+
+body.dark-mode .sidebar-doctor-info .doc-name {
+    color: #fff !important;
+}
+
+/* ════════════════════════════════════════════════════════
+   2) إضافة إيقونة الإعدادات (تحت الخدمات) — 
+      هذا يُصلَح عبر sidebar_fix.js أدناه
+════════════════════════════════════════════════════════ */
+
+/* ════════════════════════════════════════════════════════
+   3) ACCORDION PATIENT MODAL
+      تحويل الـ Wizard إلى Accordion
+════════════════════════════════════════════════════════ */
+
+/* إخفاء الـ steps القديمة — سيُدار عبر JS */
+.medical-step {
+    display: none !important;
+}
+
+.medical-step.active-step {
+    display: none !important;
+}
+
+/* ── الـ Accordion Container ─────────────────────────── */
+.accordion-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 4px 0 20px;
+}
+
+/* ── كل Section ─────────────────────────────────────── */
+.accordion-section {
+    border-radius: 14px;
+    border: 1px solid rgba(14, 165, 233, 0.14);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.05);
+}
+
+body.dark-mode .accordion-section {
+    background: #1e293b;
+    border-color: rgba(14, 165, 233, 0.15);
+}
+
+.accordion-section:hover {
+    border-color: rgba(14, 165, 233, 0.28);
+    box-shadow: 0 4px 16px rgba(14, 165, 233, 0.1);
+}
+
+/* ── Header كل Section ──────────────────────────────── */
+.accordion-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    cursor: pointer;
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.04), rgba(6, 182, 212, 0.02));
+    user-select: none;
+    transition: all 0.25s ease;
+    position: relative;
+}
+
+.accordion-header:hover {
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.08), rgba(6, 182, 212, 0.05));
+}
+
+.accordion-header.open {
+    background: linear-gradient(135deg, var(--sidebar-neon-1), var(--sidebar-neon-2));
+    border-bottom: none;
+}
+
+.accordion-header.open .accordion-title {
+    color: #fff;
+}
+
+.accordion-header.open .accordion-icon {
+    color: #fff;
+    background: rgba(255,255,255,0.15);
+}
+
+.accordion-header.open .accordion-arrow {
+    color: #fff;
+    transform: rotate(180deg);
+}
+
+/* Icon دائري */
+.accordion-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(14, 165, 233, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    color: var(--sidebar-neon-1);
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+}
+
+.accordion-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #0f172a;
+    flex: 1;
+    transition: color 0.25s ease;
+}
+
+body.dark-mode .accordion-title {
+    color: #f1f5f9;
+}
+
+.accordion-arrow {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+}
+
+/* مؤشر الحالة */
+.accordion-status {
+    font-size: 0.68rem;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-weight: 600;
+    background: rgba(148, 163, 184, 0.1);
+    color: #94a3b8;
+    flex-shrink: 0;
+}
+
+.accordion-header.open .accordion-status {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+}
+
+.accordion-status.filled {
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+}
+
+.accordion-header.open .accordion-status.filled {
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+}
+
+/* ── Body كل Section ─────────────────────────────────── */
+.accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.accordion-body.open {
+    max-height: 2000px;
+}
+
+.accordion-body-inner {
+    padding: 20px;
+    border-top: 1px solid rgba(14, 165, 233, 0.08);
+}
+
+body.dark-mode .accordion-body-inner {
+    border-top-color: rgba(255,255,255,0.05);
+}
+
+/* ── Form styles داخل الـ Accordion ─────────────────── */
+.accordion-body-inner .form-group {
+    margin-bottom: 16px;
+}
+
+.accordion-body-inner .form-group label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
+}
+
+body.dark-mode .accordion-body-inner .form-group label {
+    color: #94a3b8;
+}
+
+.accordion-body-inner .form-group input,
+.accordion-body-inner .form-group textarea,
+.accordion-body-inner .form-group select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid rgba(14, 165, 233, 0.18);
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-family: 'Cairo', sans-serif;
+    background: #f8fafc;
+    color: #0f172a;
+    transition: all 0.2s ease;
+    outline: none;
+    resize: vertical;
+}
+
+body.dark-mode .accordion-body-inner .form-group input,
+body.dark-mode .accordion-body-inner .form-group textarea,
+body.dark-mode .accordion-body-inner .form-group select {
+    background: #0f172a;
+    color: #f1f5f9;
+    border-color: rgba(255,255,255,0.08);
+}
+
+.accordion-body-inner .form-group input:focus,
+.accordion-body-inner .form-group textarea:focus,
+.accordion-body-inner .form-group select:focus {
+    border-color: var(--sidebar-neon-1);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+/* ── Prescription داخل الـ Accordion ────────────────── */
+.accordion-body-inner .prescription-sheet {
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+}
+
+/* ── الأزرار داخل الـ Accordion ─────────────────────── */
+.accordion-actions {
+    display: flex;
+    gap: 10px;
+    padding: 14px 20px;
+    border-top: 1px solid rgba(14, 165, 233, 0.08);
+    flex-wrap: wrap;
+    background: rgba(14, 165, 233, 0.02);
+}
+
+.accordion-actions button {
+    flex: 1;
+    min-width: 100px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    font-family: 'Cairo', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.acc-btn-primary {
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+.acc-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(14, 165, 233, 0.4);
+}
+
+.acc-btn-success {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.acc-btn-print {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid rgba(0,0,0,0.08);
+}
+
+.acc-btn-print:hover {
+    background: #e2e8f0;
+}
+
+/* ── Patient Modal Header ────────────────────────────── */
+.patient-modal-content {
+    border-radius: 20px !important;
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+.patient-modal-header {
+    background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+    padding: 22px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.patient-modal-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: rgba(255,255,255,0.2);
+}
+
+.patient-modal-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.patient-modal-title i {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.patient-modal-close {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.patient-modal-close:hover {
+    background: rgba(255,255,255,0.25);
+    transform: scale(1.1);
+}
+
+.accordion-scroll-area {
+    max-height: calc(90vh - 80px);
+    overflow-y: auto;
+    padding: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(14, 165, 233, 0.3) transparent;
+}
+
+.accordion-scroll-area::-webkit-scrollbar {
+    width: 4px;
+}
+
+.accordion-scroll-area::-webkit-scrollbar-thumb {
+    background: rgba(14, 165, 233, 0.3);
+    border-radius: 4px;
+}
+
+/* مربع الحمل داخل الـ Accordion */
+.preg-card {
+    background: linear-gradient(135deg, #f0f9ff, #ecfeff);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 14px;
+    border: 1px solid rgba(14, 165, 233, 0.12);
+}
+
+.preg-card-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #0ea5e9;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ── النيون Glow على الـ Sidebar الإجمالي ──────────── */
+@keyframes neonPulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+.sidebar::after {
+    animation: neonPulse 3s ease-in-out infinite;
+}
+
+/* ── Neon indicator للـ active item ─────────────────── */
+.nav-item.active {
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-item.active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.08) 100%);
+    pointer-events: none;
+}
+/* قسم المعلومات الشخصية — حقلين بجانب بعض */
+#pif-sec-1 .pif-sec-body-inner,
+[id^="pif-sec-1"] .pif-sec-body-inner {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+}
+.pif-sec-body-inner {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+}
+.pif-sec-body-inner .form-group:has(textarea) {
+    grid-column: 1 / -1 !important;
+}
+/* ── كل الأقسام: حقلين بجانب بعض ── */
+.pif-sec-body-inner {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+}
+
+/* ── الـ textarea تاخذ عرض كامل ── */
+.pif-sec-body-inner .form-group:has(textarea) {
+    grid-column: 1 / -1 !important;
+}
+
+/* ── الـ grid الداخلي (vitals) يبقى كما هو ── */
+.pif-sec-body-inner .pif-grid-2 {
+    grid-column: 1 / -1 !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+}
+
+/* ── الـ preg sub-cards تاخذ عرض كامل ── */
+.pif-sec-body-inner .preg-sub-card {
+    grid-column: 1 / -1 !important;
+}
+
+/* ══ الوصفة الطبية — عرض كامل بدون grid ══ */
+#pif-sec-4 .pif-sec-body-inner,
+[id^="pif-sec-4-"] .pif-sec-body-inner {
+    display: block !important;
+    grid-template-columns: unset !important;
+}
+
+.pif-rx-sheet {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.pif-rx-sheet .form-group {
+    width: 100% !important;
+    margin-bottom: 14px !important;
+}
+
+.pif-rx-sheet textarea {
+    min-height: 120px !important;
+    width: 100% !important;
+}
+/* ── بطاقة الحمل ومتابعة الحمل بجانب بعض ── */
+#pif-sec-5 .pif-sec-body-inner,
+[id^="pif-sec-5-"] .pif-sec-body-inner {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 14px !important;
+}
+
+.pif-sec-body-inner .preg-sub-card {
+    grid-column: unset !important;
+}

@@ -1,0 +1,604 @@
+/* ================================================================
+   patient_inline.css
+   أضفه في <head> بعد باقي الـ CSS:
+   <link rel="stylesheet" href="patient_inline.css">
+================================================================ */
+
+/* ══════════════════════════════════════════════════════════
+   PATIENT-ITEM: تحويل السطر إلى بطاقة قابلة للتوسعة
+══════════════════════════════════════════════════════════ */
+.patient-item {
+    border-radius: 16px !important;
+    border: 1px solid rgba(14, 165, 233, 0.12) !important;
+    background: #fff !important;
+    margin-bottom: 10px !important;
+    overflow: hidden !important;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease !important;
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.06) !important;
+}
+
+.patient-item:hover {
+    border-color: rgba(14, 165, 233, 0.28) !important;
+    box-shadow: 0 4px 16px rgba(14, 165, 233, 0.12) !important;
+}
+
+.patient-item.expanded {
+    border-color: rgba(14, 165, 233, 0.35) !important;
+    box-shadow: 0 8px 32px rgba(14, 165, 233, 0.18) !important;
+}
+
+body.dark-mode .patient-item {
+    background: #1e293b !important;
+    border-color: rgba(14, 165, 233, 0.15) !important;
+}
+
+/* Row داخل الـ patient-item */
+.patient-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    gap: 12px;
+}
+
+.patient-item-row:hover {
+    background: rgba(14, 165, 233, 0.03);
+}
+
+.patient-item-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+/* Avatar دائري */
+.patient-avatar-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: #fff;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+    letter-spacing: 0;
+}
+
+.patient-item-meta {
+    flex: 1;
+    min-width: 0;
+}
+
+.patient-item-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+body.dark-mode .patient-item-name {
+    color: #f1f5f9;
+}
+
+.patient-item-time {
+    font-size: 0.75rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.patient-item-time i {
+    font-size: 0.65rem;
+}
+
+/* زر الفتح/الإغلاق */
+.patient-expand-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(14, 165, 233, 0.08);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #0ea5e9;
+    font-size: 0.8rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+}
+
+.patient-expand-btn:hover {
+    background: rgba(14, 165, 233, 0.15);
+    transform: scale(1.05);
+}
+
+.patient-expand-btn.open {
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+    color: #fff;
+    transform: rotate(180deg);
+    box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
+}
+
+/* أزرار الحضور/الغياب الجديدة */
+.patient-action-btns {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.pat-btn-present,
+.pat-btn-absent {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Cairo', sans-serif;
+    white-space: nowrap;
+}
+
+.pat-btn-present {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    color: #fff;
+    box-shadow: 0 3px 8px rgba(16, 185, 129, 0.25);
+}
+
+.pat-btn-present:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(16, 185, 129, 0.35);
+}
+
+.pat-btn-absent {
+    background: linear-gradient(135deg, #ef4444, #f87171);
+    color: #fff;
+    box-shadow: 0 3px 8px rgba(239, 68, 68, 0.25);
+}
+
+.pat-btn-absent:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(239, 68, 68, 0.35);
+}
+
+/* ══════════════════════════════════════════════════════════
+   INLINE PATIENT FILE — الـ Expandable Section
+══════════════════════════════════════════════════════════ */
+.patient-inline-file {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    border-top: 0px solid transparent;
+}
+
+.patient-inline-file.open {
+    max-height: 4000px;
+    border-top: 1px solid rgba(14, 165, 233, 0.1);
+    transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.patient-file-inner {
+    padding: 0 16px 16px;
+    background: #f8fafc;
+}
+
+body.dark-mode .patient-file-inner {
+    background: #0f172a;
+}
+
+/* Header الملف الطبي */
+.patient-file-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0 10px;
+    border-bottom: 1px solid rgba(14, 165, 233, 0.1);
+    margin-bottom: 14px;
+}
+
+.patient-file-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: #0ea5e9;
+}
+
+.patient-file-title i {
+    font-size: 1rem;
+}
+
+.patient-file-id {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    background: rgba(14, 165, 233, 0.08);
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   ACCORDION SECTIONS داخل الـ Inline File
+══════════════════════════════════════════════════════════ */
+.pif-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Section */
+.pif-section {
+    border-radius: 12px;
+    border: 1px solid rgba(14, 165, 233, 0.1);
+    overflow: hidden;
+    background: #fff;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+body.dark-mode .pif-section {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+.pif-section:hover {
+    border-color: rgba(14, 165, 233, 0.22);
+}
+
+.pif-section.pif-open {
+    border-color: rgba(14, 165, 233, 0.3);
+    box-shadow: 0 4px 16px rgba(14, 165, 233, 0.08);
+}
+
+/* Section Header */
+.pif-sec-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    user-select: none;
+}
+
+.pif-sec-header:hover {
+    background: rgba(14, 165, 233, 0.04);
+}
+
+.pif-section.pif-open .pif-sec-header {
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Icon */
+.pif-sec-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+}
+
+.pif-section:not(.pif-open) .pif-sec-icon {
+    background: rgba(14, 165, 233, 0.1);
+    color: #0ea5e9;
+}
+
+.pif-section.pif-open .pif-sec-icon {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+/* Title */
+.pif-sec-title {
+    flex: 1;
+    font-size: 0.84rem;
+    font-weight: 700;
+    transition: color 0.2s ease;
+}
+
+.pif-section:not(.pif-open) .pif-sec-title {
+    color: #334155;
+}
+
+.pif-section.pif-open .pif-sec-title {
+    color: #fff;
+}
+
+body.dark-mode .pif-section:not(.pif-open) .pif-sec-title {
+    color: #cbd5e1;
+}
+
+/* Status badge */
+.pif-sec-status {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    transition: all 0.2s;
+}
+
+.pif-section:not(.pif-open) .pif-sec-status {
+    background: rgba(148, 163, 184, 0.12);
+    color: #94a3b8;
+}
+
+.pif-section:not(.pif-open) .pif-sec-status.done {
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+}
+
+.pif-section.pif-open .pif-sec-status {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+/* Arrow */
+.pif-sec-arrow {
+    font-size: 0.75rem;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+}
+
+.pif-section:not(.pif-open) .pif-sec-arrow {
+    color: #94a3b8;
+}
+
+.pif-section.pif-open .pif-sec-arrow {
+    color: #fff;
+    transform: rotate(180deg);
+}
+
+/* Section Body */
+.pif-sec-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pif-section.pif-open .pif-sec-body {
+    max-height: 3000px;
+}
+
+.pif-sec-body-inner {
+    padding: 16px;
+    border-top: 1px solid rgba(14, 165, 233, 0.06);
+}
+
+body.dark-mode .pif-sec-body-inner {
+    border-top-color: rgba(255, 255, 255, 0.04);
+}
+
+/* ══════════════════════════════════════════════════════════
+   FORM FIELDS داخل الـ Accordion
+══════════════════════════════════════════════════════════ */
+.pif-sec-body-inner .form-group {
+    margin-bottom: 12px;
+}
+
+.pif-sec-body-inner .form-group label {
+    display: block;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 5px;
+}
+
+body.dark-mode .pif-sec-body-inner .form-group label {
+    color: #94a3b8;
+}
+
+.pif-sec-body-inner .form-group input,
+.pif-sec-body-inner .form-group textarea,
+.pif-sec-body-inner .form-group select {
+    width: 100%;
+    padding: 9px 13px;
+    border: 1px solid rgba(14, 165, 233, 0.18);
+    border-radius: 9px;
+    font-size: 0.84rem;
+    font-family: 'Cairo', sans-serif;
+    background: #f8fafc;
+    color: #0f172a;
+    transition: all 0.2s ease;
+    outline: none;
+    resize: vertical;
+}
+
+body.dark-mode .pif-sec-body-inner .form-group input,
+body.dark-mode .pif-sec-body-inner .form-group textarea,
+body.dark-mode .pif-sec-body-inner .form-group select {
+    background: #0f172a;
+    color: #f1f5f9;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.pif-sec-body-inner .form-group input:focus,
+.pif-sec-body-inner .form-group textarea:focus,
+.pif-sec-body-inner .form-group select:focus {
+    border-color: #0ea5e9;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+body.dark-mode .pif-sec-body-inner .form-group input:focus,
+body.dark-mode .pif-sec-body-inner .form-group textarea:focus {
+    background: #1e293b;
+}
+
+/* Sub-card للحمل */
+.preg-sub-card {
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(14, 165, 233, 0.1);
+}
+
+.preg-sub-card.blue { background: linear-gradient(135deg, #f0f9ff, #e0f2fe); }
+.preg-sub-card.teal { background: linear-gradient(135deg, #ecfeff, #e0f2fe); }
+
+.preg-sub-title {
+    font-size: 0.76rem;
+    font-weight: 800;
+    color: #0ea5e9;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Prescription Sheet داخل الـ Inline */
+.pif-rx-sheet {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid rgba(14, 165, 233, 0.12);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+body.dark-mode .pif-rx-sheet {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Actions Row */
+.pif-actions-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 12px 16px;
+    border-top: 1px solid rgba(14, 165, 233, 0.07);
+    background: rgba(14, 165, 233, 0.02);
+}
+
+.pif-btn {
+    flex: 1;
+    min-width: 90px;
+    padding: 9px 14px;
+    border: none;
+    border-radius: 9px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Cairo', sans-serif;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.pif-btn-primary {
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(14, 165, 233, 0.25);
+}
+
+.pif-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(14, 165, 233, 0.35);
+}
+
+.pif-btn-success {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
+}
+
+.pif-btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(16, 185, 129, 0.35);
+}
+
+.pif-btn-ghost {
+    background: rgba(14, 165, 233, 0.07);
+    color: #0ea5e9;
+    border: 1px solid rgba(14, 165, 233, 0.15);
+}
+
+.pif-btn-ghost:hover {
+    background: rgba(14, 165, 233, 0.12);
+}
+
+/* ══════════════════════════════════════════════════════════
+   الـ neon indicator شريط علوي للبطاقة المفتوحة
+══════════════════════════════════════════════════════════ */
+.patient-item.expanded .patient-item-row {
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.04), rgba(6, 182, 212, 0.02));
+    border-bottom: 1px solid rgba(14, 165, 233, 0.1);
+}
+
+.patient-item .neon-bar {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #0ea5e9, #06b6d4, transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.patient-item.expanded .neon-bar {
+    opacity: 1;
+}
+
+/* Loading shimmer */
+@keyframes shimmer {
+    0% { background-position: -400px 0; }
+    100% { background-position: 400px 0; }
+}
+
+.pif-loading {
+    padding: 24px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.82rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.pif-loading i {
+    color: #0ea5e9;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Grid للحقول الصغيرة */
+.pif-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+@media (max-width: 480px) {
+    .pif-grid-2 { grid-template-columns: 1fr; }
+    .pif-actions-row { flex-direction: column; }
+    .patient-action-btns { display: none; }
+}
+
+/* Patient ID مخفي */
+.patient-hidden-id {
+    display: none;
+}
+/* ── إصلاح بسيط: الملف الطبي يظهر تحت بطاقة المريض مباشرة ── */
+.patient-item {
+    display: flex !important;
+    flex-direction: column !important;
+}

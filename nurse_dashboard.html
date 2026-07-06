@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedChifaGiz — لوحة الممرضة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="nurse_dashboard.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     PARTICLES BACKGROUND
+════════════════════════════════════════════════ -->
+<div class="bg-particles" id="bgParticles"></div>
+<div class="bg-mesh"></div>
+
+<!-- ═══════════════════════════════════════════════
+     SIDEBAR
+════════════════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-glow"></div>
+
+  <!-- Logo -->
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <i class="fas fa-heart-pulse"></i>
+    </div>
+    <div class="logo-text">
+      <span class="logo-brand">MedChifa<em>Giz</em></span>
+      <span class="logo-sub">Nurse Portal</span>
+    </div>
+  </div>
+
+  <!-- Profile -->
+  <div class="sidebar-profile">
+    <div class="profile-avatar">
+      <span>ف</span>
+      <div class="avatar-ring"></div>
+      <div class="online-dot"></div>
+    </div>
+    <div class="profile-info">
+      <span class="profile-name">فاطمة بن عمر</span>
+      <span class="profile-role">ممرضة أولى · جناح A</span>
+      <div class="profile-dept-row">
+        <span class="profile-dept-label">المصلحة:</span>
+        <span class="profile-dept-value" id="nurseDeptDisplay" onclick="editNurseDept()">مصلحة الطب الداخلي</span>
+        <button class="profile-dept-edit-btn" onclick="editNurseDept()" title="تعديل المصلحة"><i class="fas fa-pen"></i></button>
+      </div>
+      <div class="profile-dept-edit" id="nurseDeptEditRow" style="display:none">
+        <input type="text" id="nurseDeptInput" placeholder="اسم المصلحة..." />
+        <button onclick="saveNurseDept()"><i class="fas fa-check"></i></button>
+        <button onclick="cancelNurseDept()"><i class="fas fa-times"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">الرئيسية</div>
+    <a class="nav-item active" onclick="switchSection('dashboard',this)">
+      <div class="nav-icon"><i class="fas fa-house-medical"></i></div>
+      <span>لوحة التحكم</span>
+      <div class="nav-badge">3</div>
+    </a>
+
+    <div class="nav-section-label">المرضى</div>
+    <a class="nav-item" onclick="switchSection('ward-men',this)">
+      <div class="nav-icon"><i class="fas fa-person"></i></div>
+      <span>جناح الرجال</span>
+      <div class="nav-badge blue">12</div>
+    </a>
+    <a class="nav-item" onclick="switchSection('ward-women',this)">
+      <div class="nav-icon"><i class="fas fa-person-dress"></i></div>
+      <span>جناح النساء</span>
+      <div class="nav-badge pink">9</div>
+    </a>
+
+    <div class="nav-section-label">العمليات</div>
+  
+    <a class="nav-item" onclick="switchSection('calendar',this)">
+      <div class="nav-icon"><i class="fas fa-calendar-days"></i></div>
+      <span>التقويم</span>
+    </a>
+    <a class="nav-item" onclick="switchSection('reports',this)">
+      <div class="nav-icon"><i class="fas fa-chart-line"></i></div>
+      <span>التقارير و الاحصائيات</span>
+    </a>
+  
+
+    <div class="nav-section-label">الحساب</div>
+    <a class="nav-item" onclick="switchSection('settings',this)">
+      <div class="nav-icon"><i class="fas fa-gear"></i></div>
+      <span>الإعدادات</span>
+    </a>
+  </nav>
+
+  <!-- Sidebar Footer -->
+  <div class="sidebar-footer">
+    <a class="nav-item danger" onclick="handleLogout()" style="margin:0;border-radius:12px;">
+      <div class="nav-icon"><i class="fas fa-right-from-bracket"></i></div>
+      <span>تسجيل الخروج</span>
+    </a>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════════════ -->
+<main class="main" id="main">
+
+  <!-- ── HEADER ─────────────────────────────── -->
+  <header class="header">
+    <div class="header-right">
+      <button class="sidebar-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="header-title" id="headerTitle"></div>
+    </div>
+    <div class="header-center">
+      <div class="header-datetime">
+        <div class="header-time" id="headerTime">08:42:15</div>
+        <div class="header-date" id="headerDate">الإثنين، 12 مايو 2025</div>
+      </div>
+    </div>
+    <div class="header-left">
+      <div class="header-search">
+        <i class="fas fa-magnifying-glass"></i>
+        <input type="text" placeholder="بحث سريع...">
+      </div>
+      <button class="header-btn notif-btn" onclick="toggleNotifs()">
+        <i class="fas fa-bell"></i>
+        <span class="btn-badge">3</span>
+      </button>
+      <button class="header-btn">
+        <i class="fas fa-expand"></i>
+      </button>
+    </div>
+
+    <!-- Notifications Dropdown -->
+    <div class="notif-panel" id="notifPanel">
+      <div class="notif-header">
+        <span>الإشعارات</span>
+        <button class="notif-clear">مسح الكل</button>
+      </div>
+      <div class="notif-list">
+        <div class="notif-item urgent">
+          <div class="notif-icon"><i class="fas fa-exclamation-triangle"></i></div>
+          <div class="notif-body">
+            <strong>حالة طارئة — الغرفة 14</strong>
+            <span>المريض خالد بن علي يحتاج تدخل فوري</span>
+            <time>منذ 5 دقائق</time>
+          </div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon blue"><i class="fas fa-syringe"></i></div>
+          <div class="notif-body">
+            <strong>موعد علاج — الغرفة 08</strong>
+            <span>جرعة إنسولين لمريضة مريم حسين</span>
+            <time>منذ 12 دقيقة</time>
+          </div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon green"><i class="fas fa-check-circle"></i></div>
+          <div class="notif-body">
+            <strong>علاج مكتمل — الغرفة 03</strong>
+            <span>تم إعطاء الدواء بنجاح</span>
+            <time>منذ 28 دقيقة</time>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════
+       SECTION: DASHBOARD
+  ═══════════════════════════════════════════ -->
+  <section class="section active" id="section-dashboard">
+
+    <!-- Welcome -->
+    <div class="welcome-bar">
+      <div class="welcome-text">
+        <h1>صباح الخير، فاطمة <span class="wave">👋</span></h1>
+        <p>لديك <strong>5 علاجات معلقة</strong> و<strong>21 مريضاً</strong> تحت رعايتك اليوم.</p>
+      </div>
+      <div class="welcome-actions">
+       
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card" style="--card-color:#0ea5e9">
+        <div class="stat-icon"><i class="fas fa-users"></i></div>
+        <div class="stat-body">
+          <div class="stat-value">21</div>
+          <div class="stat-label">إجمالي المرضى</div>
+          <div class="stat-trend up"><i class="fas fa-arrow-up"></i> +2 اليوم</div>
+        </div>
+        <div class="stat-graph">
+          <svg viewBox="0 0 60 30" fill="none">
+            <polyline points="0,25 10,20 20,22 30,14 40,16 50,8 60,10" stroke="currentColor" stroke-width="2" fill="none" opacity=".4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="stat-card" style="--card-color:#3b82f6">
+        <div class="stat-icon"><i class="fas fa-person"></i></div>
+        <div class="stat-body">
+          <div class="stat-value">12</div>
+          <div class="stat-label">جناح الرجال</div>
+          <div class="stat-sub">8 غرف مشغولة</div>
+        </div>
+        <div class="stat-graph">
+          <svg viewBox="0 0 60 30" fill="none">
+            <polyline points="0,28 10,22 20,18 30,20 40,12 50,14 60,8" stroke="currentColor" stroke-width="2" fill="none" opacity=".4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="stat-card" style="--card-color:#ec4899">
+        <div class="stat-icon"><i class="fas fa-person-dress"></i></div>
+        <div class="stat-body">
+          <div class="stat-value">9</div>
+          <div class="stat-label">جناح النساء</div>
+          <div class="stat-sub">6 غرف مشغولة</div>
+        </div>
+        <div class="stat-graph">
+          <svg viewBox="0 0 60 30" fill="none">
+            <polyline points="0,20 10,15 20,18 30,10 40,12 50,6 60,9" stroke="currentColor" stroke-width="2" fill="none" opacity=".4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="stat-card" style="--card-color:#f59e0b">
+        <div class="stat-icon"><i class="fas fa-syringe"></i></div>
+        <div class="stat-body">
+          <div class="stat-value">18</div>
+          <div class="stat-label">علاجات اليوم</div>
+          <div class="stat-trend up"><i class="fas fa-check"></i> 13 مكتمل</div>
+        </div>
+        <div class="stat-graph">
+          <svg viewBox="0 0 60 30" fill="none">
+            <polyline points="0,22 10,18 20,20 30,12 40,14 50,6 60,8" stroke="currentColor" stroke-width="2" fill="none" opacity=".4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="stat-card" style="--card-color:#10b981">
+        <div class="stat-icon"><i class="fas fa-circle-check"></i></div>
+        <div class="stat-body">
+          <div class="stat-value">13</div>
+          <div class="stat-label">علاجات مكتملة</div>
+          <div class="stat-sub">72% من اليومية</div>
+        </div>
+        <div class="stat-graph">
+          <svg viewBox="0 0 60 30" fill="none">
+            <polyline points="0,28 10,24 20,20 30,16 40,12 50,8 60,4" stroke="currentColor" stroke-width="2" fill="none" opacity=".4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="stat-card urgent-card" style="--card-color:#ef4444">
+        <div class="stat-icon pulse-ring"><i class="fas fa-triangle-exclamation"></i></div>
+        <div class="stat-body">
+          <div class="stat-value">2</div>
+          <div class="stat-label">حالات مستعجلة</div>
+          <div class="stat-trend danger"><i class="fas fa-circle"></i> تتطلب تدخل</div>
+        </div>
+        <div class="stat-graph">
+          <svg viewBox="0 0 60 30" fill="none">
+            <polyline points="0,20 10,22 20,14 30,18 40,10 50,14 60,6" stroke="currentColor" stroke-width="2" fill="none" opacity=".4"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Layout: Calendar -->
+    <div class="dashboard-body">
+
+      <!-- placeholder removed: قائمة المرضى الحاليون -->
+
+      <!-- Right Column -->
+      <div class="dash-side">
+        <!-- Today's Schedule -->
+        <div class="schedule-widget">
+          <div class="panel-header">
+            <div class="panel-title"><i class="fas fa-list-check"></i><span>جدول اليوم</span></div>
+          </div>
+          <div class="schedule-list">
+            <div class="schedule-item done">
+              <div class="sch-time">08:00</div>
+              <div class="sch-dot done"></div>
+              <div class="sch-body">
+                <strong>جرعة دواء — غرفة 03</strong>
+                <span>بنيسيلين 500mg · خالد رشيد</span>
+              </div>
+            </div>
+            <div class="schedule-item done">
+              <div class="sch-time">09:30</div>
+              <div class="sch-dot done"></div>
+              <div class="sch-body">
+                <strong>قياس ضغط — غرفة 07</strong>
+                <span>مريم حسين · متابعة</span>
+              </div>
+            </div>
+            <div class="schedule-item active">
+              <div class="sch-time">10:00</div>
+              <div class="sch-dot active"></div>
+              <div class="sch-body">
+                <strong>حقنة إنسولين — غرفة 08</strong>
+                <span>سارة بلقاسم · 10 وحدات</span>
+              </div>
+            </div>
+            <div class="schedule-item">
+              <div class="sch-time">11:30</div>
+              <div class="sch-dot"></div>
+              <div class="sch-body">
+                <strong>تغيير ضماد — غرفة 12</strong>
+                <span>عمر طيب · جرح عملية</span>
+              </div>
+            </div>
+            <div class="schedule-item">
+              <div class="sch-time">13:00</div>
+              <div class="sch-dot"></div>
+              <div class="sch-body">
+                <strong>قياس حرارة — غرفة 14</strong>
+                <span>حسن بوزيد · حالة حرجة</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /dashboard-body -->
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION: PATIENTS
+  ═══════════════════════════════════════════ -->
+  <section class="section" id="section-patients">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">قائمة المرضى</h2>
+        <p class="section-sub">21 مريض تحت رعايتك</p>
+      </div>
+      <div class="section-actions">
+        <div class="search-bar">
+          <i class="fas fa-magnifying-glass"></i>
+          <input type="text" id="patientSearch" placeholder="بحث بالاسم أو الغرفة..." oninput="filterPatients()">
+        </div>
+        <select class="filter-select" onchange="filterPatients(this.value)">
+          <option value="all">كل المرضى</option>
+          <option value="men">جناح الرجال</option>
+          <option value="women">جناح النساء</option>
+          <option value="urgent">مستعجل</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="patients-container" id="patientsContainer"></div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION: WARD MEN
+  ═══════════════════════════════════════════ -->
+  <section class="section" id="section-ward-men">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title"><i class="fas fa-person"></i> جناح الرجال</h2>
+        <p class="section-sub">12 مريض · 8 غرف مشغولة</p>
+      </div>
+    </div>
+    <div class="ward-grid" id="wardMenGrid"></div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION: WARD WOMEN
+  ═══════════════════════════════════════════ -->
+  <section class="section" id="section-ward-women">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title"><i class="fas fa-person-dress"></i> جناح النساء</h2>
+        <p class="section-sub">9 مريضات · 6 غرف مشغولة</p>
+      </div>
+    </div>
+    <div class="ward-grid" id="wardWomenGrid"></div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION: TREATMENTS
+  ═══════════════════════════════════════════ -->
+  <section class="section" id="section-treatments">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">جدول العلاجات</h2>
+        <p class="section-sub">اليوم — 18 علاج · 5 معلق</p>
+      </div>
+      <div class="section-actions">
+        <div class="filter-tabs">
+          <button class="ftab active" onclick="filterTreatments('all',this)">الكل</button>
+          <button class="ftab" onclick="filterTreatments('pending',this)">معلق</button>
+          <button class="ftab" onclick="filterTreatments('done',this)">مكتمل</button>
+          <button class="ftab" onclick="filterTreatments('urgent',this)">مستعجل</button>
+        </div>
+      </div>
+    </div>
+    <div class="treatments-list" id="treatmentsList"></div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION: CALENDAR
+  ═══════════════════════════════════════════ -->
+  <section class="section" id="section-calendar">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">التقويم</h2>
+        <p class="section-sub">مايو 2025</p>
+      </div>
+    </div>
+    <div class="calendar-layout">
+      <div class="calendar-widget-big" id="calendarBig"></div>
+      <div class="calendar-events">
+        <div class="panel-header">
+          <div class="panel-title"><i class="fas fa-list"></i><span>جدول اليوم</span></div>
+        </div>
+        <div class="schedule-list" id="calEvents">
+          <div class="schedule-item done">
+            <div class="sch-time">08:00</div>
+            <div class="sch-dot done"></div>
+            <div class="sch-body"><strong>بنيسيلين — غرفة 03</strong><span>خالد رشيد</span></div>
+          </div>
+          <div class="schedule-item done">
+            <div class="sch-time">09:30</div>
+            <div class="sch-dot done"></div>
+            <div class="sch-body"><strong>قياس ضغط — غرفة 07</strong><span>مريم حسين</span></div>
+          </div>
+          <div class="schedule-item active">
+            <div class="sch-time">10:00</div>
+            <div class="sch-dot active"></div>
+            <div class="sch-body"><strong>إنسولين — غرفة 08</strong><span>سارة بلقاسم</span></div>
+          </div>
+          <div class="schedule-item">
+            <div class="sch-time">11:30</div>
+            <div class="sch-dot"></div>
+            <div class="sch-body"><strong>تغيير ضماد — غرفة 12</strong><span>عمر طيب</span></div>
+          </div>
+          <div class="schedule-item">
+            <div class="sch-time">13:00</div>
+            <div class="sch-dot"></div>
+            <div class="sch-body"><strong>حرارة — غرفة 14</strong><span>حسن بوزيد</span></div>
+          </div>
+          <div class="schedule-item">
+            <div class="sch-time">15:00</div>
+            <div class="sch-dot"></div>
+            <div class="sch-body"><strong>مراجعة ملف — غرفة 01</strong><span>ليلى معمر</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION: REPORTS
+  ═══════════════════════════════════════════ -->
+  <section class="section" id="section-reports">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">التقارير</h2>
+  
+      </div>
+      <button class="btn-primary"><i class="fas fa-download"></i> تصدير PDF</button>
+    </div>
+    <div class="reports-grid">
+      <div class="report-card">
+        <div class="report-header">
+          <span>نسبة اكتمال العلاجات</span>
+          <strong>72%</strong>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:72%;--c:#10b981"></div>
+        </div>
+      </div>
+      <div class="report-card">
+        <div class="report-header">
+          <span>المرضى تحت الرقابة</span>
+          <strong>4</strong>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:20%;--c:#f59e0b"></div>
+        </div>
+      </div>
+      <div class="report-card">
+        <div class="report-header">
+          <span>الحالات الطارئة اليوم</span>
+          <strong>2</strong>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:10%;--c:#ef4444"></div>
+        </div>
+      </div>
+      <div class="report-card">
+        <div class="report-header">
+          <span>جناح الرجال — إشغال</span>
+          <strong>67%</strong>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:67%;--c:#3b82f6"></div>
+        </div>
+      </div>
+      <div class="report-card">
+        <div class="report-header">
+          <span>جناح النساء — إشغال</span>
+          <strong>60%</strong>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:60%;--c:#ec4899"></div>
+        </div>
+      </div>
+      <div class="report-card">
+        <div class="report-header">
+          <span>ملاحظات مسجّلة</span>
+          <strong>8</strong>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:40%;--c:#8b5cf6"></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes-section">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fas fa-note-sticky"></i><span>ملاحظات</span></div>
+        <button class="btn-primary small" onclick="saveNote()"><i class="fas fa-save"></i> حفظ</button>
+      </div>
+      <textarea class="notes-area" id="shiftNotes" placeholder="سجّل ملاحظاتك هنا...&#10;مثال: المريض في الغرفة 14 يحتاج متابعة خاصة..."></textarea>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION: SETTINGS
+  ═══════════════════════════════════════════ -->
+  <section class="section" id="section-settings">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">الإعدادات</h2>
+        <p class="section-sub">إدارة حسابك وتفضيلاتك</p>
+      </div>
+    </div>
+    <div class="settings-layout">
+      <!-- Profile Card -->
+      <div class="settings-profile-card">
+        <div class="settings-avatar-big">
+          <span>ف</span>
+          <div class="avatar-ring"></div>
+        </div>
+        <h3>فاطمة بن عمر</h3>
+        <p>ممرضة أولى · جناح A</p>
+        <button class="btn-primary">تغيير الصورة</button>
+      </div>
+      <!-- Settings Groups -->
+      <div class="settings-groups">
+        <div class="settings-group">
+          <div class="settings-group-title">المعلومات الشخصية</div>
+          <div class="settings-field-grid">
+            <div class="settings-field">
+              <label>الاسم الكامل</label>
+              <input type="text" value="فاطمة بن عمر">
+            </div>
+            <div class="settings-field">
+              <label>رقم الموظف</label>
+              <input type="text" value="NRS-2024-047">
+            </div>
+            <div class="settings-field">
+              <label>التخصص</label>
+              <input type="text" value="تمريض عام">
+            </div>
+            <div class="settings-field">
+              <label>الجناح</label>
+              <input type="text" value="جناح A">
+            </div>
+            <div class="settings-field">
+              <label>البريد الإلكتروني</label>
+              <input type="email" value="fatima.benomar@medchifagiz.dz">
+            </div>
+            <div class="settings-field">
+              <label>الهاتف</label>
+              <input type="text" value="0550 XXX XXX">
+            </div>
+            <div class="settings-field">
+              <label>المصلحة</label>
+              <input type="text" id="settingsDeptInput" placeholder="مصلحة الطب الداخلي">
+            </div>
+          </div>
+          <button class="btn-primary" onclick="saveSettingsInfo()">
+            <i class="fas fa-save"></i> حفظ التغييرات
+          </button>
+        </div>
+        <div class="settings-group">
+          <div class="settings-group-title">التفضيلات</div>
+          <div class="settings-toggles">
+            <div class="settings-toggle-item">
+              <div class="stg-text">
+                <strong>الإشعارات الصوتية</strong>
+                <small>صوت عند وصول إشعار جديد</small>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-toggle-item">
+              <div class="stg-text">
+                <strong>الوضع الليلي</strong>
+                <small>خلفية داكنة لراحة العين</small>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-toggle-item">
+              <div class="stg-text">
+                <strong>تنبيهات العلاج</strong>
+                <small>تذكير 10 دقائق قبل موعد العلاج</small>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="settings-group">
+          <div class="settings-group-title">تغيير كلمة السر</div>
+          <div class="settings-field-grid">
+            <div class="settings-field">
+              <label>كلمة السر الحالية</label>
+              <input type="password" placeholder="••••••••">
+            </div>
+            <div class="settings-field">
+              <label>كلمة السر الجديدة</label>
+              <input type="password" placeholder="••••••••">
+            </div>
+          </div>
+          <button class="btn-primary" onclick="showToast('تم تغيير كلمة السر ✓')">
+            <i class="fas fa-lock"></i> تحديث كلمة السر
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION: PATIENT FILE (ملف المريض)
+  ═══════════════════════════════════════════ -->
+  <section class="section" id="section-patient-file">
+    <!-- Back button -->
+    <div class="pf-back-bar">
+      <button class="pf-back-btn" id="pfBackBtn" onclick="">
+        <i class="fas fa-arrow-right"></i>
+        <span>العودة</span>
+      </button>
+    </div>
+
+    <!-- Personal Info Title -->
+    <div class="pf-personal-title">
+      <h2>المعلومات الشخصية</h2>
+    </div>
+
+    <!-- Sticky Info Cards -->
+    <div class="pf-sticky-cards" id="pfStickyCards">
+      <div class="pf-info-card">
+        <div class="pf-ic-icon"><i class="fas fa-user"></i></div>
+        <div class="pf-ic-body"><label>الاسم واللقب</label><span id="pfFullName"></span></div>
+      </div>
+      <div class="pf-info-card">
+        <div class="pf-ic-icon"><i class="fas fa-cake-candles"></i></div>
+        <div class="pf-ic-body"><label>تاريخ الميلاد</label><span id="pfDOB"></span></div>
+      </div>
+      <div class="pf-info-card">
+        <div class="pf-ic-icon"><i class="fas fa-calendar-plus"></i></div>
+        <div class="pf-ic-body"><label>تاريخ الدخول</label><span id="pfAdmit"></span></div>
+      </div>
+      <div class="pf-info-card">
+        <div class="pf-ic-icon"><i class="fas fa-door-open"></i></div>
+        <div class="pf-ic-body"><label>رقم الغرفة</label><span id="pfRoom"></span></div>
+      </div>
+      <div class="pf-info-card">
+        <div class="pf-ic-icon"><i class="fas fa-user-doctor"></i></div>
+        <div class="pf-ic-body"><label>الطبيب المعالج</label><span id="pfDoctor"></span></div>
+      </div>
+      <div class="pf-info-card">
+        <div class="pf-ic-icon"><i class="fas fa-notes-medical"></i></div>
+        <div class="pf-ic-body"><label>سبب الدخول</label><span id="pfReason"></span></div>
+      </div>
+    </div>
+
+    <!-- Weekly Calendar Strip -->
+    <div class="pf-section">
+      <div class="pf-cal-strip" id="pfCalStrip">
+        <div class="pf-cal-header">
+          <button class="pf-cal-nav" onclick="pfChangeWeek(-1)"><i class="fas fa-chevron-right"></i></button>
+          <span class="pf-cal-month-label" id="pfCalMonthLabel"></span>
+          <button class="pf-cal-nav" onclick="pfChangeWeek(1)"><i class="fas fa-chevron-left"></i></button>
+        </div>
+        <div class="pf-cal-days pf-week-row" id="pfCalDays"></div>
+      </div>
+    </div>
+
+    <!-- Treatments Section -->
+    <div class="pf-section">
+      <div class="pf-section-title"><i class="fas fa-syringe"></i> قائمة العلاجات</div>
+      <div class="pf-treatments-list" id="pfTreatmentsList"></div>
+    </div>
+
+    <!-- Nurse Notes -->
+    <div class="pf-section">
+      <div class="pf-section-title"><i class="fas fa-note-sticky"></i> ملاحظات </div>
+      <textarea class="notes-area" id="pfNotes" placeholder="أضف ملاحظاتك هنا..."></textarea>
+      <button class="btn-primary mt8" onclick="showToast('تم حفظ الملاحظة ✓')">
+        <i class="fas fa-save"></i> حفظ الملاحظة
+      </button>
+    </div>
+  </section>
+
+</main><!-- /main -->
+
+<!-- ═══════════════════════════════════════════════
+     PATIENT DETAIL PANEL (Inline Slide-in)
+════════════════════════════════════════════════ -->
+<div class="patient-panel-overlay" id="patientPanelOverlay" onclick="closePatientPanel()"></div>
+<div class="patient-panel" id="patientPanel">
+  <div class="panel-close-btn" onclick="closePatientPanel()">
+    <i class="fas fa-times"></i>
+  </div>
+  <div class="pp-header">
+    <div class="pp-avatar" id="ppAvatar"></div>
+    <div class="pp-info">
+      <h2 id="ppName"></h2>
+      <div class="pp-badges">
+        <span class="pp-badge" id="ppRoom"></span>
+        <span class="pp-badge" id="ppStatus"></span>
+        <span class="pp-badge" id="ppWard"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Grid -->
+  <div class="pp-section">
+    <div class="pp-section-title"><i class="fas fa-id-card"></i> المعلومات الشخصية</div>
+    <div class="pp-info-grid">
+      <div class="pp-info-cell">
+        <label>تاريخ الميلاد</label>
+        <span id="ppDOB"></span>
+      </div>
+      <div class="pp-info-cell">
+        <label>رقم الغرفة</label>
+        <span id="ppRoomNo"></span>
+      </div>
+      <div class="pp-info-cell">
+        <label>رقم السرير</label>
+        <span id="ppBed"></span>
+      </div>
+      <div class="pp-info-cell">
+        <label>تاريخ الدخول</label>
+        <span id="ppAdmit"></span>
+      </div>
+      <div class="pp-info-cell">
+        <label>الطبيب المعالج</label>
+        <span id="ppDoctor"></span>
+      </div>
+      <div class="pp-info-cell">
+        <label>المصلحة</label>
+        <span id="ppDept"></span>
+      </div>
+      <div class="pp-info-cell full">
+        <label>سبب الدخول</label>
+        <span id="ppReason"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Treatments -->
+  <div class="pp-section">
+    <div class="pp-section-title"><i class="fas fa-syringe"></i> فيش العلاجات</div>
+    <div class="pp-treatments" id="ppTreatments"></div>
+  </div>
+
+  <!-- Notes -->
+  <div class="pp-section">
+    <div class="pp-section-title"><i class="fas fa-note-sticky"></i> ملاحظات التمريض</div>
+    <textarea class="notes-area" id="ppNotes" placeholder="أضف ملاحظاتك هنا..."></textarea>
+    <button class="btn-primary mt8" onclick="showToast('تم حفظ الملاحظة ✓')">
+      <i class="fas fa-save"></i> حفظ الملاحظة
+    </button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ALARM AUDIO -->
+<audio id="alarmAudio" loop>
+  <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAA..." type="audio/wav">
+</audio>
+
+<script src="nurse_dashboard.js"></script>
+ <script src="nurse_treatment_sync.js"></script> 
+</body>
+</html>

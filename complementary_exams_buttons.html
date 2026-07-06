@@ -1,0 +1,94 @@
+<!-- ════════════════════════════════════════════════════════════════
+     MedChifaGiz — تفعيل أزرار "الفحوصات التكميلية"
+     يُلصق كما هو قرب نهاية dr_dashboard.php (انظر تعليمات التركيب).
+     لا يلمس أي كود آخر. يستخدم:
+       - window._apfCurrentRecordId : معرّف المريض المفتوح حالياً (نفس قيمة rapport/fiche)
+       - showAddPatientToast()      : دالة الرسائل الموجودة في dr_dashboard.js
+     ════════════════════════════════════════════════════════════════ -->
+<script>
+(function complementaryExamsModule() {
+    var API_URL = window.LAB_RADIO_API_URL || 'lab_radiology_api.php';
+
+    /* رسالة آمنة سواء توفّرت showAddPatientToast أم لا */
+    function toast(msg, type) {
+        if (typeof window.showAddPatientToast === 'function') {
+            window.showAddPatientToast(msg, type);
+        } else {
+            alert(msg);
+        }
+    }
+
+    function getVal(id) {
+        var el = document.getElementById(id);
+        return el ? el.value.trim() : '';
+    }
+
+    /* معرّف المريض المفتوح حالياً — نفس مصدر rapport/fiche */
+    function currentPatientId() {
+        return parseInt(window._apfCurrentRecordId, 10) || 0;
+    }
+
+    function sendRequest(action, fieldId, textKey, btn, defaultLabel) {
+        var patientId = currentPatientId();
+        var text = getVal(fieldId);
+
+        // منع الإرسال إذا لم يوجد Patient ID
+        if (patientId <= 0) {
+            toast('⚠️ لا يوجد مريض مفتوح — احفظ ملف المريض أولاً', 'warn');
+            return;
+        }
+        // منع إرسال طلب فارغ
+        if (!text) {
+            toast('⚠️ لا يمكن إرسال طلب فارغ', 'warn');
+            return;
+        }
+
+        if (btn) {
+            btn.disabled  = true;
+            btn.dataset._label = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-left:6px;"></i> جاري الإرسال...';
+        }
+
+        var fd = new FormData();
+        fd.append('action', action);
+        fd.append('patient_id', patientId);
+        fd.append(textKey, text);
+
+        fetch(API_URL, { method: 'POST', body: fd, credentials: 'same-origin' })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                if (btn) btn.disabled = false;
+                if (res && res.success) {
+                    toast('✅ ' + (res.message || 'تم الإرسال بنجاح'), 'success');
+                    if (btn) {
+                        btn.innerHTML = '<i class="fas fa-check" style="margin-left:6px;"></i> تم الإرسال';
+                        setTimeout(function () { btn.innerHTML = defaultLabel; }, 2500);
+                    }
+                } else {
+                    toast('❌ ' + (res && res.message ? res.message : 'فشل الإرسال'), 'error');
+                    if (btn) btn.innerHTML = defaultLabel;
+                }
+            })
+            .catch(function () {
+                if (btn) { btn.disabled = false; btn.innerHTML = defaultLabel; }
+                toast('❌ تعذّر الاتصال بالخادم', 'error');
+            });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var labBtn = document.getElementById('sendLabRequestBtn');
+        if (labBtn) {
+            labBtn.addEventListener('click', function () {
+                sendRequest('send_lab_request', 'apf_medical_tests', 'analysis_text', labBtn, '📤 إرسال للمخبر');
+            });
+        }
+
+        var radioBtn = document.getElementById('sendRadiologyRequestBtn');
+        if (radioBtn) {
+            radioBtn.addEventListener('click', function () {
+                sendRequest('send_radiology_request', 'apf_radiology', 'radiology_text', radioBtn, '📤 إرسال للأشعة');
+            });
+        }
+    });
+})();
+</script>
