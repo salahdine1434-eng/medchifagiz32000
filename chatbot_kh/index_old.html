@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>MedChifagiz AI</title>
+
+<style>
+body{
+    margin: 0;
+    height: 100vh;
+    font-family: Arial;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+.container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+}
+
+.sidebar {
+    width: 250px;
+    min-width: 250px;
+    background: #1e1e2f;
+    color: white;
+    padding: 10px;
+}
+
+.sidebar button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.chat-area {
+    flex: 1;
+    display: flex;   
+}
+
+.chat-box{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+} 
+
+
+.header{
+    background:#1976d2;
+    color:white;
+    padding:15px;
+    text-align:center;
+    font-weight:bold;
+}
+
+.messages{
+    flex:1;
+    overflow-y:auto;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+}
+
+.msg{
+    padding:10px;
+    margin:8px;
+    border-radius:10px;
+    max-width:70%;
+    line-height:1.5;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+#message{
+    direction: rtl;
+    text-align: right;
+}
+.user{
+    background:#1976d2;
+    color:white;
+    align-self:flex-end;
+}
+
+.bot{
+    background:#f1f1f1;
+    color:black;
+    align-self:flex-start;
+}
+
+.input-area{
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    background: white;
+    border-top: 1px solid #ddd;
+}
+
+.input-area input{
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+.input-area button{
+    padding: 10px 15px;
+    border: none;
+    border-radius: 10px;
+    background: #1976d2;
+    color: white;
+    cursor: pointer;
+}
+.welcome{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+}
+
+.welcome h2{
+    font-size: 26px;
+    margin-bottom: 25px;
+    color: white;
+}
+
+.suggestions{
+    display:grid;
+    grid-template-columns: repeat(2,1fr);
+    gap:12px;
+}
+
+.suggestions button{
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+    background:white;
+    font-size:14px;
+    transition:0.2s;
+}
+
+.suggestions button:hover{
+    background:#e3f2fd;
+    transform:scale(1.05);
+}
+#fileLabel{
+    background:#1976d2;
+    color:white;
+    padding:8px 12px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:18px;
+}
+
+#fileLabel:hover{
+    background:#125aa0;
+}
+
+#fileName{
+    margin-left:10px;
+    color:#eee;
+    font-size:13px;
+}
+.input-area {
+    position: relative;
+}
+
+#previewImg {
+    display: block;
+    margin-bottom: 10px;
+    pointer-events: none;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+    
+    <div class="sidebar">
+        <button onclick="newChat()" data-t="newChat">+ New Chat</button>
+        <div id="chatList"></div>
+    </div>
+
+    <div class="chat-area">
+       <div class="chat-box">
+    <div class="header">
+    MedChifagiz AI
+    <button onclick="toggleLang()" style="float:right;">🌐</button>
+</div>
+
+    <!-- ✅ welcome -->
+    <div id="welcomeScreen" class="welcome">
+        <h2 data-t="welcome">كيف يمكنني مساعدتك؟</h2>
+
+        <div class="suggestions">
+            <button onclick="sendSuggestion('pain')" data-t="pain">🤒 لدي ألم</button>
+            <button onclick="sendSuggestion('medicine')" data-t="medicine">💊 دواء</button>
+            <button onclick="sendSuggestion('doctor')" data-t="doctor">🧑‍⚕️ طبيب</button>
+            <button onclick="sendSuggestion('analysis')" data-t="analysis">🧠 تحليل</button>
+        </div>
+    </div>
+    <!-- ✅ نهاية welcome -->
+
+    <div id="messages" class="messages"></div>
+
+           <div class="input-area">
+    <input id="message" placeholder="Ask a health question" />
+
+   <button id="sendBtn" type="button" onclick="sendMessage()" data-t="send">Send</button>
+    <div style="margin-top:8px;">
+
+    <!-- زر اختيار صورة -->
+    <label for="imageInput" style="cursor:pointer;" data-t="chooseFile">
+    📷 اختر صورة
+</label>
+    <!-- اسم الملف -->
+    <span id="fileName">No file chosen</span>
+
+    <!-- input مخفي -->
+    <input type="file" id="imageInput" accept="image/*" style="display:none;">
+
+</div>
+    
+
+    <!-- 🖼️ preview -->
+    <img id="previewImg" style="max-width:120px; display:none; margin-top:5px; border-radius:8px;">
+    <button id="removeImgBtn" style="display:none; margin-top:5px;">❌</button>
+
+</div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+let lang = localStorage.getItem("lang") || "ar";
+
+const translations = {
+   ar: {
+    welcome: "كيف يمكنني مساعدتك؟",
+    pain: "لدي ألم",
+    medicine: "دواء",
+    doctor: "طبيب",
+    analysis: "تحليل",
+    send: "إرسال",
+    newChat: "محادثة جديدة",
+    placeholder: "اكتب سؤالك الطبي...",
+    chooseFile: "اختر ملف",
+    noFile: "لم يتم اختيار ملف"
+},
+en: {
+    welcome: "How can I help you?",
+    pain: "I have pain",
+    medicine: "Medicine",
+    doctor: "Doctor",
+    analysis: "Analysis",
+    send: "Send",
+    newChat: "New Chat",
+    placeholder: "Ask a health question...",
+    chooseFile: "Choose File",
+    noFile: "No file chosen"
+
+},
+fr: {
+    welcome: "Comment puis-je vous aider ?",
+    pain: "J'ai une douleur",
+    medicine: "Médicament",
+    doctor: "Médecin",
+    analysis: "Analyse",
+    send: "Envoyer",
+    newChat: "Nouveau Chat",
+    placeholder: "Posez une question médicale...",
+    chooseFile: "Choisir un fichier",
+    noFile: "Aucun fichier choisi"
+}
+};
+function applyLanguage(){
+    document.querySelectorAll("[data-t]").forEach(el=>{
+        let key = el.getAttribute("data-t");
+        if(translations[lang][key]){
+            el.innerText = translations[lang][key];
+        }
+    });
+    let input = document.getElementById("message");
+if(input && translations[lang].placeholder){
+    input.placeholder = translations[lang].placeholder;
+}
+
+/* 🔽 حط الكود هنا بالضبط */
+let fileNameEl = document.getElementById("fileName");
+let inputFile = document.getElementById("imageInput");
+
+if(fileNameEl && inputFile){
+    if(inputFile.files.length === 0){
+        fileNameEl.innerText = translations[lang].noFile;
+    }
+}
+
+// ✅ بعدها يبقى هذا
+renderChats();
+}
+/* 🔽 هنا بالضبط حط الكود */
+document.addEventListener("DOMContentLoaded", function(){
+
+    let input = document.getElementById("imageInput");
+    let preview = document.getElementById("previewImg");
+    let fileNameEl = document.getElementById("fileName");
+
+    input.addEventListener("change", function(){
+
+        // 📝 اسم الملف
+        let fileName = this.files.length > 0 
+            ? this.files[0].name 
+            : translations[lang].noFile;
+
+        fileNameEl.innerText = fileName;
+
+        // 🖼 preview
+        if(this.files && this.files[0]){
+            let reader = new FileReader();
+
+           reader.onload = function(e){
+    preview.src = e.target.result;
+    preview.style.display = "block";
+
+    // 👇 زيد هذا
+    document.getElementById("removeImgBtn").style.display = "inline-block";
+}
+
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+
+});
+
+
+
+
+let chats = JSON.parse(localStorage.getItem("chats")) || [];
+let currentChat = 0;
+function addMessage(text, type){
+    let div = document.createElement("div");
+    div.className = "msg " + type;
+    div.innerText = text;
+    div.style.whiteSpace = "pre-line";
+    document.getElementById("messages").appendChild(div);
+
+    document.getElementById("messages").scrollTop =
+    document.getElementById("messages").scrollHeight;
+}
+// 👇 حطها هنا مباشرة
+function sendMessage(){
+    document.getElementById("welcomeScreen").style.display = "none";
+
+    if(!checkLimit()){
+        addMessage("⛔ وصلت إلى الحد اليومي (30 سؤال).\nارجع بعد 6 ساعات ⏳","bot");
+        return;
+    }
+
+    let input = document.getElementById("message");
+    let text = input.value.trim();
+    let imageInput = document.getElementById("imageInput");
+
+    // ✅ هنا الحل
+    if(text === "" && imageInput.files.length === 0){
+        return;
+    }
+
+    // عرض النص
+    if(text){
+        addMessage(text,"user");
+    }
+
+    // عرض الصورة
+    if(imageInput.files.length > 0){
+        let img = document.createElement("img");
+        img.src = URL.createObjectURL(imageInput.files[0]);
+        img.style.maxWidth = "150px";
+
+        let div = document.createElement("div");
+        div.className = "msg user";
+        div.appendChild(img);
+
+        document.getElementById("messages").appendChild(div);
+    }
+
+    // history
+    if (!chats[currentChat]) chats[currentChat] = [];
+
+    chats[currentChat].push({
+        role: "user",
+        content: text || "[image]"
+    });
+
+    localStorage.setItem("chats", JSON.stringify(chats));
+    renderChats();
+
+    usage.count++;
+    localStorage.setItem("usage", JSON.stringify(usage));
+
+    let limitedHistory = chats[currentChat].slice(-5).map(msg => ({
+        role: fixRole(msg.role),
+        content: msg.content
+    }));
+
+    let formData = new FormData();
+    formData.append("message", text);
+    formData.append("history", JSON.stringify(limitedHistory));
+
+    if(imageInput.files.length > 0){
+        formData.append("image", imageInput.files[0]);
+    }
+
+    fetch("chatbot.php",{
+        method:"POST",
+        body: formData
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        let textReply = data.reply;
+
+        if (data.specialty) {
+            textReply += "\n\n🩺 Recommended doctor: " + data.specialty;
+        }
+
+        addMessage(textReply,"bot");
+
+        chats[currentChat].push({
+            role: "assistant",
+            content: textReply
+        });
+
+        localStorage.setItem("chats", JSON.stringify(chats));
+        renderChats();
+    });
+
+    // تنظيف
+    input.value = "";
+    imageInput.value = "";
+    document.getElementById("previewImg").style.display = "none";
+    document.getElementById("fileName").innerText = translations[lang].noFile;
+
+
+    // scroll
+    let msgBox = document.getElementById("messages");
+    msgBox.scrollTop = msgBox.scrollHeight;
+
+};
+
+function sendSuggestion(key){
+    let text = translations[lang][key];
+    document.getElementById("message").value = text;
+    sendMessage();
+}
+function toggleLang(){
+    if(lang === "ar"){
+        lang = "en";
+    } else if(lang === "en"){
+        lang = "fr";
+    } else {
+        lang = "ar";
+    }
+
+    localStorage.setItem("lang", lang);
+    applyLanguage();
+
+    // 🔥 اتجاه الصفحة
+ document.body.dir = (lang === "ar") ? "rtl" : "ltr";
+
+document.getElementById("message").style.direction = (lang === "ar") ? "rtl" : "ltr";
+document.getElementById("message").style.textAlign = (lang === "ar") ? "right" : "left";
+}
+
+function fixRole(role) {
+    return role === "bot" ? "assistant" : role;
+}
+
+function newChat() {
+    chats.push([]);
+    currentChat = chats.length - 1;
+
+    localStorage.setItem("chats", JSON.stringify(chats));
+
+    renderChats();
+    loadChat(currentChat);
+}
+
+function renderChats() {
+    let chatList = document.getElementById("chatList");
+    chatList.innerHTML = "";
+
+    chats.forEach((chat, index) => {
+        let div = document.createElement("div");
+
+        let title = chat.length > 0
+            ? chat[0].content.substring(0, 20)
+            : translations[lang].newChat;
+
+        div.innerText = title;
+        div.style.cursor = "pointer";
+        div.style.padding = "10px";
+        div.style.color = "white";
+        div.style.display = "flex";
+        div.style.justifyContent = "space-between";
+
+        if (index === currentChat) {
+            div.style.background = "#333";
+        }
+
+        div.onclick = () => loadChat(index);
+
+        let deleteBtn = document.createElement("span");
+        deleteBtn.innerText = " ❌";
+        deleteBtn.style.cursor = "pointer";
+
+        deleteBtn.onclick = (e) => {
+            e.stopPropagation();
+            chats.splice(index, 1);
+
+            if (chats.length === 0) {
+                chats.push([]);
+            }
+
+            currentChat = 0;
+            localStorage.setItem("chats", JSON.stringify(chats));
+            renderChats();
+            loadChat(currentChat);
+        };
+
+        div.appendChild(deleteBtn);
+        chatList.appendChild(div);
+    });
+}
+function loadChat(index) {
+    currentChat = index;
+
+    let messagesBox = document.getElementById("messages");
+    messagesBox.innerHTML = "";
+// 👇 هذا هو السطر المهم
+    if(chats[index].length === 0){
+        document.getElementById("welcomeScreen").style.display = "block";
+    } else {
+        document.getElementById("welcomeScreen").style.display = "none";
+    }
+    chats[index].forEach(msg => {
+        let uiRole = msg.role === "assistant" ? "bot" : msg.role;
+        addMessage(msg.content, uiRole);
+    });
+}
+window.onload = () => {
+    if (chats.length === 0) {
+        chats.push([]);
+    }
+
+    renderChats();
+    loadChat(currentChat);
+    applyLanguage();
+
+    document.body.dir = (lang === "ar") ? "rtl" : "ltr";
+
+    document.getElementById("message").style.direction = (lang === "ar") ? "rtl" : "ltr";
+    document.getElementById("message").style.textAlign = (lang === "ar") ? "right" : "left";
+    // 👇 هنا بالضبط ضيف هذا
+
+    let removeBtn = document.getElementById("removeImgBtn");
+
+    removeBtn.addEventListener("click", function(){
+        document.getElementById("imageInput").value = "";
+        document.getElementById("previewImg").style.display = "none";
+        document.getElementById("fileName").innerText = translations[lang].noFile;
+        this.style.display = "none";
+    });
+};
+    
+
+// 🔄 تحميل الرسائل القديمة
+
+// ⏱️ إعدادات
+const MAX_QUESTIONS = 30;
+const WAIT_HOURS = 6;
+
+// 📊 تحميل البيانات
+let usage = JSON.parse(localStorage.getItem("usage")) || {
+    count: 0,
+    lastReset: Date.now()
+};
+
+// 🔄 تحقق من الوقت
+function checkLimit(){
+
+    let now = Date.now();
+    let hoursPassed = (now - usage.lastReset) / (1000 * 60 * 60);
+
+    // ⏱️ إذا فاتت 6 ساعات → reset
+    if(hoursPassed >= WAIT_HOURS){
+        usage.count = 0;
+        usage.lastReset = now;
+        localStorage.setItem("usage", JSON.stringify(usage));
+    }
+
+    // 🚫 إذا وصل 30
+    if(usage.count >= MAX_QUESTIONS){
+        return false;
+    }
+
+    return true;
+}
+
+
+// Enter send
+document.getElementById("message").addEventListener("keypress",function(e){
+    if(e.key==="Enter"){
+        sendMessage();
+    }
+});
+
+</script>
+
+</body>
+</html>
