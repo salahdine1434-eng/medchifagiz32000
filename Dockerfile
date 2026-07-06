@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# Extensions PHP nécessaires à l'application (PDO MySQL, mysqli, curl, gd)
+# Extensions PHP nécessaires à l'application (PDO MySQL, mysqli, curl, gd) et installation de dos2unix
 RUN apt-get update && apt-get install -y \
         libcurl4-openssl-dev \
         libpng-dev \
@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
         unzip \
         git \
+        dos2unix \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_mysql mysqli curl gd \
     && a2enmod rewrite \
@@ -29,9 +30,10 @@ COPY . /var/www/html/
 RUN mkdir -p /var/www/html/chatbot_kh/uploads \
     && chown -R www-data:www-data /var/www/html
 
-# Render fournit le port d'écoute via la variable d'environnement PORT
+# Copie de l'entrypoint, conversion des fins de ligne (CRLF -> LF) et droits d'exécution
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+RUN dos2unix /usr/local/bin/docker-entrypoint.sh \
+    && chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 80
 
