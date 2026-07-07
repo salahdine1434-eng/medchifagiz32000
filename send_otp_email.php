@@ -21,12 +21,22 @@ function sendOtpEmail($toEmail, $otp) {
         $mail->SMTPDebug = 0;
        
 
-        $mail->Host       = 'smtp.gmail.com';
+        $mail->Host       = gethostbyname('smtp.gmail.com');
         $mail->SMTPAuth   = true;
         $mail->Username   = 'hinanadjet@gmail.com';
         $mail->Password   = 'otpynwremqnnruhd'; // ⚠️ حاول تخبيها لاحقاً
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
+
+        // Important si tu remplaces le Host par une IP : Gmail vérifie le certificat SSL,
+// donc il faut spécifier le nom d'origine pour la vérification TLS :
+$mail->SMTPOptions = [
+    'ssl' => [
+        'verify_peer'       => false,
+        'verify_peer_name'  => false,
+        'allow_self_signed' => true,
+    ]
+];
 
         // المرسل والمستقبل
         $mail->setFrom($mail->Username, 'MedChifaGiz');
