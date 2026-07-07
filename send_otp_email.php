@@ -2,7 +2,7 @@
 
 function sendViaTurboSMTP($toEmail, $subject, $htmlContent) {
     $data = [
-        "from"         => "hinanadjet@gmail.com",
+        "from"         => "noreply@medchifagiz.com",
         "to"           => $toEmail,
         "subject"      => $subject,
         "html_content" => $htmlContent
