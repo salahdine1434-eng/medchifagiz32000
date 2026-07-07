@@ -1,8 +1,8 @@
 <?php
-$host = " https://php-myadmin.net/index.php";
-$dbname = "icei_42351031_rafik22";
-$user = "icei_42351031";
-$pass = "LEtRSvD61KBq";
+$host = "sql.freedb.tech";
+$dbname = "freedb_fAdaxmkv";
+$user = "u_vIi7lt";
+$pass = "Y4HqyDZuEwzM";
 
 try {
     $pdo = new PDO(
