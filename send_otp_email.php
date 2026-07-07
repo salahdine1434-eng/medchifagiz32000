@@ -26,7 +26,7 @@ function sendOtpEmail($toEmail, $otp) {
         $mail->Username   = 'hinanadjet@gmail.com';
         $mail->Password   = 'otpynwremqnnruhd'; // ⚠️ حاول تخبيها لاحقاً
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = 587;
+        $mail->Port       = 465;
 
         // Important si tu remplaces le Host par une IP : Gmail vérifie le certificat SSL,
 // donc il faut spécifier le nom d'origine pour la vérification TLS :
