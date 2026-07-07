@@ -10,6 +10,10 @@ if ($full_name === '' ||  $email === '' ||  $password === '' || $confirm === '')
     die("يرجى ملء جميع الحقول");
 }
 
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    die("عنوان البريد الإلكتروني غير صالح");
+}
+
 if ($password !== $confirm) {
     die("كلمتا السر غير متطابقتين");
 }
